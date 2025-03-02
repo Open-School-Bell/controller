@@ -3,3 +3,8 @@ node_modules
 /.cache
 /build
 .env
+
+prisma/*.db
+prisma/*.db-journal
+
+public/sounds

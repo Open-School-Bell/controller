@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Sounder {
+  id       String  @id @default(uuid())
+  key      String  @unique()
+  name     String
+  enrolled Boolean @default(false)
+
+  zones ZoneSounder[]
+}
+
+model Zone {
+  id   String @id @default(uuid())
+  name String
+
+  sounders  ZoneSounder[]
+  schedules Schedule[]
+}
+
+model ZoneSounder {
+  id String @id @default(uuid())
+
+  sounder   Sounder @relation(fields: [sounderId], references: [id])
+  sounderId String
+
+  zone   Zone   @relation(fields: [zoneId], references: [id])
+  zoneId String
+}
+
+model Schedule {
+  id       String @id @default(uuid())
+  time     String
+  weekDays String
+
+  zone   Zone   @relation(fields: [zoneId], references: [id])
+  zoneId String
+
+  dayType   DayType? @relation(fields: [dayTypeId], references: [id])
+  dayTypeId String?
+
+  audio   Audio  @relation(fields: [audioId], references: [id])
+  audioId String
+}
+
+model DayType {
+  id   String @id @default(uuid())
+  name String
+
+  schedules   Schedule[]
+  assignments DayTypeAssignment[]
+}
+
+model DayTypeAssignment {
+  id   String   @id @default(uuid())
+  date DateTime
+
+  dayType   DayType @relation(fields: [dayTypeId], references: [id])
+  dayTypeId String
+}
+
+model Audio {
+  id       String @id @default(uuid())
+  name     String
+  fileName String
+
+  schedules Schedule[]
+}
