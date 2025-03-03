@@ -14,10 +14,12 @@ datasource db {
 }
 
 model Sounder {
-  id       String  @id @default(uuid())
-  key      String  @unique()
-  name     String
-  enrolled Boolean @default(false)
+  id        String  @id @default(uuid())
+  key       String  @unique()
+  name      String
+  enrolled  Boolean @default(false)
+  ringerPin Int     @default(0)
+  lastCheckIn DateTime @default(now())
 
   zones ZoneSounder[]
 }
@@ -72,9 +74,10 @@ model DayTypeAssignment {
 }
 
 model Audio {
-  id       String @id @default(uuid())
-  name     String
-  fileName String
+  id         String @id @default(uuid())
+  name       String
+  fileName   String
+  ringerWire String @default("")
 
   schedules Schedule[]
 }

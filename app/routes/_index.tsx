@@ -1,18 +1,59 @@
-import type {MetaFunction} from '@remix-run/node'
-import {Link} from '@remix-run/react'
+import {type MetaFunction, type LoaderFunctionArgs} from '@remix-run/node'
+import {Link, useLoaderData} from '@remix-run/react'
+import {formatDistance} from 'date-fns'
+
+import {getPrisma} from '~/lib/prisma.server'
+
+export const loader = async ({}: LoaderFunctionArgs) => {
+  const prisma = getPrisma()
+
+  const sounders = await prisma.sounder.findMany({orderBy: {name: 'asc'}})
+
+  return {sounders}
+}
 
 export const meta: MetaFunction = () => {
-  return [
-    {title: 'New Remix App'},
-    {name: 'description', content: 'Welcome to Remix!'}
-  ]
+  return [{title: 'Open School Bell'}]
 }
 
 export default function Index() {
+  const {sounders} = useLoaderData<typeof loader>()
+
   return (
-    <div>
-      <Link to="/schedule">Schedule</Link>
-      <Link to="/zones">Zones</Link>
+    <div className="grid grid-cols-3">
+      <div className="border border-gray-200 p-2">
+        <h2>Sounders</h2>
+        <table>
+          <thead>
+            <tr>
+              <th className="p-2">Name</th>
+              <th className="p-2">Online</th>
+              <th className="p-2">Last Seen</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sounders.map(({id, name, lastCheckIn}) => {
+              return (
+                <tr key={id}>
+                  <td>
+                    <Link to={`/sounders/${id}`}>{name}</Link>
+                  </td>
+                  <td className="text-center">
+                    {new Date().getTime() / 1000 -
+                      lastCheckIn.getTime() / 1000 <
+                    65
+                      ? '🟢'
+                      : '🔴'}
+                  </td>
+                  <td>
+                    {formatDistance(lastCheckIn, new Date(), {addSuffix: true})}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

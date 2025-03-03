@@ -10,3 +10,6 @@ export const makeKey = () => {
   }
   return result
 }
+
+export const INPUT_CLASSES =
+  'p-2 border border-gray-300 rounded-md shadow w-full'

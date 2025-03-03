@@ -22,6 +22,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
   return Response.json({
     id: sounder.id,
     name: sounder.name,
-    schedules: schedules.map(({time, audioId}) => `${time}/${audioId}`)
+    schedules: schedules.map(
+      ({time, audioId, dayTypeId, weekDays}) =>
+        `${time}/${audioId}/${dayTypeId}/${weekDays}`
+    )
   })
 }

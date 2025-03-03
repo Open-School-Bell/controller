@@ -4,10 +4,10 @@ import {
   redirect
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
-
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {INPUT_CLASSES} from '~/lib/utils'
 
 export const loader = async ({}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
@@ -64,7 +64,7 @@ export const action: ActionFunction = async ({request}) => {
   invariant(day)
   invariant(sound)
 
-  const schedule = await prisma.schedule.create({
+  await prisma.schedule.create({
     data: {
       weekDays: days,
       time,
@@ -74,14 +74,14 @@ export const action: ActionFunction = async ({request}) => {
     }
   })
 
-  return redirect(`/schedule/${schedule.id}`)
+  return redirect(`/schedule`)
 }
 
 const AddSchedule = () => {
   const {zones, days, sounds} = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="border border-gray-300 p-2">
       <form method="post">
         <div className="grid grid-cols-7">
           {[
@@ -94,55 +94,71 @@ const AddSchedule = () => {
             'Sunday'
           ].map((day, i) => {
             return (
-              <div key={i}>
-                {day}
+              <label key={i} className="text-center cursor-pointer">
+                <p>{day}</p>
                 <input type="checkbox" name={`day[${i + 1}]`} value={i + 1} />
-              </div>
+              </label>
             )
           })}
         </div>
-        <label>
-          Time
-          <input type="time" name="time" />
-        </label>
-        <label>
-          Day Type
-          <select name="dayType" defaultValue={'_'}>
-            <option value="_">Default</option>
-            {days.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </label>
-        <label>
-          Zone
-          <select name="zone">
-            {zones.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </label>
-        <label>
-          Sound
-          <select name="sound">
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </label>
-        <input type="submit" value="Add" />
+        <div className="grid grid-cols-4 mt-2">
+          <label className="p-2">
+            Time
+            <input type="time" name="time" className={`${INPUT_CLASSES}`} />
+            <span className="text-gray-400">
+              The time that the scheduled bell will occur.
+            </span>
+          </label>
+          <label className="p-2">
+            Day Type
+            <select
+              name="dayType"
+              defaultValue={'_'}
+              className={`${INPUT_CLASSES}`}
+            >
+              <option value="_">Default</option>
+              {days.map(({id, name}) => {
+                return (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                )
+              })}
+            </select>
+            <span className="text-gray-400">
+              The day type that this schedule applies to.
+            </span>
+          </label>
+          <label className="p-2">
+            Zone
+            <select name="zone" className={INPUT_CLASSES}>
+              {zones.map(({id, name}) => {
+                return (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                )
+              })}
+            </select>
+          </label>
+          <label className="p-2">
+            Sound
+            <select name="sound" className={INPUT_CLASSES}>
+              {sounds.map(({id, name}) => {
+                return (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                )
+              })}
+            </select>
+          </label>
+        </div>
+        <input
+          type="submit"
+          value="Add"
+          className={`${INPUT_CLASSES} bg-green-300 cursor-pointer`}
+        />
       </form>
     </div>
   )
