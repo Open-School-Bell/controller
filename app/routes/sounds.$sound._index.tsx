@@ -1,5 +1,5 @@
 import {type LoaderFunctionArgs} from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 
@@ -19,9 +19,11 @@ const Sound = () => {
   return (
     <div>
       <h1>{sound.name}</h1>
+      <Link to={`/sounds/${sound.id}/edit`}>Edit</Link>
       <audio controls>
         <source src={`/sounds/${sound.fileName}`} type="audio/mp3" />
       </audio>
+      Ringer Wire: {sound.ringerWire}
     </div>
   )
 }

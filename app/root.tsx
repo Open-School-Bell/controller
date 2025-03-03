@@ -33,7 +33,10 @@ export function Layout({children}: {children: React.ReactNode}) {
 export default function App() {
   return (
     <div className="grid grid-cols-app">
-      <div className="bg-green-200 p-2">Open School Bell</div>
+      <div className="bg-green-200 p-2 flex items-center">
+        <img src="/logo.png" className="w-16 mr-4" />
+        <span>Open School Bell</span>
+      </div>
       <div className="bg-green-200"></div>
       <div className="bg-gray-300">
         <ul>

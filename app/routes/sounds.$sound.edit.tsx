@@ -1,17 +1,29 @@
 import {
   redirect,
   type ActionFunctionArgs,
+  type LoaderFunctionArgs,
   unstable_composeUploadHandlers,
   unstable_createFileUploadHandler,
   unstable_createMemoryUploadHandler,
   unstable_parseMultipartFormData
 } from '@remix-run/node'
+import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 import path from 'path'
 
 import {getPrisma} from '~/lib/prisma.server'
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const loader = async ({params}: LoaderFunctionArgs) => {
+  const prisma = getPrisma()
+
+  const sound = await prisma.audio.findFirstOrThrow({
+    where: {id: params.sound}
+  })
+
+  return {sound}
+}
+
+export const action = async ({request, params}: ActionFunctionArgs) => {
   const prisma = getPrisma()
 
   const uploadHandler = unstable_composeUploadHandlers(
@@ -28,16 +40,18 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await unstable_parseMultipartFormData(request, uploadHandler)
 
   const name = formData.get('name') as string | undefined
-  const ringerWire = formData.get('ringer-wire') as string | undefined
   const fileData = formData.get('file') as any as {filepath: string} | undefined
+  const ringerWire = formData.get('ringer-wire') as string | undefined
 
   invariant(name)
-  invariant(fileData)
 
-  const sound = await prisma.audio.create({
+  const sound = await prisma.audio.update({
+    where: {id: params.sound},
     data: {
       name,
-      fileName: path.basename(fileData.filepath),
+      fileName: fileData!.filepath
+        ? path.basename(fileData!.filepath)
+        : undefined,
       ringerWire: ringerWire ? ringerWire : ''
     }
   })
@@ -46,6 +60,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const AddSound = () => {
+  const {sound} = useLoaderData<typeof loader>()
+
   return (
     <div>
       <h2>Add Sound</h2>
@@ -55,6 +71,7 @@ const AddSound = () => {
           <input
             name="name"
             className="border border-gray-200 rounded-md p-2"
+            defaultValue={sound.name}
           />
         </label>
         <label>
@@ -71,9 +88,10 @@ const AddSound = () => {
           <input
             name="ringer-wire"
             className="border border-gray-200 rounded-md p-2"
+            defaultValue={sound.ringerWire}
           />
         </label>
-        <input type="submit" value="Add" />
+        <input type="submit" value="Update" />
       </form>
     </div>
   )
