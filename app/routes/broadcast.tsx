@@ -1,6 +1,6 @@
 import {asyncForEach, invariant} from '@arcath/utils'
 import {type LoaderFunctionArgs, type ActionFunctionArgs} from '@remix-run/node'
-import {Outlet, useLoaderData, Link} from '@remix-run/react'
+import {useLoaderData} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 
@@ -29,7 +29,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     include: {sounders: {include: {sounder: true}}}
   })
 
-  asyncForEach(z.sounders, async ({sounder}) => {
+  await asyncForEach(z.sounders, async ({sounder}) => {
     await fetch(`http://${sounder.ip}:3000/play?id=${sound}`)
   })
 
