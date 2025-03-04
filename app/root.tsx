@@ -52,6 +52,16 @@ export default function App() {
           </li>
           <li>
             <NavLink
+              to="/broadcast"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Broadcast
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/zones"
               className={({isActive}) => {
                 return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`

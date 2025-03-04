@@ -14,12 +14,13 @@ datasource db {
 }
 
 model Sounder {
-  id        String  @id @default(uuid())
-  key       String  @unique()
-  name      String
-  enrolled  Boolean @default(false)
-  ringerPin Int     @default(0)
+  id          String   @id @default(uuid())
+  key         String   @unique()
+  name        String
+  enrolled    Boolean  @default(false)
+  ringerPin   Int      @default(0)
   lastCheckIn DateTime @default(now())
+  ip          String   @default("")
 
   zones ZoneSounder[]
 }

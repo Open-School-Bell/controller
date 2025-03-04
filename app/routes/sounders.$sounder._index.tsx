@@ -25,6 +25,7 @@ const Zone = () => {
   return (
     <div>
       <h1>{sounder.name}</h1>
+      IP: {sounder.ip}
       {sounder.enrolled ? (
         <Link to={`/sounders/${sounder.id}/reset`}>
           Reset Key (will require re-enroll)
