@@ -9,7 +9,8 @@ export const loader = async ({}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
   const schedules = await prisma.schedule.findMany({
-    orderBy: {time: 'asc'}
+    orderBy: {time: 'asc'},
+    include: {zone: true}
   })
 
   const days = await prisma.dayType.findMany({
@@ -53,6 +54,7 @@ const Schedule = () => {
             <th className="p-2">Friday</th>
             <th className="p-2">Saturday</th>
             <th className="p-2">Sunday</th>
+            <th className="p-2">Zone</th>
             <th></th>
           </tr>
         </thead>
@@ -61,7 +63,7 @@ const Schedule = () => {
             .filter(({dayTypeId}) => {
               return dayTypeId === day
             })
-            .map(({id, time, weekDays}) => {
+            .map(({id, time, weekDays, zone}) => {
               const days = weekDays.split(',')
 
               return (
@@ -90,6 +92,7 @@ const Schedule = () => {
                   <td className="text-center">
                     {days.includes('7') ? '✔️' : '❌'}
                   </td>
+                  <td>{zone.name}</td>
                   <td className="text-center">
                     <Link to={`/schedule/${id}/delete`}>🗑️</Link>
                   </td>

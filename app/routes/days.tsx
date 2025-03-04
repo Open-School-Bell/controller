@@ -15,8 +15,8 @@ const Days = () => {
   const {days} = useLoaderData<typeof loader>()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div>
+    <div className="grid grid-cols-4 gap-8">
+      <div className="border border-gray-200 p-2">
         <h1>Days ({days.length})</h1>
         <ul>
           {days.map(({id, name}) => {
