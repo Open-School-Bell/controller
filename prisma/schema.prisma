@@ -23,6 +23,16 @@ model Sounder {
   ip          String   @default("")
 
   zones ZoneSounder[]
+  logs SounderLog[]
+}
+
+model SounderLog{
+  id          String   @id @default(uuid())
+  time DateTime @default(now())
+  message String
+
+  sounder Sounder @relation(fields: [sounderId], references: [id])
+  sounderId String
 }
 
 model Zone {

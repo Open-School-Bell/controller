@@ -8,7 +8,10 @@ export const loader = async ({params}: LoaderFunctionArgs) => {
 
   const sounder = await prisma.sounder.findFirstOrThrow({
     where: {id: params.sounder},
-    include: {zones: {include: {zone: true}}}
+    include: {
+      zones: {include: {zone: true}},
+      logs: {orderBy: {time: 'desc'}, take: 10}
+    }
   })
 
   const zones = await prisma.zone.findMany({
@@ -19,12 +22,13 @@ export const loader = async ({params}: LoaderFunctionArgs) => {
   return {sounder, zones}
 }
 
-const Zone = () => {
+const Sounder = () => {
   const {sounder, zones} = useLoaderData<typeof loader>()
 
   return (
     <div>
       <h1>{sounder.name}</h1>
+      <Link to={`/sounders/${sounder.id}/edit`}>Edit</Link>
       IP: {sounder.ip}
       {sounder.enrolled ? (
         <Link to={`/sounders/${sounder.id}/reset`}>
@@ -56,8 +60,27 @@ const Zone = () => {
         </select>
         <input type="submit" value="Add to Zone" />
       </form>
+      <h2>Log</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Message</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sounder.logs.map(({id, message, time}) => {
+            return (
+              <tr key={id}>
+                <td>{time.toISOString()}</td>
+                <td>{message}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </div>
   )
 }
 
-export default Zone
+export default Sounder
