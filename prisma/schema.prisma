@@ -23,15 +23,15 @@ model Sounder {
   ip          String   @default("")
 
   zones ZoneSounder[]
-  logs SounderLog[]
+  logs  SounderLog[]
 }
 
-model SounderLog{
-  id          String   @id @default(uuid())
-  time DateTime @default(now())
+model SounderLog {
+  id      String   @id @default(uuid())
+  time    DateTime @default(now())
   message String
 
-  sounder Sounder @relation(fields: [sounderId], references: [id])
+  sounder   Sounder @relation(fields: [sounderId], references: [id])
   sounderId String
 }
 
@@ -91,4 +91,15 @@ model Audio {
   ringerWire String @default("")
 
   schedules Schedule[]
+  actions   Action[]
+}
+
+model Action {
+  id     String @id @default(uuid())
+  name   String
+  icon   String
+  action String
+
+  audio   Audio?  @relation(fields: [audioId], references: [id])
+  audioId String?
 }

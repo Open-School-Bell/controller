@@ -4,7 +4,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  NavLink
+  NavLink,
+  useMatches
 } from '@remix-run/react'
 import {type LinksFunction} from '@remix-run/node'
 
@@ -31,6 +32,18 @@ export function Layout({children}: {children: React.ReactNode}) {
 }
 
 export default function App() {
+  const matches = useMatches()
+
+  const match = matches.pop()!
+
+  if (match && match.id === 'routes/screen') {
+    return (
+      <div>
+        <Outlet />
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-cols-app">
       <div className="bg-green-200 p-2 flex items-center">
@@ -108,6 +121,16 @@ export default function App() {
               }}
             >
               Sounds
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/actions"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Actions
             </NavLink>
           </li>
         </ul>
