@@ -40,7 +40,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
       body: JSON.stringify({key: sounder.key, sound}),
       headers: {'Content-Type': 'application/json'},
       method: 'post'
-    })
+    }).catch(() => {})
   })
 
   return {status: 'ok'}
