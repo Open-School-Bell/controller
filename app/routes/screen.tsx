@@ -70,12 +70,12 @@ const Screen = () => {
             <button
               key={id}
               className="cursor-pointer text-center text-xl"
-              onClick={() => {
+              onClick={async () => {
                 if (action === 'broadcast') {
                   const data = new FormData()
                   data.append('sound', audioId!)
                   data.append('zone', zone)
-                  fetch('/broadcast', {method: 'post', body: data})
+                  await fetch('/broadcast', {method: 'post', body: data})
                 }
               }}
             >
