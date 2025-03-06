@@ -30,7 +30,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const downloadResponse = await fetch(process.env.TTS_API!, {
     body: JSON.stringify({
-      voice: 'gtts_file',
+      voice: 'google_speech_file',
       textToSpeech: tts,
       language: 'en',
       speed: '1'

@@ -16,7 +16,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   })
 
   const schedules = await prisma.schedule.findMany({
-    where: {zoneId: {in: sounder.zones.map(({zoneId}) => zoneId)}}
+    where: {zoneId: {in: sounder.zones.map(({zoneId}) => zoneId)}},
+    include: {audio: true}
   })
 
   const date = new Date()
@@ -30,9 +31,10 @@ export const action = async ({request}: ActionFunctionArgs) => {
     id: sounder.id,
     name: sounder.name,
     day: dayAssignment ? dayAssignment.dayTypeId : 'null',
+    ringerPin: sounder.ringerPin,
     schedules: schedules.map(
-      ({time, audioId, dayTypeId, weekDays}) =>
-        `${time}/${audioId}/${dayTypeId}/${weekDays}`
+      ({time, audioId, dayTypeId, weekDays, audio}) =>
+        `${time}/${audioId}/${dayTypeId}/${weekDays}/${audio.ringerWire}`
     )
   })
 }

@@ -25,13 +25,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
   const name = formData.get('name') as string | undefined
   const ip = formData.get('ip') as string | undefined
+  const ringerPin = formData.get('ringer') as string | undefined
 
   invariant(name)
   invariant(ip)
+  invariant(ringerPin)
 
   const sounder = await prisma.sounder.update({
     where: {id: params.sounder},
-    data: {name, ip}
+    data: {name, ip, ringerPin: parseInt(ringerPin)}
   })
 
   return redirect(`/sounders/${sounder.id}`)
@@ -57,6 +59,14 @@ const EditSounder = () => {
           <input
             name="ip"
             defaultValue={sounder.ip}
+            className="border border-gray-200 rounded-md p-2"
+          />
+        </label>
+        <label>
+          Ringer PIN
+          <input
+            name="ringer"
+            defaultValue={sounder.ringerPin}
             className="border border-gray-200 rounded-md p-2"
           />
         </label>

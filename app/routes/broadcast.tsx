@@ -35,9 +35,15 @@ export const action = async ({request}: ActionFunctionArgs) => {
     include: {sounders: {include: {sounder: true}}}
   })
 
+  const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
+
   await asyncForEach(z.sounders, async ({sounder}) => {
     await fetch(`http://${sounder.ip}:3000/play`, {
-      body: JSON.stringify({key: sounder.key, sound}),
+      body: JSON.stringify({
+        key: sounder.key,
+        sound,
+        ringerWire: audio.ringerWire
+      }),
       headers: {'Content-Type': 'application/json'},
       method: 'post'
     }).catch(() => {})

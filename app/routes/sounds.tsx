@@ -18,15 +18,28 @@ const Sounds = () => {
     <div className="grid grid-cols-2 gap-8">
       <div>
         <h1>Sounds ({sounds.length})</h1>
-        <ul>
-          {sounds.map(({id, name}) => {
-            return (
-              <li key={id}>
-                <Link to={`/sounds/${id}`}>{name}</Link>
-              </li>
-            )
-          })}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {sounds.map(({id, name}) => {
+              return (
+                <tr key={id}>
+                  <td>
+                    <Link to={`/sounds/${id}`}>{name}</Link>
+                  </td>
+                  <td>
+                    <Link to={`/sounds/${id}/delete`}>🗑️</Link>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
         <Link to="/sounds/add">Add</Link>
         <Link to="/sounds/add-tts">Add TTS</Link>
       </div>
