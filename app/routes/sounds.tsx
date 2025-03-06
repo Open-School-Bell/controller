@@ -28,6 +28,7 @@ const Sounds = () => {
           })}
         </ul>
         <Link to="/sounds/add">Add</Link>
+        <Link to="/sounds/add-tts">Add TTS</Link>
       </div>
       <Outlet />
     </div>
