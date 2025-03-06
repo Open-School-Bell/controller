@@ -6,6 +6,7 @@ import {finished} from 'stream/promises'
 import {Readable} from 'stream'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {updateSounders} from '~/lib/update-sounders.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const prisma = getPrisma()
@@ -49,6 +50,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     where: {id: sound.id},
     data: {fileName: `${sound.id}.mp3`}
   })
+
+  await updateSounders()
 
   return redirect(`/sounds/${sound.id}`)
 }
