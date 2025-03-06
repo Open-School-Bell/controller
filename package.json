@@ -8,6 +8,8 @@
     "dev": "remix vite:dev --host",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
+    "start:tts": "docker run -d --name=osb-tts -v ./tts:/output -p 8080:8080 openschoolbell/tts:main",
+    "stop:tts": "docker stop osb-tts && docker remove osb-tts",
     "typecheck": "tsc",
     "prettier": "prettier app --check --end-of-line auto"
   },

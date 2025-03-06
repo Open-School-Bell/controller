@@ -8,6 +8,8 @@ import {Readable} from 'stream'
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
 
+const {rename} = fs.promises
+
 export const action = async ({request}: ActionFunctionArgs) => {
   const prisma = getPrisma()
 
@@ -28,27 +30,23 @@ export const action = async ({request}: ActionFunctionArgs) => {
     }
   })
 
-  const downloadResponse = await fetch(process.env.TTS_API!, {
+  await fetch(process.env.TTS_API!, {
     body: JSON.stringify({
-      voice: 'google_speech_file',
-      textToSpeech: tts,
-      language: 'en',
-      speed: '1'
+      target: `${sound.id}.wav`,
+      text: tts
     }),
     headers: {'Content-Type': 'application/json'},
     method: 'post'
   }).catch(() => {})
 
-  const downloadStream = fs.createWriteStream(
-    path.join(process.cwd(), 'public', 'sounds', `${sound.id}.mp3`)
-  )
-  await finished(
-    Readable.fromWeb(downloadResponse!.body as any).pipe(downloadStream)
+  await rename(
+    path.join(process.cwd(), 'tts', `${sound.id}.wav`),
+    path.join(process.cwd(), 'public', 'sounds', `${sound.id}.wav`)
   )
 
   await prisma.audio.update({
     where: {id: sound.id},
-    data: {fileName: `${sound.id}.mp3`}
+    data: {fileName: `${sound.id}.wav`}
   })
 
   await updateSounders()
