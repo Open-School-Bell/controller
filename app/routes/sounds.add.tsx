@@ -8,8 +8,11 @@ import {
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 import path from 'path'
+import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
+
+const {rename} = fs.promises
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const prisma = getPrisma()
@@ -40,6 +43,26 @@ export const action = async ({request}: ActionFunctionArgs) => {
       fileName: path.basename(fileData.filepath),
       ringerWire: ringerWire ? ringerWire : ''
     }
+  })
+
+  await rename(
+    path.join(
+      process.cwd(),
+      'public',
+      'sounds',
+      path.basename(fileData.filepath)
+    ),
+    path.join(
+      process.cwd(),
+      'public',
+      'sounds',
+      `${sound.id}${path.extname(fileData.filepath)}`
+    )
+  )
+
+  await prisma.audio.update({
+    where: {id: sound.id},
+    data: {fileName: `${sound.id}${path.extname(fileData.filepath)}`}
   })
 
   return redirect(`/sounds/${sound.id}`)

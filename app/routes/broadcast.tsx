@@ -41,7 +41,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     await fetch(`http://${sounder.ip}:3000/play`, {
       body: JSON.stringify({
         key: sounder.key,
-        sound,
+        sound: audio.fileName,
         ringerWire: audio.ringerWire
       }),
       headers: {'Content-Type': 'application/json'},

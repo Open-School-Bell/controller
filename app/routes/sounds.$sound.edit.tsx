@@ -10,8 +10,11 @@ import {
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 import path from 'path'
+import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
+
+const {rename} = fs.promises
 
 export const loader = async ({params}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
@@ -45,13 +48,27 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
   invariant(name)
 
+  if (fileData) {
+    await rename(
+      path.join(
+        process.cwd(),
+        'public',
+        'sounds',
+        path.basename(fileData.filepath)
+      ),
+      path.join(
+        process.cwd(),
+        'public',
+        'sounds',
+        `${params.sound}${path.extname(fileData.filepath)}`
+      )
+    )
+  }
+
   const sound = await prisma.audio.update({
     where: {id: params.sound},
     data: {
       name,
-      fileName: fileData!.filepath
-        ? path.basename(fileData!.filepath)
-        : undefined,
       ringerWire: ringerWire ? ringerWire : ''
     }
   })
