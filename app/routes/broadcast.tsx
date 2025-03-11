@@ -6,6 +6,7 @@ import {formatDistance} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {broadcast} from '~/lib/broadcast.server'
 
 export const loader = async ({}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
@@ -20,8 +21,6 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
-  const prisma = getPrisma()
-
   const formData = await request.formData()
 
   const sound = formData.get('sound') as string | undefined
@@ -30,24 +29,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   invariant(sound)
   invariant(zone)
 
-  const z = await prisma.zone.findFirstOrThrow({
-    where: {id: zone},
-    include: {sounders: {include: {sounder: true}}}
-  })
-
-  const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
-
-  await asyncForEach(z.sounders, async ({sounder}) => {
-    await fetch(`http://${sounder.ip}:3000/play`, {
-      body: JSON.stringify({
-        key: sounder.key,
-        sound: audio.fileName,
-        ringerWire: audio.ringerWire
-      }),
-      headers: {'Content-Type': 'application/json'},
-      method: 'post'
-    }).catch(() => {})
-  })
+  await broadcast(zone, sound)
 
   return {status: 'ok'}
 }

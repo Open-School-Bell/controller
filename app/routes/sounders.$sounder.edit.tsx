@@ -7,6 +7,7 @@ import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {INPUT_CLASSES} from '~/lib/utils'
 
 export const loader = async ({params}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
@@ -26,6 +27,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
   const name = formData.get('name') as string | undefined
   const ip = formData.get('ip') as string | undefined
   const ringerPin = formData.get('ringer') as string | undefined
+  const screen = formData.get('screen') as string | undefined
 
   invariant(name)
   invariant(ip)
@@ -33,7 +35,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
   const sounder = await prisma.sounder.update({
     where: {id: params.sounder},
-    data: {name, ip, ringerPin: parseInt(ringerPin)}
+    data: {name, ip, ringerPin: parseInt(ringerPin), screen: !!screen}
   })
 
   return redirect(`/sounders/${sounder.id}`)
@@ -69,6 +71,16 @@ const EditSounder = () => {
             defaultValue={sounder.ringerPin}
             className="border border-gray-200 rounded-md p-2"
           />
+        </label>
+        <label>
+          Screen
+          <input
+            type="checkbox"
+            className={INPUT_CLASSES}
+            defaultChecked={sounder.screen}
+            name="screen"
+          />
+          <p>Please restart your sounder after chaning the screen option.</p>
         </label>
         <input type="submit" value="Edit" />
       </form>

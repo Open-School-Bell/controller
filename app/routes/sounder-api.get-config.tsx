@@ -32,6 +32,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     name: sounder.name,
     day: dayAssignment ? dayAssignment.dayTypeId : 'null',
     ringerPin: sounder.ringerPin,
+    screen: sounder.screen,
     schedules: schedules.map(
       ({time, dayTypeId, weekDays, audio}) =>
         `${time}/${audio.fileName}/${dayTypeId}/${weekDays}/${audio.ringerWire}`

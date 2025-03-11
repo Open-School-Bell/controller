@@ -21,6 +21,7 @@ model Sounder {
   ringerPin   Int      @default(0)
   lastCheckIn DateTime @default(now())
   ip          String   @default("")
+  screen      Boolean  @default(false)
 
   zones ZoneSounder[]
   logs  SounderLog[]
