@@ -25,11 +25,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const sound = formData.get('sound') as string | undefined
   const zone = formData.get('zone') as string | undefined
+  const times = formData.get('times') as string | undefined
 
   invariant(sound)
   invariant(zone)
+  invariant(times)
 
-  await broadcast(zone, sound)
+  await broadcast(zone, sound, parseInt(times))
 
   return {status: 'ok'}
 }
@@ -81,6 +83,15 @@ const Broadcast = () => {
                 )
               })}
             </select>
+          </label>
+          <label>
+            Number of Times
+            <input
+              type="number"
+              name="times"
+              className={INPUT_CLASSES}
+              defaultValue={1}
+            />
           </label>
           <input
             type="submit"

@@ -2,7 +2,11 @@ import {asyncForEach} from '@arcath/utils'
 
 import {getPrisma} from './prisma.server'
 
-export const broadcast = async (zone: string, sound: string) => {
+export const broadcast = async (
+  zone: string,
+  sound: string,
+  times: number = 1
+) => {
   const prisma = getPrisma()
 
   const z = await prisma.zone.findFirstOrThrow({
@@ -17,7 +21,8 @@ export const broadcast = async (zone: string, sound: string) => {
       body: JSON.stringify({
         key: sounder.key,
         sound: audio.fileName,
-        ringerWire: audio.ringerWire
+        ringerWire: audio.ringerWire,
+        times
       }),
       headers: {'Content-Type': 'application/json'},
       method: 'post'

@@ -3,6 +3,7 @@ import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {broadcast} from '~/lib/broadcast.server'
+import {startLockdown} from '~/lib/lockdown.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const {key, action, zone} = (await request.json()) as {
@@ -25,13 +26,14 @@ export const action = async ({request}: ActionFunctionArgs) => {
     where: {id: action}
   })
 
-  console.log('trigger action')
-
   switch (dbAction.action) {
     case 'broadcast':
       if (dbAction.audioId) {
         await broadcast(zone, dbAction.audioId)
       }
+      break
+    case 'lockdown':
+      await startLockdown()
       break
     default:
       break

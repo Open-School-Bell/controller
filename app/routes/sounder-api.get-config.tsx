@@ -2,6 +2,7 @@ import {type ActionFunctionArgs} from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {getSettings} from '~/lib/settings.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const {key} = (await request.json()) as {key?: string}
@@ -27,6 +28,29 @@ export const action = async ({request}: ActionFunctionArgs) => {
     where: {date}
   })
 
+  const {
+    lockdownMode,
+    lockdownRepeat,
+    lockdownEntrySound,
+    lockdownExitSound,
+    lockdownRepeatRingerWire,
+    lockdownRepetitions
+  } = await getSettings([
+    'lockdownEntrySound',
+    'lockdownMode',
+    'lockdownRepeat',
+    'lockdownExitSound',
+    'lockdownRepeatRingerWire',
+    'lockdownRepetitions'
+  ])
+
+  const entrySound = await prisma.audio.findFirstOrThrow({
+    where: {id: lockdownEntrySound}
+  })
+  const exitSound = await prisma.audio.findFirstOrThrow({
+    where: {id: lockdownExitSound}
+  })
+
   return Response.json({
     id: sounder.id,
     name: sounder.name,
@@ -36,6 +60,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
     schedules: schedules.map(
       ({time, dayTypeId, weekDays, audio}) =>
         `${time}/${audio.fileName}/${dayTypeId}/${weekDays}/${audio.ringerWire}`
-    )
+    ),
+    lockdown: {
+      enable: lockdownMode === '1',
+      entrySound: entrySound.fileName,
+      entrySoundRingerWire: entrySound.ringerWire,
+      exitSound: exitSound.fileName,
+      exitSoundRingerWire: exitSound.ringerWire,
+      times: parseInt(lockdownRepetitions),
+      interval: parseInt(lockdownRepeat),
+      repeatRingerWire: lockdownRepeatRingerWire === '1'
+    }
   })
 }

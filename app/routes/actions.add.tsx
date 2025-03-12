@@ -58,6 +58,7 @@ const AddAction = () => {
           Type
           <select name="action" className={INPUT_CLASSES}>
             <option value="broadcast">Broadcast</option>
+            <option value="lockdown">Lockdown Toggle</option>
           </select>
         </label>
         <label>

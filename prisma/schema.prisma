@@ -104,3 +104,9 @@ model Action {
   audio   Audio?  @relation(fields: [audioId], references: [id])
   audioId String?
 }
+
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+}
