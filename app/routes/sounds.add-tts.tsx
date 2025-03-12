@@ -1,13 +1,31 @@
-import {redirect, type ActionFunctionArgs} from '@remix-run/node'
+import {
+  redirect,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs
+} from '@remix-run/node'
 import {invariant} from '@arcath/utils'
-import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
+import {checkSession} from '~/lib/session'
 
-const {rename} = fs.promises
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
+  return {}
+}
 
 export const action = async ({request}: ActionFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const formData = await request.formData()

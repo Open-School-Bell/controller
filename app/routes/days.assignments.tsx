@@ -9,8 +9,15 @@ import {subDays} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {checkSession} from '~/lib/session'
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const dayAssigments = await prisma.dayTypeAssignment.findMany({
@@ -25,6 +32,12 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const formData = await request.formData()

@@ -1,5 +1,9 @@
-import {asyncForEach, invariant} from '@arcath/utils'
-import {type LoaderFunctionArgs, type ActionFunctionArgs} from '@remix-run/node'
+import {invariant} from '@arcath/utils'
+import {
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+  redirect
+} from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 import {useState} from 'react'
 import {formatDistance} from 'date-fns'
@@ -7,8 +11,15 @@ import {formatDistance} from 'date-fns'
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
 import {broadcast} from '~/lib/broadcast.server'
+import {checkSession} from '~/lib/session'
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const sounds = await prisma.audio.findMany({orderBy: {name: 'asc'}})
@@ -21,6 +32,12 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const formData = await request.formData()
 
   const sound = formData.get('sound') as string | undefined

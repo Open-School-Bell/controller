@@ -8,6 +8,7 @@ type SettingKey =
   | 'lockdownMode'
   | 'lockdownRepeatRingerWire'
   | 'lockdownRepetitions'
+  | 'password'
 
 export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownEntrySound: '',
@@ -15,7 +16,8 @@ export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownRepeat: '5',
   lockdownRepeatRingerWire: '0',
   lockdownMode: '0',
-  lockdownRepetitions: '4'
+  lockdownRepetitions: '4',
+  password: 'bell'
 }
 
 export const getSetting = async (setting: SettingKey) => {

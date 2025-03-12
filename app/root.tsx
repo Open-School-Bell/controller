@@ -130,6 +130,26 @@ export default function App() {
               Lockdown
             </NavLink>
           </li>
+          <li>
+            <NavLink
+              to="/change-password"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Change Password
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/logout"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Logout
+            </NavLink>
+          </li>
         </ul>
       </div>
       <div className="p-4">

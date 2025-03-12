@@ -13,10 +13,17 @@ import path from 'path'
 import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {checkSession} from '~/lib/session'
 
 const {rename} = fs.promises
 
-export const loader = async ({params}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const sound = await prisma.audio.findFirstOrThrow({
@@ -27,6 +34,12 @@ export const loader = async ({params}: LoaderFunctionArgs) => {
 }
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const uploadHandler = unstable_composeUploadHandlers(

@@ -9,8 +9,15 @@ import {invariant} from '@arcath/utils'
 import {getPrisma} from '~/lib/prisma.server'
 import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {checkSession} from '~/lib/session'
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const {
     lockdownMode,
     lockdownRepeat,

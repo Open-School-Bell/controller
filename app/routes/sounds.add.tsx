@@ -4,17 +4,35 @@ import {
   unstable_composeUploadHandlers,
   unstable_createFileUploadHandler,
   unstable_createMemoryUploadHandler,
-  unstable_parseMultipartFormData
+  unstable_parseMultipartFormData,
+  type LoaderFunctionArgs
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 import path from 'path'
 import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {checkSession} from '~/lib/session'
 
 const {rename} = fs.promises
 
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
+  return
+}
+
 export const action = async ({request}: ActionFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const uploadHandler = unstable_composeUploadHandlers(

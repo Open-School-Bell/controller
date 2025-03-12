@@ -1,11 +1,18 @@
-import {type LoaderFunctionArgs} from '@remix-run/node'
+import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
 import {Link, useLoaderData} from '@remix-run/react'
 import {useState} from 'react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {checkSession} from '~/lib/session'
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const prisma = getPrisma()
 
   const schedules = await prisma.schedule.findMany({
