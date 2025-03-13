@@ -58,8 +58,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     ringerPin: sounder.ringerPin,
     screen: sounder.screen,
     schedules: schedules.map(
-      ({time, dayTypeId, weekDays, audio}) =>
-        `${time}/${audio.fileName}/${dayTypeId}/${weekDays}/${audio.ringerWire}`
+      ({time, dayTypeId, weekDays, audio, count}) =>
+        `${time}/${audio.fileName}/${dayTypeId}/${weekDays}/${audio.ringerWire}/${count}`
     ),
     lockdown: {
       enable: lockdownMode === '1',

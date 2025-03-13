@@ -1,8 +1,8 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
+import {type ActionFunctionArgs, redirect} from '@remix-run/node'
 
 import {getPrisma} from '~/lib/prisma.server'
 
-export const loader = async ({params}: LoaderFunctionArgs) => {
+export const action = async ({params}: ActionFunctionArgs) => {
   const prisma = getPrisma()
 
   await prisma.schedule.delete({where: {id: params.schedule}})

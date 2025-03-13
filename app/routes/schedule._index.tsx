@@ -17,7 +17,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const schedules = await prisma.schedule.findMany({
     orderBy: {time: 'asc'},
-    include: {zone: true}
+    include: {zone: true, audio: true}
   })
 
   const days = await prisma.dayType.findMany({
@@ -62,6 +62,8 @@ const Schedule = () => {
             <th className="p-2">Saturday</th>
             <th className="p-2">Sunday</th>
             <th className="p-2">Zone</th>
+            <th className="p-2">Sound</th>
+            <th className="p-2">Count</th>
             <th></th>
           </tr>
         </thead>
@@ -70,7 +72,7 @@ const Schedule = () => {
             .filter(({dayTypeId}) => {
               return dayTypeId === day
             })
-            .map(({id, time, weekDays, zone}) => {
+            .map(({id, time, weekDays, zone, audio, count}) => {
               const days = weekDays.split(',')
 
               return (
@@ -99,9 +101,15 @@ const Schedule = () => {
                   <td className="text-center">
                     {days.includes('7') ? '✔️' : '❌'}
                   </td>
-                  <td>{zone.name}</td>
+                  <td className="text-center">{zone.name}</td>
                   <td className="text-center">
-                    <Link to={`/schedule/${id}/delete`}>🗑️</Link>
+                    <Link to={`/sounds/${audio.id}`}>{audio.name}</Link>
+                  </td>
+                  <td className="text-center">{count}</td>
+                  <td className="text-center">
+                    <form method="post" action={`/schedule/${id}/delete`}>
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
                   </td>
                 </tr>
               )

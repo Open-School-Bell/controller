@@ -58,6 +58,7 @@ model Schedule {
   id       String @id @default(uuid())
   time     String
   weekDays String
+  count    Int    @default(1)
 
   zone   Zone   @relation(fields: [zoneId], references: [id])
   zoneId String

@@ -10,7 +10,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {
@@ -23,10 +23,14 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const days = await prisma.dayType.findMany({orderBy: {name: 'asc'}})
   const sounds = await prisma.audio.findMany({orderBy: {name: 'asc'}})
 
-  return {zones, days, sounds}
+  const schedule = await prisma.schedule.findFirstOrThrow({
+    where: {id: params.schedule}
+  })
+
+  return {zones, days, sounds, schedule}
 }
 
-export const action: ActionFunction = async ({request}) => {
+export const action: ActionFunction = async ({request, params}) => {
   const result = await checkSession(request)
 
   if (!result) {
@@ -79,7 +83,8 @@ export const action: ActionFunction = async ({request}) => {
   invariant(sound)
   invariant(count)
 
-  await prisma.schedule.create({
+  await prisma.schedule.update({
+    where: {id: params.schedule},
     data: {
       weekDays: days,
       time,
@@ -93,8 +98,8 @@ export const action: ActionFunction = async ({request}) => {
   return redirect(`/schedule`)
 }
 
-const AddSchedule = () => {
-  const {zones, days, sounds} = useLoaderData<typeof loader>()
+const EditSchedule = () => {
+  const {zones, days, sounds, schedule} = useLoaderData<typeof loader>()
 
   return (
     <div className="border border-gray-300 p-2">
@@ -112,7 +117,14 @@ const AddSchedule = () => {
             return (
               <label key={i} className="text-center cursor-pointer">
                 <p>{day}</p>
-                <input type="checkbox" name={`day[${i + 1}]`} value={i + 1} />
+                <input
+                  type="checkbox"
+                  name={`day[${i + 1}]`}
+                  value={i + 1}
+                  defaultChecked={schedule.weekDays
+                    .split(',')
+                    .includes(`${i + 1}`)}
+                />
               </label>
             )
           })}
@@ -120,7 +132,12 @@ const AddSchedule = () => {
         <div className="grid grid-cols-4 mt-2">
           <label className="p-2">
             Time
-            <input type="time" name="time" className={`${INPUT_CLASSES}`} />
+            <input
+              type="time"
+              name="time"
+              className={`${INPUT_CLASSES}`}
+              defaultValue={schedule.time}
+            />
             <span className="text-gray-400">
               The time that the scheduled bell will occur.
             </span>
@@ -129,7 +146,7 @@ const AddSchedule = () => {
             Day Type
             <select
               name="dayType"
-              defaultValue={'_'}
+              defaultValue={schedule.dayTypeId ? schedule.dayTypeId : '_'}
               className={`${INPUT_CLASSES}`}
             >
               <option value="_">Default</option>
@@ -147,7 +164,11 @@ const AddSchedule = () => {
           </label>
           <label className="p-2">
             Zone
-            <select name="zone" className={INPUT_CLASSES}>
+            <select
+              name="zone"
+              className={INPUT_CLASSES}
+              defaultValue={schedule.zoneId}
+            >
               {zones.map(({id, name}) => {
                 return (
                   <option key={id} value={id}>
@@ -159,7 +180,11 @@ const AddSchedule = () => {
           </label>
           <label className="p-2">
             Sound
-            <select name="sound" className={INPUT_CLASSES}>
+            <select
+              name="sound"
+              className={INPUT_CLASSES}
+              defaultValue={schedule.audioId}
+            >
               {sounds.map(({id, name}) => {
                 return (
                   <option key={id} value={id}>
@@ -173,7 +198,7 @@ const AddSchedule = () => {
             Count
             <input
               type="number"
-              defaultValue={1}
+              defaultValue={schedule.count}
               name="count"
               className={INPUT_CLASSES}
             />
@@ -181,7 +206,7 @@ const AddSchedule = () => {
         </div>
         <input
           type="submit"
-          value="Add"
+          value="Update"
           className={`${INPUT_CLASSES} bg-green-300 cursor-pointer`}
         />
       </form>
@@ -189,4 +214,4 @@ const AddSchedule = () => {
   )
 }
 
-export default AddSchedule
+export default EditSchedule
