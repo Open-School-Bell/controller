@@ -4,6 +4,10 @@ import {
   type LoaderFunctionArgs
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
+import path from 'path'
+import fs from 'fs'
+import {finished} from 'stream/promises'
+import {Readable} from 'stream'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
@@ -45,7 +49,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     }
   })
 
-  await fetch(process.env.TTS_API!, {
+  const downloadResponse = await fetch(process.env.TTS_API!, {
     body: JSON.stringify({
       target: `${sound.id}.wav`,
       text: tts
@@ -53,6 +57,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
     headers: {'Content-Type': 'application/json'},
     method: 'post'
   }).catch(() => {})
+
+  const downloadStream = fs.createWriteStream(
+    path.join(process.cwd(), 'public', 'sounds', `${sound.id}.wav`)
+  )
+  await finished(
+    Readable.fromWeb(downloadResponse!.body as any).pipe(downloadStream)
+  )
 
   await prisma.audio.update({
     where: {id: sound.id},
