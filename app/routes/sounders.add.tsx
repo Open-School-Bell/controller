@@ -1,13 +1,18 @@
 import {
   redirect,
   type ActionFunctionArgs,
-  type LoaderFunctionArgs
+  type LoaderFunctionArgs,
+  type MetaFunction
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {makeKey} from '~/lib/utils'
+import {makeKey, INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Sounders', 'Add')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -50,16 +55,17 @@ const AddSounder = () => {
       <form method="post">
         <label>
           Name
-          <input
-            name="name"
-            className="border border-gray-200 rounded-md p-2"
-          />
+          <input name="name" className={INPUT_CLASSES} />
         </label>
         <label>
           IP
-          <input name="ip" className="border border-gray-200 rounded-md p-2" />
+          <input name="ip" className={INPUT_CLASSES} />
         </label>
-        <input type="submit" value="Add" />
+        <input
+          type="submit"
+          value="Add"
+          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        />
       </form>
     </div>
   )

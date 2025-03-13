@@ -1,8 +1,17 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect
+} from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {pageTitle} from '~/lib/utils'
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [{title: pageTitle('Zones', data ? data.zone.name : 'View Zone')}]
+}
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)

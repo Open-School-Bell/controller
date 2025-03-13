@@ -8,6 +8,7 @@ import {formatDistance} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {pageTitle} from '~/lib/utils'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -24,7 +25,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 }
 
 export const meta: MetaFunction = () => {
-  return [{title: 'Open School Bell'}]
+  return [{title: pageTitle('Dashboard')}]
 }
 
 export default function Index() {

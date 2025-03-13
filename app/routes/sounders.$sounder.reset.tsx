@@ -1,10 +1,10 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
+import {type ActionFunctionArgs, redirect} from '@remix-run/node'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {makeKey} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 
-export const loader = async ({request, params}: LoaderFunctionArgs) => {
+export const action = async ({request, params}: ActionFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {

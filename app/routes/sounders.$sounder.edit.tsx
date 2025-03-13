@@ -1,14 +1,26 @@
 import {
   redirect,
   type ActionFunctionArgs,
-  type LoaderFunctionArgs
+  type LoaderFunctionArgs,
+  type MetaFunction
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [
+    {
+      title: pageTitle(
+        'Sounders',
+        data ? `Edit ${data.sounder.name}` : 'Edit Sounder'
+      )
+    }
+  ]
+}
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -66,7 +78,7 @@ const EditSounder = () => {
           <input
             name="name"
             defaultValue={sounder.name}
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
           />
         </label>
         <label>
@@ -74,7 +86,7 @@ const EditSounder = () => {
           <input
             name="ip"
             defaultValue={sounder.ip}
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
           />
         </label>
         <label>
@@ -82,7 +94,7 @@ const EditSounder = () => {
           <input
             name="ringer"
             defaultValue={sounder.ringerPin}
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
           />
         </label>
         <label>
@@ -93,9 +105,13 @@ const EditSounder = () => {
             defaultChecked={sounder.screen}
             name="screen"
           />
-          <p>Please restart your sounder after chaning the screen option.</p>
+          <p>Please restart your sounder after changing the screen option.</p>
         </label>
-        <input type="submit" value="Edit" />
+        <input
+          type="submit"
+          value="Edit"
+          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        />
       </form>
     </div>
   )

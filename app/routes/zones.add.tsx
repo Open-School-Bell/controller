@@ -1,12 +1,18 @@
 import {
   redirect,
   type ActionFunctionArgs,
-  type LoaderFunctionArgs
+  type LoaderFunctionArgs,
+  type MetaFunction
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {pageTitle, INPUT_CLASSES} from '~/lib/utils'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Zones', 'Add')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -45,12 +51,13 @@ const AddZone = () => {
       <form method="post">
         <label>
           Name
-          <input
-            name="name"
-            className="border border-gray-200 rounded-md p-2"
-          />
+          <input name="name" className={INPUT_CLASSES} />
         </label>
-        <input type="submit" value="Add" />
+        <input
+          type="submit"
+          value="Add"
+          className={`${INPUT_CLASSES} bg-green-300 mt-2`}
+        />
       </form>
     </div>
   )

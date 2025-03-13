@@ -1,8 +1,19 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect
+} from '@remix-run/node'
 import {useLoaderData, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [
+    {title: pageTitle('Sounders', data ? data.sounder.name : 'View Sounder')}
+  ]
+}
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -36,11 +47,15 @@ const Sounder = () => {
     <div>
       <h1>{sounder.name}</h1>
       <Link to={`/sounders/${sounder.id}/edit`}>Edit</Link>
-      IP: {sounder.ip}
+      <p>IP: {sounder.ip}</p>
+      <p>Screen: {sounder.screen ? 'Yes' : 'No'}</p>
+      <p>Ringer Pin: {sounder.ringerPin === 0 ? 'No' : sounder.ringerPin}</p>
       {sounder.enrolled ? (
-        <Link to={`/sounders/${sounder.id}/reset`}>
-          Reset Key (will require re-enroll)
-        </Link>
+        <form method="post" action={`/sounders/${sounder.id}/reset`}>
+          <button className={`${INPUT_CLASSES} bg-red-300 mt-2`}>
+            Reset Key (will require re-enroll)
+          </button>
+        </form>
       ) : (
         <>
           <p>Key: {sounder.key}</p>
@@ -50,13 +65,13 @@ const Sounder = () => {
         </>
       )}
       <h2>Zones</h2>
-      <ul>
+      <ul className="mb-2">
         {sounder.zones.map(({zone}) => {
           return <li key={zone.id}>{zone.name}</li>
         })}
       </ul>
       <form method="post" action={`/sounders/${sounder.id}/add-to-zone`}>
-        <select name="zone">
+        <select name="zone" className={INPUT_CLASSES}>
           {zones.map(({id, name}) => {
             return (
               <option key={id} value={id}>
@@ -65,7 +80,11 @@ const Sounder = () => {
             )
           })}
         </select>
-        <input type="submit" value="Add to Zone" />
+        <input
+          type="submit"
+          value="Add to Zone"
+          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        />
       </form>
       <h2>Log</h2>
       <table>

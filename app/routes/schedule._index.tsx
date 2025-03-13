@@ -1,10 +1,18 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect
+} from '@remix-run/node'
 import {Link, useLoaderData} from '@remix-run/react'
 import {useState} from 'react'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Schedule')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -32,7 +40,7 @@ const Schedule = () => {
   const [day, setDay] = useState<null | string>(null)
 
   return (
-    <div className="border border-gray-200">
+    <div className="border border-gray-200 p-2">
       <h1>Schedules</h1>
       <select
         className={INPUT_CLASSES}
@@ -49,7 +57,6 @@ const Schedule = () => {
           )
         })}
       </select>
-      <Link to="/schedule/add">Add</Link>
       <table>
         <thead>
           <tr>
@@ -115,6 +122,13 @@ const Schedule = () => {
               )
             })}
         </tbody>
+        <tfoot>
+          <tr>
+            <td className="py-4">
+              <Link to="/schedule/add">Add</Link>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   )

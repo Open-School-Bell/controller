@@ -13,3 +13,7 @@ export const makeKey = () => {
 
 export const INPUT_CLASSES =
   'p-2 border border-gray-300 rounded-md shadow w-full'
+
+export const pageTitle = (...parts: string[]) => {
+  return ['Open School Bell', ...parts].join(' / ')
+}

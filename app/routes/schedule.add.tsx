@@ -1,14 +1,19 @@
 import {
   type ActionFunction,
   type LoaderFunctionArgs,
+  type MetaFunction,
   redirect
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Schedule', 'Add')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
