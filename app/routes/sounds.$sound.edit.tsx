@@ -61,7 +61,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
   invariant(name)
 
-  if (fileData) {
+  if (fileData && fileData.filepath) {
     await rename(
       path.join(
         process.cwd(),
@@ -82,9 +82,10 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
     where: {id: params.sound},
     data: {
       name,
-      fileName: fileData
-        ? `${params.sound}${path.extname(fileData.filepath)}`
-        : undefined,
+      fileName:
+        fileData && fileData.filepath
+          ? `${params.sound}${path.extname(fileData.filepath)}`
+          : undefined,
       ringerWire: ringerWire ? ringerWire : ''
     }
   })
