@@ -15,7 +15,7 @@ import {broadcast} from '~/lib/broadcast.server'
 import {checkSession} from '~/lib/session'
 
 export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Dashboard')}]
+  return [{title: pageTitle('Broadcast')}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
