@@ -70,7 +70,7 @@ const EditSounder = () => {
   const {sounder} = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="box">
       <h2>Edit Sounder</h2>
       <form method="post">
         <label>

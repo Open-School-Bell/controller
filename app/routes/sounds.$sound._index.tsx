@@ -24,7 +24,7 @@ const Sound = () => {
   const {sound} = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="box">
       <h1>{sound.name}</h1>
       <Link to={`/sounds/${sound.id}/edit`}>Edit</Link>
       <audio controls>

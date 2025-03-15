@@ -50,7 +50,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const AddSounder = () => {
   return (
-    <div>
+    <div className="box">
       <h2>Add Sounder</h2>
       <form method="post">
         <label>

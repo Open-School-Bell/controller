@@ -10,6 +10,8 @@ import {type LinksFunction} from '@remix-run/node'
 
 import './tailwind.css'
 
+import {VERSION} from '~/lib/constants'
+
 export const links: LinksFunction = () => []
 
 export function Layout({children}: {children: React.ReactNode}) {
@@ -32,7 +34,7 @@ export function Layout({children}: {children: React.ReactNode}) {
 
 export default function App() {
   return (
-    <div className="grid grid-cols-app">
+    <div className="grid grid-cols-app min-h-screen grid-rows-app">
       <div className="bg-green-200 p-2 flex items-center">
         <img src="/logo.png" className="w-16 mr-4" />
         <span>Open School Bell</span>
@@ -132,6 +134,16 @@ export default function App() {
           </li>
           <li>
             <NavLink
+              to="/about"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/change-password"
               className={({isActive}) => {
                 return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
@@ -154,6 +166,9 @@ export default function App() {
       </div>
       <div className="p-4">
         <Outlet />
+      </div>
+      <div className="bg-gray-100 col-span-2 p-2 text-gray-500">
+        &copy; Open School Bell 2025 - OSB {VERSION}
       </div>
     </div>
   )

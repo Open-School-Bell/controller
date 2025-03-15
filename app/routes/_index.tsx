@@ -33,7 +33,7 @@ export default function Index() {
 
   return (
     <div className="grid grid-cols-3">
-      <div className="border border-gray-200 p-2">
+      <div className="box">
         <h2>Sounders</h2>
         <table>
           <thead>

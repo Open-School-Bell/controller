@@ -44,7 +44,7 @@ const Sounder = () => {
   const {sounder, zones} = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="box">
       <h1>{sounder.name}</h1>
       <Link to={`/sounders/${sounder.id}/edit`}>Edit</Link>
       <p>IP: {sounder.ip}</p>

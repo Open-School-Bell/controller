@@ -23,17 +23,34 @@ const Actions = () => {
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <div>
+      <div className="box">
         <h1>Actions ({actions.length})</h1>
-        <ul>
-          {actions.map(({id, name}) => {
-            return (
-              <li key={id}>
-                <Link to={`/actions/${id}`}>{name}</Link>
-              </li>
-            )
-          })}
-        </ul>
+        <table className="box-table">
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {actions.map(({id, name, action}) => {
+              return (
+                <tr key={id}>
+                  <td>
+                    <Link to={`/actions/${id}`}>{name}</Link>
+                  </td>
+                  <td>{action}</td>
+                  <td>
+                    <form method="post" action={`/actions/${id}/delete`}>
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
         <Link to="/actions/add">Add</Link>
       </div>
       <Outlet />

@@ -12,6 +12,7 @@ import {Readable} from 'stream'
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
 import {checkSession} from '~/lib/session'
+import {INPUT_CLASSES} from '~/lib/utils'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -49,7 +50,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     }
   })
 
-  const downloadResponse = await fetch(process.env.TTS_API!, {
+  const downloadResponse = await fetch(`${process.env.TTS_API}/piper`, {
     body: JSON.stringify({
       target: `${sound.id}.wav`,
       text: tts
@@ -77,28 +78,26 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const AddSound = () => {
   return (
-    <div>
-      <h2>Add Sound</h2>
+    <div className="box">
+      <h2>Add Sound (text to speech)</h2>
       <form method="post" encType="multipart/form-data">
         <label>
           Name
-          <input
-            name="name"
-            className="border border-gray-200 rounded-md p-2"
-          />
+          <input name="name" className={INPUT_CLASSES} />
         </label>
         <label>
           Text
-          <input name="tts" className="border border-gray-200 rounded-md p-2" />
+          <input name="tts" className={INPUT_CLASSES} />
         </label>
         <label>
           Ringer Wire
-          <input
-            name="ringer-wire"
-            className="border border-gray-200 rounded-md p-2"
-          />
+          <input name="ringer-wire" className={INPUT_CLASSES} />
         </label>
-        <input type="submit" value="Add" />
+        <input
+          type="submit"
+          value="Add"
+          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        />
       </form>
     </div>
   )

@@ -10,7 +10,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {
@@ -19,12 +19,16 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const prisma = getPrisma()
 
+  const action = await prisma.action.findFirstOrThrow({
+    where: {id: params.action}
+  })
+
   const sounds = await prisma.audio.findMany({orderBy: {name: 'asc'}})
 
-  return {sounds}
+  return {sounds, action}
 }
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = async ({params, request}: ActionFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {
@@ -45,38 +49,55 @@ export const action = async ({request}: ActionFunctionArgs) => {
   invariant(action)
   invariant(sound)
 
-  const newAction = await prisma.action.create({
+  await prisma.action.update({
+    where: {id: params.action},
     data: {name, icon, action, audioId: sound}
   })
 
-  return redirect(`/actions/${newAction.id}`)
+  return redirect(`/actions/${params.action}`)
 }
 
 const AddAction = () => {
-  const {sounds} = useLoaderData<typeof loader>()
+  const {sounds, action} = useLoaderData<typeof loader>()
 
   return (
     <div className="box">
-      <h2>Add Action</h2>
+      <h2>Edit Action</h2>
       <form method="post">
         <label>
           Name
-          <input name="name" className={INPUT_CLASSES} />
+          <input
+            name="name"
+            className={INPUT_CLASSES}
+            defaultValue={action.name}
+          />
         </label>
         <label>
           Icon
-          <input name="icon" className={INPUT_CLASSES} />
+          <input
+            name="icon"
+            className={INPUT_CLASSES}
+            defaultValue={action.icon}
+          />
         </label>
         <label>
           Type
-          <select name="action" className={INPUT_CLASSES}>
+          <select
+            name="action"
+            className={INPUT_CLASSES}
+            defaultValue={action.action}
+          >
             <option value="broadcast">Broadcast</option>
             <option value="lockdown">Lockdown Toggle</option>
           </select>
         </label>
         <label>
           Sound
-          <select name="sound" className={INPUT_CLASSES}>
+          <select
+            name="sound"
+            className={INPUT_CLASSES}
+            defaultValue={action.audioId!}
+          >
             {sounds.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -88,7 +109,7 @@ const AddAction = () => {
         </label>
         <input
           type="submit"
-          value="Add"
+          value="Edit"
           className={`${INPUT_CLASSES} bg-green-300 mt-2`}
         />
       </form>

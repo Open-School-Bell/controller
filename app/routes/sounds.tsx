@@ -23,9 +23,9 @@ const Sounds = () => {
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <div>
+      <div className="box">
         <h1>Sounds ({sounds.length})</h1>
-        <table>
+        <table className="box-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -40,14 +40,18 @@ const Sounds = () => {
                     <Link to={`/sounds/${id}`}>{name}</Link>
                   </td>
                   <td>
-                    <Link to={`/sounds/${id}/delete`}>🗑️</Link>
+                    <form method="post" action={`/sounds/${id}/delete`}>
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
                   </td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-        <Link to="/sounds/add">Add</Link>
+        <Link to="/sounds/add" className="pr-2">
+          Add
+        </Link>
         <Link to="/sounds/add-tts">Add TTS</Link>
       </div>
       <Outlet />

@@ -14,6 +14,7 @@ import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {INPUT_CLASSES} from '~/lib/utils'
 
 const {rename} = fs.promises
 
@@ -97,14 +98,14 @@ const AddSound = () => {
   const {sound} = useLoaderData<typeof loader>()
 
   return (
-    <div>
-      <h2>Add Sound</h2>
+    <div className="box">
+      <h2>Edit Sound</h2>
       <form method="post" encType="multipart/form-data">
         <label>
           Name
           <input
             name="name"
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
             defaultValue={sound.name}
           />
         </label>
@@ -114,18 +115,22 @@ const AddSound = () => {
             name="file"
             type="file"
             accept="audio/mp3"
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
           />
         </label>
         <label>
           Ringer Wire
           <input
             name="ringer-wire"
-            className="border border-gray-200 rounded-md p-2"
+            className={INPUT_CLASSES}
             defaultValue={sound.ringerWire}
           />
         </label>
-        <input type="submit" value="Update" />
+        <input
+          type="submit"
+          value="Update"
+          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        />
       </form>
     </div>
   )

@@ -32,17 +32,27 @@ const Sounders = () => {
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <div>
+      <div className="box">
         <h1>Sounders ({sounders.length})</h1>
-        <ul>
-          {sounders.map(({id, name}) => {
-            return (
-              <li key={id}>
-                <Link to={`/sounders/${id}`}>{name}</Link>
-              </li>
-            )
-          })}
-        </ul>
+        <table className="box-table">
+          <thead>
+            <tr>
+              <th>Sounder</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {sounders.map(({id, name}) => {
+              return (
+                <tr key={id}>
+                  <td>
+                    <Link to={`/sounders/${id}`}>{name}</Link>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
         <Link to="/sounders/add">Add</Link>
       </div>
       <Outlet />

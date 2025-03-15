@@ -22,7 +22,10 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const prisma = getPrisma()
 
-  const zones = await prisma.zone.findMany({orderBy: {name: 'asc'}})
+  const zones = await prisma.zone.findMany({
+    include: {sounders: true, schedules: true},
+    orderBy: {name: 'asc'}
+  })
 
   return {zones}
 }
@@ -32,17 +35,36 @@ const Zones = () => {
 
   return (
     <div className="grid grid-cols-2 gap-8">
-      <div>
+      <div className="box">
         <h1>Zones ({zones.length})</h1>
-        <ul>
-          {zones.map(({id, name}) => {
-            return (
-              <li key={id}>
-                <Link to={`/zones/${id}`}>{name}</Link>
-              </li>
-            )
-          })}
-        </ul>
+        <table className="box-table">
+          <thead>
+            <tr>
+              <th>Zone</th>
+              <th>Sounders</th>
+              <th>Schedules</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {zones.map(({id, name, sounders, schedules}) => {
+              return (
+                <tr key={id}>
+                  <td>
+                    <Link to={`/zones/${id}`}>{name}</Link>
+                  </td>
+                  <td className="text-center">{sounders.length}</td>
+                  <td className="text-center">{schedules.length}</td>
+                  <td>
+                    <form method="post" action={`/zones/${id}/delete`}>
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
         <Link to="/zones/add">Add</Link>
       </div>
       <Outlet />

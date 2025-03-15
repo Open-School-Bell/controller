@@ -3,7 +3,7 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
@@ -34,12 +34,17 @@ const Zone = () => {
   const {zone} = useLoaderData<typeof loader>()
 
   return (
-    <div>
+    <div className="box">
       <h1>{zone.name}</h1>
+      <Link to={`/zones/${zone.id}/edit`}>Edit</Link>
       <h2>Sounders</h2>
       <ul>
         {zone.sounders.map(({sounder}) => {
-          return <li key={sounder.id}>{sounder.name}</li>
+          return (
+            <li key={sounder.id}>
+              <Link to={`/sounders/${sounder.id}`}>{sounder.name}</Link>
+            </li>
+          )
         })}
       </ul>
     </div>

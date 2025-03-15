@@ -124,12 +124,12 @@ const Broadcast = () => {
       </div>
       <div className="border border-gray-200 p-2">
         <h2>Sounders in Zone</h2>
-        <table>
+        <table className="box-table">
           <thead>
             <tr>
-              <th className="p-2">Name</th>
-              <th className="p-2">Online</th>
-              <th className="p-2">Last Seen</th>
+              <th>Name</th>
+              <th>Online</th>
+              <th>Last Seen</th>
             </tr>
           </thead>
           <tbody>
