@@ -33,7 +33,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return redirect('/login')
   }
 
-  mkdirp(BACKUPS_DIR)
+  await mkdirp(BACKUPS_DIR)
 
   const backupsDir = path.join(process.cwd(), 'public', 'backups')
   const files = await fs.promises.readdir(backupsDir)
@@ -48,7 +48,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     return redirect('/login')
   }
 
-  mkdirp(BACKUPS_DIR)
+  await mkdirp(BACKUPS_DIR)
 
   const zip = new AdmZip()
 
