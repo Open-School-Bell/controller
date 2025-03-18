@@ -19,9 +19,11 @@
     "@remix-run/node": "^2.16.1",
     "@remix-run/react": "^2.16.1",
     "@remix-run/serve": "^2.16.1",
+    "adm-zip": "^0.5.16",
     "date-fns": "^4.1.0",
     "isbot": "^5.1.25",
     "jsonwebtoken": "^9.0.2",
+    "mkdirp": "^3.0.1",
     "prisma": "^6.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
@@ -29,6 +31,7 @@
   "devDependencies": {
     "@remix-run/dev": "^2.16.1",
     "@tailwindcss/postcss": "^4.0.14",
+    "@types/adm-zip": "^0.5.7",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",

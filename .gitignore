@@ -8,3 +8,4 @@ prisma/*.db
 prisma/*.db-journal
 
 public/sounds
+public/backups
