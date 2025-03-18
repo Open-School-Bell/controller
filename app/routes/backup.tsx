@@ -54,7 +54,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   zip.addLocalFile(DB_PATH, 'database')
   await new Promise<void>(resolve => {
-    zip.addLocalFolderAsync(SOUNDS_PATH, (s, e) => resolve(), 'sounds')
+    zip.addLocalFolderAsync(SOUNDS_PATH, () => resolve(), 'sounds')
   })
 
   const fileDate = format(new Date(), 'yyyy-MM-dd-HH-mm')

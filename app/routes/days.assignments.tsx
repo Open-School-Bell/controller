@@ -9,9 +9,8 @@ import {invariant} from '@arcath/utils'
 import {subDays} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
-import {pageTitle} from '~/lib/utils'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Days', 'Assignments')}]

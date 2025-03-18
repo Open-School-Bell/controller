@@ -36,8 +36,8 @@ export const checkSession = async (request: Request) => {
 }
 
 const jwtVerify = (token: string) => {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, process.env.JWT_KEY!, (err, decoded) => {
+  return new Promise(resolve => {
+    jwt.verify(token, process.env.JWT_KEY!, () => {
       resolve(true)
     })
   })

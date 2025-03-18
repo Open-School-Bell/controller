@@ -1,7 +1,6 @@
 import {asyncForEach} from '@arcath/utils'
 
 import {getSetting, setSetting} from './settings.server'
-import {updateSounders} from './update-sounders.server'
 import {getPrisma} from './prisma.server'
 
 export const startLockdown = async () => {

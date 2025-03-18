@@ -5,10 +5,9 @@ import {
 } from '@remix-run/node'
 import {invariant} from '@arcath/utils'
 
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {getSession, commitSession, jwtCreate} from '~/lib/session'
 import {getSetting} from '~/lib/settings.server'
-import {pageTitle} from '~/lib/utils'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Login')}]
