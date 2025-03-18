@@ -1,7 +1,12 @@
-import {type LoaderFunctionArgs} from '@remix-run/node'
+import {type LoaderFunctionArgs, type MetaFunction} from '@remix-run/node'
 import {Outlet, useLoaderData, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
+import {pageTitle} from '~/lib/utils'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Days')}]
+}
 
 export const loader = async ({}: LoaderFunctionArgs) => {
   const prisma = getPrisma()

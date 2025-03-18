@@ -5,7 +5,8 @@ import {
   unstable_composeUploadHandlers,
   unstable_createFileUploadHandler,
   unstable_createMemoryUploadHandler,
-  unstable_parseMultipartFormData
+  unstable_parseMultipartFormData,
+  type MetaFunction
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
@@ -15,8 +16,15 @@ import fs from 'fs'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {pageTitle} from '~/lib/utils'
 
 const {rename} = fs.promises
+
+export const meta: MetaFunction<typeof loader> = ({data}) => {
+  return [
+    {title: pageTitle('Sounds', data ? data.sound.name : 'Sound', 'Edit')}
+  ]
+}
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -117,6 +125,9 @@ const AddSound = () => {
             accept="audio/mp3"
             className={INPUT_CLASSES}
           />
+          <span className="text-gray-400">
+            Supply a new MP3 to replace the existing one.
+          </span>
         </label>
         <label>
           Ringer Wire
@@ -125,6 +136,10 @@ const AddSound = () => {
             className={INPUT_CLASSES}
             defaultValue={sound.ringerWire}
           />
+          <span className="text-gray-400">
+            Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF,
+            e.g. 1,3,1,3. make sure to end with an off time.
+          </span>
         </label>
         <input
           type="submit"

@@ -1,9 +1,18 @@
-import {redirect, type ActionFunctionArgs} from '@remix-run/node'
+import {
+  redirect,
+  type ActionFunctionArgs,
+  type MetaFunction
+} from '@remix-run/node'
+import {invariant} from '@arcath/utils'
 
 import {INPUT_CLASSES} from '~/lib/utils'
 import {getSession, commitSession, jwtCreate} from '~/lib/session'
 import {getSetting} from '~/lib/settings.server'
-import {invariant} from '@arcath/utils'
+import {pageTitle} from '~/lib/utils'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Login')}]
+}
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const checkPassword = await getSetting('password')

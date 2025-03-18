@@ -52,7 +52,7 @@ const Sounds = () => {
         <Link to="/sounds/add" className="pr-2">
           Add
         </Link>
-        <Link to="/sounds/add-tts">Add TTS</Link>
+        <Link to="/sounds/add-tts">Add Text-To-Speech</Link>
       </div>
       <Outlet />
     </div>

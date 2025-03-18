@@ -108,6 +108,10 @@ const AddSound = () => {
         <label>
           Ringer Wire
           <input name="ringer-wire" className={INPUT_CLASSES} />
+          <span className="text-gray-400">
+            Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF,
+            e.g. 1,3,1,3. make sure to end with an off time.
+          </span>
         </label>
         <input
           type="submit"

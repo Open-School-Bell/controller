@@ -1,6 +1,7 @@
 import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
+  type MetaFunction,
   redirect
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
@@ -10,6 +11,11 @@ import {subDays} from 'date-fns'
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {pageTitle} from '~/lib/utils'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Days', 'Assignments')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
