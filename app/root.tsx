@@ -134,6 +134,16 @@ export default function App() {
           </li>
           <li>
             <NavLink
+              to="/desktop-groups"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Desktop Groups
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/about"
               className={({isActive}) => {
                 return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`

@@ -32,8 +32,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     orderBy: {name: 'asc'},
     include: {sounders: {include: {sounder: true}}}
   })
+  const desktopGroups = await prisma.desktopAlertGroup.findMany({
+    orderBy: {name: 'asc'}
+  })
 
-  return {sounds, zones}
+  return {sounds, zones, desktopGroups}
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
@@ -43,23 +46,43 @@ export const action = async ({request}: ActionFunctionArgs) => {
     return redirect('/login')
   }
 
+  const prisma = getPrisma()
+
   const formData = await request.formData()
 
   const sound = formData.get('sound') as string | undefined
   const zone = formData.get('zone') as string | undefined
+  const desktopGroup = formData.get('desktopGroup') as string | undefined
   const times = formData.get('times') as string | undefined
 
   invariant(sound)
   invariant(zone)
+  invariant(desktopGroup)
   invariant(times)
 
-  await broadcast(zone, sound, parseInt(times))
+  if (zone !== '_') {
+    await broadcast(zone, sound, parseInt(times))
+  }
+  if (desktopGroup !== '_') {
+    const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
+
+    const playData = JSON.stringify({
+      fileName: audio.fileName,
+      times,
+      triggerTime: new Date().toJSON()
+    })
+
+    await prisma.desktopAlertGroup.update({
+      where: {id: desktopGroup},
+      data: {playData}
+    })
+  }
 
   return {status: 'ok'}
 }
 
 const Broadcast = () => {
-  const {sounds, zones} = useLoaderData<typeof loader>()
+  const {sounds, zones, desktopGroups} = useLoaderData<typeof loader>()
   const [selectedZone, setSelectedZone] = useState(zones[0].id)
 
   const sounders = zones
@@ -76,45 +99,70 @@ const Broadcast = () => {
     <div className="grid grid-cols-2 gap-8">
       <div className="border border-gray-200 p-2">
         <form method="post">
-          <label>
-            Sound
-            <select name="sound" className={INPUT_CLASSES}>
-              {sounds.map(({id, name}) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
-            </select>
-          </label>
-          <label className="mt-4">
-            Zone
-            <select
-              name="zone"
-              className={INPUT_CLASSES}
-              onChange={e => {
-                setSelectedZone(e.target.value)
-              }}
-            >
-              {zones.map(({id, name}) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
-            </select>
-          </label>
-          <label>
-            Number of Times
-            <input
-              type="number"
-              name="times"
-              className={INPUT_CLASSES}
-              defaultValue={1}
-            />
-          </label>
+          <div className="grid grid-cols-2 gap-4">
+            <label>
+              Sound
+              <select name="sound" className={INPUT_CLASSES}>
+                {sounds.map(({id, name}) => {
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  )
+                })}
+              </select>
+            </label>
+            <label>
+              Number of Times
+              <input
+                type="number"
+                name="times"
+                className={INPUT_CLASSES}
+                defaultValue={1}
+              />
+            </label>
+            <label>
+              Zone
+              <select
+                name="zone"
+                className={INPUT_CLASSES}
+                onChange={e => {
+                  setSelectedZone(e.target.value)
+                }}
+                defaultValue="_"
+              >
+                <option value="_">None</option>
+                {zones.map(({id, name}) => {
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  )
+                })}
+              </select>
+            </label>
+            <label>
+              Desktop Groups
+              <select
+                name="desktopGroup"
+                className={INPUT_CLASSES}
+                onChange={e => {
+                  setSelectedZone(e.target.value)
+                }}
+                defaultValue="_"
+              >
+                <option value="_">None</option>
+                {desktopGroups.map(({id, name}) => {
+                  return (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  )
+                })}
+              </select>
+            </label>
+          </div>
+
           <input
             type="submit"
             value="Broadcast!"

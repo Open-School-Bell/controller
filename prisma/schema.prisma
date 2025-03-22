@@ -111,3 +111,10 @@ model Setting {
   key   String @unique
   value String
 }
+
+model DesktopAlertGroup {
+  id   String @id @default(uuid())
+  name String
+  key  String @unique()
+  playData String @default("{}")
+}
