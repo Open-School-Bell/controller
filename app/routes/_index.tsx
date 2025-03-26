@@ -9,6 +9,7 @@ import {formatDistance} from 'date-fns'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
+import {getSetting} from '~/lib/settings.server'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -21,7 +22,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const sounders = await prisma.sounder.findMany({orderBy: {name: 'asc'}})
 
-  return {sounders}
+  const lockdownMode = await getSetting('lockdownMode')
+
+  return {sounders, lockdownMode}
 }
 
 export const meta: MetaFunction = () => {
@@ -29,10 +32,10 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Index() {
-  const {sounders} = useLoaderData<typeof loader>()
+  const {sounders, lockdownMode} = useLoaderData<typeof loader>()
 
   return (
-    <div className="grid grid-cols-3">
+    <div className="grid grid-cols-3 gap-4">
       <div className="box">
         <h2>Sounders</h2>
         <table>
@@ -65,6 +68,28 @@ export default function Index() {
             })}
           </tbody>
         </table>
+      </div>
+      <div
+        className={`box ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
+      >
+        <p>Lockdown Mode {lockdownMode === '0' ? 'Disabled' : 'Enabled'}</p>
+        <form
+          action="/lockdown/trigger"
+          method="post"
+          onSubmit={e => {
+            if (
+              !confirm(
+                `Are you sure you want to ${lockdownMode === '0' ? 'enable' : 'disable'} lockdown?`
+              )
+            ) {
+              e.preventDefault()
+            }
+          }}
+        >
+          <button className="bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer">
+            {lockdownMode === '0' ? 'Enable' : 'Disable'}
+          </button>
+        </form>
       </div>
     </div>
   )
