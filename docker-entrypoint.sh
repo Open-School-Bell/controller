@@ -12,4 +12,6 @@ if [ "$1" = 'osb-remix' ]; then
   prepare_database
 
   npm run start
+elif [ "$1" = 'osb-worker' ]; then
+  npm run start:worker
 fi

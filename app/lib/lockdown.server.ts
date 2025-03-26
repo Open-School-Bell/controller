@@ -2,6 +2,7 @@ import {asyncForEach} from '@arcath/utils'
 
 import {getSetting, setSetting} from './settings.server'
 import {getPrisma} from './prisma.server'
+import {addJob} from './queues.server'
 
 export const startLockdown = async () => {
   await setSetting('lockdownMode', '1')
@@ -11,6 +12,9 @@ export const startLockdown = async () => {
   const sounders = await prisma.sounder.findMany()
 
   return asyncForEach(sounders, async ({ip, key}) => {
+    await addJob('updateConfig', {ip, key})
+    await addJob('lockdown', {ip, key})
+
     await fetch(`http://${ip}:3000/update`, {}).catch(() => {})
     await fetch(`http://${ip}:3000/lockdown`, {
       method: 'post',

@@ -1,6 +1,7 @@
 import {asyncForEach} from '@arcath/utils'
 
 import {getPrisma} from './prisma.server'
+import {addJob} from './queues.server'
 
 export const broadcast = async (
   zone: string,
@@ -17,15 +18,12 @@ export const broadcast = async (
   const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
 
   return asyncForEach(z.sounders, async ({sounder}) => {
-    await fetch(`http://${sounder.ip}:3000/play`, {
-      body: JSON.stringify({
-        key: sounder.key,
-        sound: audio.fileName,
-        ringerWire: audio.ringerWire,
-        times
-      }),
-      headers: {'Content-Type': 'application/json'},
-      method: 'post'
-    }).catch(() => {})
+    await addJob('broadcast', {
+      ip: sounder.ip,
+      key: sounder.key,
+      fileName: audio.fileName,
+      ringerWire: audio.ringerWire,
+      times
+    })
   })
 }
