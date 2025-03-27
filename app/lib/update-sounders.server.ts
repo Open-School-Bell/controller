@@ -9,7 +9,6 @@ export const updateSounders = async () => {
   const sounders = await prisma.sounder.findMany()
 
   return asyncForEach(sounders, async ({ip, key}) => {
-    //await fetch(`http://${ip}:3000/update`, {}).catch(() => {})
     await addJob('updateConfig', {ip, key})
   })
 }

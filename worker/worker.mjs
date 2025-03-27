@@ -8,7 +8,6 @@ const queue = new Queue('osbc', {connection})
 const worker = new Worker(
   'osbc',
   async ({name, data}) => {
-    console.dir(data)
     if (handlers[name]) {
       handlers[name]({...data})
     } else {
@@ -59,6 +58,11 @@ createHandler('broadcast', async ({ip, key, times, fileName, ringerWire}) => {
 
 createHandler('lockdown', async ({ip, key}) => {
   console.log(`Lockingdown ${ip}`)
+  await fetch(`http://${ip}:3000/lockdown`, {
+    body: JSON.stringify({key}),
+    headers: {'Content-Type': 'application/json'},
+    method: 'post'
+  })
 })
 
 console.log('Ready to accept jobs')

@@ -3,7 +3,7 @@ import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {broadcast} from '~/lib/broadcast.server'
-import {startLockdown} from '~/lib/lockdown.server'
+import {toggleLockdown} from '~/lib/lockdown.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const {key, action, zone} = (await request.json()) as {
@@ -33,7 +33,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
       }
       break
     case 'lockdown':
-      await startLockdown()
+      await toggleLockdown()
       break
     default:
       break

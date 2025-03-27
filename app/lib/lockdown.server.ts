@@ -12,17 +12,7 @@ export const startLockdown = async () => {
   const sounders = await prisma.sounder.findMany()
 
   return asyncForEach(sounders, async ({ip, key}) => {
-    await addJob('updateConfig', {ip, key})
     await addJob('lockdown', {ip, key})
-
-    await fetch(`http://${ip}:3000/update`, {}).catch(() => {})
-    await fetch(`http://${ip}:3000/lockdown`, {
-      method: 'post',
-      body: JSON.stringify({
-        key
-      }),
-      headers: {'Content-Type': 'application/json'}
-    }).catch(() => {})
   })
 }
 
@@ -34,14 +24,7 @@ export const endLockdown = async () => {
   const sounders = await prisma.sounder.findMany()
 
   return asyncForEach(sounders, async ({ip, key}) => {
-    await fetch(`http://${ip}:3000/update`, {}).catch(() => {})
-    await fetch(`http://${ip}:3000/lockdown`, {
-      method: 'post',
-      body: JSON.stringify({
-        key
-      }),
-      headers: {'Content-Type': 'application/json'}
-    }).catch(() => {})
+    await addJob('lockdown', {ip, key})
   })
 }
 
