@@ -13,10 +13,9 @@ import {Readable} from 'stream'
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
 import {checkSession} from '~/lib/session'
-import {INPUT_CLASSES} from '~/lib/utils'
-import {pageTitle} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = () => {
   return [{title: pageTitle('Sounds', 'Add TTS')}]
 }
 

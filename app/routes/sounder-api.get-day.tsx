@@ -10,7 +10,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const prisma = getPrisma()
 
-  const sounder = await prisma.sounder.findFirstOrThrow({
+  await prisma.sounder.findFirstOrThrow({
     where: {key, enrolled: true}
   })
 

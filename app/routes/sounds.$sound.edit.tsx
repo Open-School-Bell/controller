@@ -15,8 +15,7 @@ import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
-import {INPUT_CLASSES} from '~/lib/utils'
-import {pageTitle} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 
 const {rename} = fs.promises
 
