@@ -66,8 +66,18 @@ const Sounder = () => {
       )}
       <h2>Zones</h2>
       <ul className="mb-2">
-        {sounder.zones.map(({zone}) => {
-          return <li key={zone.id}>{zone.name}</li>
+        {sounder.zones.map(({id, zone}) => {
+          return (
+            <li key={zone.id}>
+              <form
+                action={`/sounders/${sounder.id}/remove-from-zone`}
+                method="post"
+              >
+                {zone.name} <button className="cursor-pointer">🗑️</button>
+                <input type="hidden" name="sounderZone" value={id} />
+              </form>
+            </li>
+          )
         })}
       </ul>
       <form method="post" action={`/sounders/${sounder.id}/add-to-zone`}>
