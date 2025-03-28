@@ -26,6 +26,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const {
     lockdownMode,
     lockdownRepeat,
+    lockdownExitRepeat,
     lockdownEntrySound,
     lockdownExitSound,
     lockdownRepeatRingerWire,
@@ -34,6 +35,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     'lockdownEntrySound',
     'lockdownMode',
     'lockdownRepeat',
+    'lockdownExitRepeat',
     'lockdownExitSound',
     'lockdownRepeatRingerWire',
     'lockdownRepetitions'
@@ -46,6 +48,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {
     lockdownMode,
     lockdownRepeat,
+    lockdownExitRepeat,
     lockdownEntrySound,
     lockdownExitSound,
     lockdownRepeatRingerWire,
@@ -66,6 +69,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const lockdownRepetitions = formData.get('lockdownRepetitions') as
     | string
     | undefined
+  const lockdownExitRepeat = formData.get('lockdownExitRepeat') as
+    | string
+    | undefined
   const lockdownRepeat = formData.get('lockdownRepeat') as string | undefined
   const lockdownRepeatRingerWire = !!(formData.get(
     'lockdownRepeatRingerWire'
@@ -77,10 +83,12 @@ export const action = async ({request}: ActionFunctionArgs) => {
   invariant(lockdownExitSound)
   invariant(lockdownRepetitions)
   invariant(lockdownRepeat)
+  invariant(lockdownExitRepeat)
 
   await setSetting('lockdownEntrySound', lockdownEntrySound)
   await setSetting('lockdownExitSound', lockdownExitSound)
   await setSetting('lockdownRepetitions', lockdownRepetitions)
+  await setSetting('lockdownExitRepeat', lockdownExitRepeat)
   await setSetting('lockdownRepeat', lockdownRepeat)
   await setSetting('lockdownRepeatRingerWire', lockdownRepeatRingerWire)
 
@@ -91,6 +99,7 @@ const Lockdown = () => {
   const {
     lockdownMode,
     lockdownRepeat,
+    lockdownExitRepeat,
     lockdownEntrySound,
     lockdownExitSound,
     lockdownRepeatRingerWire,
@@ -148,6 +157,18 @@ const Lockdown = () => {
           <span className="text-gray-400">
             How many times should the start of lockdown sound be played, both
             when it starts and on repeats.
+          </span>
+        </label>
+        <label>
+          Repeat Lockdown End Sound Count
+          <input
+            type="number"
+            name="lockdownExitRepeat"
+            className={INPUT_CLASSES}
+            defaultValue={lockdownExitRepeat}
+          />
+          <span className="text-gray-400">
+            How many times should the end of lockdown sound be played.
           </span>
         </label>
         <label>

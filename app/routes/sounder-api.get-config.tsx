@@ -31,6 +31,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const {
     lockdownMode,
     lockdownRepeat,
+    lockdownExitRepeat,
     lockdownEntrySound,
     lockdownExitSound,
     lockdownRepeatRingerWire,
@@ -41,7 +42,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     'lockdownRepeat',
     'lockdownExitSound',
     'lockdownRepeatRingerWire',
-    'lockdownRepetitions'
+    'lockdownRepetitions',
+    'lockdownExitRepeat'
   ])
 
   const entrySound = await prisma.audio.findFirstOrThrow({
@@ -68,6 +70,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
       exitSound: exitSound.fileName,
       exitSoundRingerWire: exitSound.ringerWire,
       times: parseInt(lockdownRepetitions),
+      exitTimes: parseInt(lockdownExitRepeat),
       interval: parseInt(lockdownRepeat),
       repeatRingerWire: lockdownRepeatRingerWire === '1'
     }

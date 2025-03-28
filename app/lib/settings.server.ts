@@ -5,6 +5,7 @@ type SettingKey =
   | 'lockdownEntrySound'
   | 'lockdownExitSound'
   | 'lockdownRepeat'
+  | 'lockdownExitRepeat'
   | 'lockdownMode'
   | 'lockdownRepeatRingerWire'
   | 'lockdownRepetitions'
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownEntrySound: '',
   lockdownExitSound: '',
   lockdownRepeat: '5',
+  lockdownExitRepeat: '2',
   lockdownRepeatRingerWire: '0',
   lockdownMode: '0',
   lockdownRepetitions: '4',
