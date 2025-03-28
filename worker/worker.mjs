@@ -62,7 +62,7 @@ createHandler('lockdown', async ({ip, key}) => {
     body: JSON.stringify({key}),
     headers: {'Content-Type': 'application/json'},
     method: 'post'
-  })
+  }).catch(() => {})
 })
 
 console.log('Ready to accept jobs')
