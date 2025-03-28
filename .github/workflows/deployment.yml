@@ -52,6 +52,7 @@ jobs:
               - Dockerfile
               - docker-entrypoint.sh
               - tailwind.config.js
+              - 'worker/**'
             docs:
               - 'docs/**'
               - '.github/workflows/**'
