@@ -4,9 +4,6 @@ import {getPrisma} from '~/lib/prisma.server'
 import {VERSION} from '~/lib/constants'
 import {getSettings} from '~/lib/settings.server'
 
-type ArrayElement<ArrayType extends readonly unknown[]> =
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never
-
 export const loader = async ({}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
@@ -17,7 +14,16 @@ export const loader = async ({}: LoaderFunctionArgs) => {
   })
   const zones = await prisma.zone.findMany()
 
+  const date = new Date()
+  date.setHours(0, 0, 0, 0)
+
+  const dayAssignment = await prisma.dayTypeAssignment.findFirst({
+    where: {date},
+    include: {dayType: true}
+  })
+
   return Response.json({
+    day: dayAssignment ? dayAssignment.dayType.name : 'Normal',
     lockdown: lockdownMode === '1',
     sounders,
     version: VERSION,
