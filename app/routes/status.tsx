@@ -17,15 +17,9 @@ export const loader = async ({}: LoaderFunctionArgs) => {
   })
   const zones = await prisma.zone.findMany()
 
-  const soundersObject: {[sounderId: string]: ArrayElement<typeof sounders>} =
-    {}
-  sounders.forEach(sounder => {
-    soundersObject[sounder.id] = sounder
-  })
-
   return Response.json({
     lockdown: lockdownMode === '1',
-    sounders: soundersObject,
+    sounders,
     version: VERSION,
     zones
   })
