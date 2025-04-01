@@ -5,7 +5,15 @@
 }
 
 @utility grid-rows-app {
-  grid-template-rows: 80px 1fr 40px;
+  grid-template-rows: 80px 1fr 80px;
+}
+
+@utility grid-cols-narrow {
+  grid-template-columns: 1fr 3fr 1fr;
+}
+
+@utility grid-cols-wide {
+  grid-template-columns: 1fr 5fr 1fr;
 }
 
 @utility box {
@@ -14,7 +22,7 @@
 
 html,
 body {
-  @apply bg-white;
+  @apply bg-stone-200;
 }
 
 a,

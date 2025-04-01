@@ -7,10 +7,22 @@ import {
   NavLink
 } from '@remix-run/react'
 import {type LinksFunction} from '@remix-run/node'
+import BellIcon from '@heroicons/react/24/outline/BellIcon'
+import BellAlertIcon from '@heroicons/react/24/outline/BellAlertIcon'
+import Square3StackIcon from '@heroicons/react/24/outline/Square3Stack3DIcon'
+import CalendarIcon from '@heroicons/react/24/outline/CalendarIcon'
+import CalendarDaysIcon from '@heroicons/react/24/outline/CalendarDaysIcon'
+import CogIcon from '@heroicons/react/24/outline/Cog6ToothIcon'
+import SpeakerIcon from '@heroicons/react/24/outline/SpeakerWaveIcon'
+import InfoIcon from '@heroicons/react/24/outline/InformationCircleIcon'
+import BoxIcon from '@heroicons/react/24/outline/ArchiveBoxArrowDownIcon'
+import ArrowIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
 
 import './tailwind.css'
 
 import {VERSION} from '~/lib/constants'
+
+import {SidebarLink, NavSep} from './lib/ui'
 
 export const links: LinksFunction = () => []
 
@@ -32,7 +44,60 @@ export function Layout({children}: {children: React.ReactNode}) {
   )
 }
 
-export default function App() {
+const App = () => {
+  return (
+    <div className="grid grid-cols-app min-h-screen grid-rows-app">
+      <div className="p-2 flex items-center">
+        <img src="/logo.png" className="w-16 mr-4" />
+        <span>Open School Bell</span>
+      </div>
+      <div className="row-span-3 border-gray-300 border rounded-xl my-2 mr-2 shadow-sm bg-white p-2">
+        <Outlet />
+      </div>
+      <div className="border-t border-gray-300">
+        <SidebarLink to="/">
+          <BellIcon className="w-6 mr-2" /> <span>Dashboard</span>
+        </SidebarLink>
+        <SidebarLink to="/broadcast">
+          <BellAlertIcon className="w-6 mr-2" /> <span>Broadcast</span>
+        </SidebarLink>
+        <SidebarLink to="/schedule">
+          <CalendarIcon className="w-6 mr-2" /> <span>Schedule</span>
+        </SidebarLink>
+        <SidebarLink to="/days">
+          <CalendarDaysIcon className="w-6 mr-2" /> <span>Days</span>
+        </SidebarLink>
+        <SidebarLink to="/sounders">
+          <SpeakerIcon className="w-6 mr-2" /> <span>Sounders</span>
+        </SidebarLink>
+        <SidebarLink to="/actions">
+          <ArrowIcon className="w-6 mr-2" /> <span>Actions</span>
+        </SidebarLink>
+        <SidebarLink to="/zones">
+          <Square3StackIcon className="w-6 mr-2" /> <span>Zones</span>
+        </SidebarLink>
+        <NavSep />
+        <SidebarLink to="/settings">
+          <CogIcon className="w-6 mr-2" /> <span>Settings</span>
+        </SidebarLink>
+        <SidebarLink to="/about">
+          <InfoIcon className="w-6 mr-2" /> <span>About</span>
+        </SidebarLink>
+        <SidebarLink to="/backup">
+          <BoxIcon className="w-6 mr-2" /> <span>Backup</span>
+        </SidebarLink>
+      </div>
+      <div className="text-sm text-gray-400 p-2 text-center">
+        &copy; Open School Bell 2025 <br />
+        OSB {VERSION}
+      </div>
+    </div>
+  )
+}
+
+export default App
+
+/*export default function App() {
   return (
     <div className="grid grid-cols-app min-h-screen grid-rows-app">
       <div className="bg-green-200 p-2 flex items-center">
@@ -202,4 +267,4 @@ export default function App() {
       </div>
     </div>
   )
-}
+}*/

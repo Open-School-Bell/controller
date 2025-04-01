@@ -10,6 +10,7 @@ import {invariant} from '@arcath/utils'
 import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Lockdown')}]
@@ -45,29 +46,26 @@ const Settings = () => {
   const {ttsSpeed} = useLoaderData<typeof loader>()
 
   return (
-    <div>
-      <h1>Settings</h1>
+    <Page title="Settings">
       <form method="post">
-        <label>
-          Text to Speech Speed
+        <FormElement
+          label="Text to Speech Speed"
+          helperText="Set the speed factor of text to speech generation. Default is 1, lower is faster."
+        >
           <input
             type="text"
             name="ttsSpeed"
             className={INPUT_CLASSES}
             defaultValue={ttsSpeed}
           />
-          <span className="text-gray-400">
-            Set the speed factor of text to speech generation. Default is 1,
-            lower is faster.
-          </span>
-        </label>
+        </FormElement>
         <input
           type="submit"
           value="Update"
           className={`${INPUT_CLASSES} bg-green-300`}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

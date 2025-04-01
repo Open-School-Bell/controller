@@ -2,16 +2,24 @@ import {type MetaFunction, type LoaderFunctionArgs} from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 
 import {pageTitle} from '~/lib/utils'
+import {Page} from '~/lib/ui'
 
-import {VERSION} from '~/lib/constants'
+import {VERSION, RequiredVersions} from '~/lib/constants'
 
 export const loader = async ({}: LoaderFunctionArgs) => {
-  const piperResponse = await fetch(`${process.env.TTS_API}/status`)
-
-  const piperData = (await piperResponse.json()) as {
+  const piperData = await new Promise<{
     version: string
     piperVersion: string
-  }
+  }>(resolve => {
+    fetch(`${process.env.TTS_API}/status`)
+      .then(response => {
+        response
+          .json()
+          .then(data => resolve(data))
+          .catch(() => resolve({version: 'error', piperVersion: 'error'}))
+      })
+      .catch(() => resolve({version: 'error', piperVersion: 'error'}))
+  })
 
   return {piperData}
 }
@@ -24,14 +32,14 @@ const About = () => {
   const {piperData} = useLoaderData<typeof loader>()
 
   return (
-    <div className="border border-gray-300 p-2">
-      <h1>About</h1>
-      <table>
+    <Page title="About">
+      <table className="box-table">
         <thead>
           <tr>
             <th>Component</th>
             <th>Version</th>
             <th>Latest Version</th>
+            <th>Required Version</th>
           </tr>
         </thead>
         <tbody>
@@ -39,20 +47,23 @@ const About = () => {
             <td>openschoolbell/controller</td>
             <td className="text-center">{VERSION}</td>
             <td></td>
+            <td>{RequiredVersions.controller}</td>
           </tr>
           <tr>
             <td>openschoolbell/tts</td>
             <td className="text-center">{piperData.version}</td>
             <td></td>
+            <td>{RequiredVersions.tts}</td>
           </tr>
           <tr>
             <td>piper</td>
             <td className="text-center">{piperData.piperVersion}</td>
             <td></td>
+            <td>{RequiredVersions.piper}</td>
           </tr>
         </tbody>
       </table>
-    </div>
+    </Page>
   )
 }
 
