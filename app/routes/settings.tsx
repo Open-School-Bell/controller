@@ -7,7 +7,6 @@ import {
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
-import {getPrisma} from '~/lib/prisma.server'
 import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
@@ -24,8 +23,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   }
 
   const {ttsSpeed} = await getSettings(['ttsSpeed'])
-
-  const prisma = getPrisma()
 
   return {
     ttsSpeed
@@ -60,7 +57,8 @@ const Settings = () => {
             defaultValue={ttsSpeed}
           />
           <span className="text-gray-400">
-            Set the speed factor of text to speech generation. Between 0 and 1.
+            Set the speed factor of text to speech generation. Default is 1,
+            lower is faster.
           </span>
         </label>
         <input

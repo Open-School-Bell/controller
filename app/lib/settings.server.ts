@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownMode: '0',
   lockdownRepetitions: '4',
   password: 'bell',
-  ttsSpeed: '.67'
+  ttsSpeed: '1'
 }
 
 export const getSetting = async (setting: SettingKey) => {
