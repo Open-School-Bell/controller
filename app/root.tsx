@@ -164,6 +164,16 @@ export default function App() {
           </li>
           <li>
             <NavLink
+              to="/settings"
+              className={({isActive}) => {
+                return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`
+              }}
+            >
+              Settings
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
               to="/backup"
               className={({isActive}) => {
                 return `${isActive ? 'bg-blue-800' : '!text-blue-800'} w-full block p-2`

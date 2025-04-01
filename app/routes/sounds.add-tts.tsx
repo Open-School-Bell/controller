@@ -14,6 +14,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {getSetting} from '~/lib/settings.server'
 
 export const meta: MetaFunction<typeof loader> = () => {
   return [{title: pageTitle('Sounds', 'Add TTS')}]
@@ -38,6 +39,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const prisma = getPrisma()
 
+  const speed = await getSetting('ttsSpeed')
+
   const formData = await request.formData()
 
   const name = formData.get('name') as string | undefined
@@ -58,7 +61,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const downloadResponse = await fetch(`${process.env.TTS_API}/piper`, {
     body: JSON.stringify({
       target: `${sound.id}.wav`,
-      text: tts
+      text: tts,
+      speed
     }),
     headers: {'Content-Type': 'application/json'},
     method: 'post'
