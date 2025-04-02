@@ -20,12 +20,13 @@ export const NavSep = () => {
   return <div className="border-t-gray-300 border-t my-4" />
 }
 
-export const Page: React.FC<{children: React.ReactNode; title: string}> = ({
-  title,
-  children
-}) => {
+export const Page: React.FC<{
+  children: React.ReactNode
+  title: string
+  wide?: boolean
+}> = ({title, wide, children}) => {
   return (
-    <div className="grid grid-cols-narrow">
+    <div className={`grid ${wide ? 'grid-cols-wide' : 'grid-cols-narrow'}`}>
       <div className="col-start-2">
         <h1 className="font-light mb-2 pb-2 border-b-stone-200 border-b">
           {title}

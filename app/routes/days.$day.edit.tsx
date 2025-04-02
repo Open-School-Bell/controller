@@ -3,7 +3,7 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs
 } from '@remix-run/node'
-import {useNavigate} from '@remix-run/react'
+import {useNavigate, useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
@@ -11,17 +11,23 @@ import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {INPUT_CLASSES} from '~/lib/utils'
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {
     return redirect('/login')
   }
 
-  return {}
+  const prisma = getPrisma()
+
+  const dayType = await prisma.dayType.findFirstOrThrow({
+    where: {id: params.day}
+  })
+
+  return {dayType}
 }
 
-export const action = async ({request}: ActionFunctionArgs) => {
+export const action = async ({request, params}: ActionFunctionArgs) => {
   const result = await checkSession(request)
 
   if (!result) {
@@ -36,19 +42,27 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   invariant(name)
 
-  await prisma.dayType.create({data: {name}})
+  await prisma.dayType.update({
+    where: {id: params.day},
+    data: {name}
+  })
 
   return redirect(`/calendar`)
 }
 
 const AddDay = () => {
+  const {dayType} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
 
   return (
-    <Page title="Add Day">
+    <Page title="Edit Day">
       <form method="post">
         <FormElement label="Name" helperText="Descriptive name for the day.">
-          <input name="name" className={INPUT_CLASSES} />
+          <input
+            name="name"
+            className={INPUT_CLASSES}
+            defaultValue={dayType.name}
+          />
         </FormElement>
         <Actions
           actions={[
@@ -61,7 +75,7 @@ const AddDay = () => {
               }
             },
             {
-              label: 'Add Day',
+              label: 'Edit Day',
               color: 'bg-green-300'
             }
           ]}
