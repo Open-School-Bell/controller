@@ -1,12 +1,25 @@
-import {type MetaFunction, type LoaderFunctionArgs} from '@remix-run/node'
+import {
+  type MetaFunction,
+  type LoaderFunctionArgs,
+  redirect
+} from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
+import {asyncForEach} from '@arcath/utils'
 
 import {pageTitle} from '~/lib/utils'
 import {Page} from '~/lib/ui'
-
 import {VERSION, RequiredVersions} from '~/lib/constants'
+import {getRedis} from '~/lib/redis.server.mjs'
+import {getPrisma} from '~/lib/prisma.server'
+import {checkSession} from '~/lib/session'
 
-export const loader = async ({}: LoaderFunctionArgs) => {
+export const loader = async ({request}: LoaderFunctionArgs) => {
+  const result = await checkSession(request)
+
+  if (!result) {
+    return redirect('/login')
+  }
+
   const piperData = await new Promise<{
     version: string
     piperVersion: string
@@ -21,7 +34,23 @@ export const loader = async ({}: LoaderFunctionArgs) => {
       .catch(() => resolve({version: 'error', piperVersion: 'error'}))
   })
 
-  return {piperData}
+  const prisma = getPrisma()
+  const redis = getRedis()
+
+  const sounders = await prisma.sounder.findMany({
+    select: {id: true, name: true},
+    orderBy: {name: 'asc'}
+  })
+
+  const sounderVersions: {[sounderId: string]: string} = {}
+
+  await asyncForEach(sounders, async ({id}) => {
+    const version = await redis.get(`osb-sounder-version-${id}`)
+
+    sounderVersions[id] = version ? version : '0.0.0'
+  })
+
+  return {piperData, sounders, sounderVersions}
 }
 
 export const meta: MetaFunction = () => {
@@ -29,7 +58,7 @@ export const meta: MetaFunction = () => {
 }
 
 const About = () => {
-  const {piperData} = useLoaderData<typeof loader>()
+  const {piperData, sounders, sounderVersions} = useLoaderData<typeof loader>()
 
   return (
     <Page title="About">
@@ -61,6 +90,16 @@ const About = () => {
             <td></td>
             <td>{RequiredVersions.piper}</td>
           </tr>
+          {sounders.map(({id, name}) => {
+            return (
+              <tr key={id}>
+                <td>Sounder: {name}</td>
+                <td className="text-center">{sounderVersions[id]}</td>
+                <td></td>
+                <td>{RequiredVersions.sounder}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
     </Page>
