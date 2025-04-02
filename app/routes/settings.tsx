@@ -23,22 +23,26 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return redirect('/login')
   }
 
-  const {ttsSpeed} = await getSettings(['ttsSpeed'])
+  const {ttsSpeed, enrollUrl} = await getSettings(['ttsSpeed', 'enrollUrl'])
 
   return {
-    ttsSpeed
+    ttsSpeed,
+    enrollUrl
   }
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData()
 
+  const enrollUrl = formData.get('enrollUrl') as string | undefined
   const ttsSpeed = formData.get('ttsSpeed') as string | undefined
   const password = formData.get('password') as string | undefined
   const checkPassword = formData.get('confirmPassword') as string | undefined
 
+  invariant(enrollUrl)
   invariant(ttsSpeed)
 
+  await setSetting('enrollUrl', enrollUrl)
   await setSetting('ttsSpeed', ttsSpeed)
 
   if (password && checkPassword && password === checkPassword) {
@@ -49,11 +53,22 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const Settings = () => {
-  const {ttsSpeed} = useLoaderData<typeof loader>()
+  const {ttsSpeed, enrollUrl} = useLoaderData<typeof loader>()
 
   return (
     <Page title="Settings">
       <form method="post">
+        <FormElement
+          label="Controler URL"
+          helperText="The Address of the controller on the network. Without the trailing /"
+        >
+          <input
+            type="text"
+            name="enrollUrl"
+            className={INPUT_CLASSES}
+            defaultValue={enrollUrl}
+          />
+        </FormElement>
         <FormElement
           label="Text to Speech Speed"
           helperText="Set the speed factor of text to speech generation. Default is 1, lower is faster."

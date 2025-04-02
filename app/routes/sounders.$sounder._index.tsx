@@ -10,6 +10,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {getSetting} from '~/lib/settings.server'
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -39,11 +40,13 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
     where: {id: {notIn: sounder.zones.map(({zoneId}) => zoneId)}}
   })
 
-  return {sounder, zones}
+  const enrollUrl = await getSetting('enrollUrl')
+
+  return {sounder, zones, enrollUrl}
 }
 
 const Sounder = () => {
-  const {sounder, zones} = useLoaderData<typeof loader>()
+  const {sounder, zones, enrollUrl} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
 
   return (
@@ -66,7 +69,9 @@ const Sounder = () => {
             <>
               <p>Key: {sounder.key}</p>
               <div className="bg-gray-300 rounded-md p-2">
-                <pre>sounder --enroll {sounder.key} --controller 127.0.0.1</pre>
+                <pre>
+                  sounder --enroll {sounder.key} --controller {enrollUrl}
+                </pre>
               </div>
             </>
           )}

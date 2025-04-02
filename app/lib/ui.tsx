@@ -1,7 +1,5 @@
 import {NavLink} from '@remix-run/react'
 
-import {INPUT_CLASSES} from './utils'
-
 export const SidebarLink: React.FC<{
   to: string
   children: React.ReactNode

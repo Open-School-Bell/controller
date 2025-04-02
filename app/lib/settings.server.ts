@@ -11,6 +11,7 @@ type SettingKey =
   | 'lockdownRepetitions'
   | 'password'
   | 'ttsSpeed'
+  | 'enrollUrl'
 
 export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownEntrySound: '',
@@ -21,7 +22,8 @@ export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   lockdownMode: '0',
   lockdownRepetitions: '4',
   password: 'bell',
-  ttsSpeed: '1'
+  ttsSpeed: '1',
+  enrollUrl: 'http://controller:3000'
 }
 
 export const getSetting = async (setting: SettingKey) => {
