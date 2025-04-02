@@ -11,6 +11,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Lockdown')}]
@@ -108,14 +109,15 @@ const Lockdown = () => {
   } = useLoaderData<typeof loader>()
 
   return (
-    <div>
-      <h1>Lockdown</h1>
+    <Page title="Lockdown">
       <div
         className={`${lockdownMode === '1' ? 'bg-red-300' : 'bg-green-300'} p-2 my-4`}
       >{`${lockdownMode === '1' ? 'Lockdown Active' : 'Lockdown Inactive'} `}</div>
       <form method="post">
-        <label>
-          Lockdown Start Sound
+        <FormElement
+          label="Lockdown Start Sound"
+          helperText="The sound used to start the lockdown and used on repetitions."
+        >
           <select
             className={INPUT_CLASSES}
             name="lockdownEntrySound"
@@ -129,9 +131,11 @@ const Lockdown = () => {
               )
             })}
           </select>
-        </label>
-        <label>
-          Lockdown End Sound
+        </FormElement>
+        <FormElement
+          label="Lockdown End Sound"
+          helperText="The sound used to end the lockdown"
+        >
           <select
             className={INPUT_CLASSES}
             name="lockdownExitSound"
@@ -145,63 +149,54 @@ const Lockdown = () => {
               )
             })}
           </select>
-        </label>
-        <label>
-          Repeat Lockdown Start Sound Count
+        </FormElement>
+        <FormElement
+          label="Lockdown Start Count"
+          helperText="How many times should the start of lockdown sound be played, both when it starts and on repeats."
+        >
           <input
             type="number"
             name="lockdownRepetitions"
             className={INPUT_CLASSES}
             defaultValue={lockdownRepetitions}
           />
-          <span className="text-gray-400">
-            How many times should the start of lockdown sound be played, both
-            when it starts and on repeats.
-          </span>
-        </label>
-        <label>
-          Repeat Lockdown End Sound Count
+        </FormElement>
+        <FormElement
+          label="Lockdown End Count"
+          helperText="How many times should the end of lockdown sound be played."
+        >
           <input
             type="number"
             name="lockdownExitRepeat"
             className={INPUT_CLASSES}
             defaultValue={lockdownExitRepeat}
           />
-          <span className="text-gray-400">
-            How many times should the end of lockdown sound be played.
-          </span>
-        </label>
-        <label>
-          Repeat Lockdown Start Sound interval (minutes).
+        </FormElement>
+        <FormElement
+          label="Lockdown Repeat Interval"
+          helperText="How often should the start of lockdown sound be repeated in minutes."
+        >
           <input
             type="number"
             name="lockdownRepeat"
             className={INPUT_CLASSES}
             defaultValue={lockdownRepeat}
           />
-          <span className="text-gray-400">
-            How often should the start of lockdown sound be repeated.
-          </span>
-        </label>
-        <label>
-          Repeat ringer wire on repetitions.
+        </FormElement>
+        <FormElement
+          label="Ringer Wire on Repeat?"
+          helperText="Should the ringer wire be triggered on repetitions. Useful to avoid abiguity over number of bells meaning start/end of lockdown"
+        >
           <input
             type="checkbox"
             name="lockdownRepeatRingerWire"
-            className={INPUT_CLASSES}
+            className="ml-2 shadow-xl"
             defaultChecked={lockdownRepeatRingerWire === '1'}
           />
-          <span className="text-gray-400">
-            Should the ringer wire be used on repeats?
-          </span>
-        </label>
-        <input
-          type="submit"
-          value="Update"
-          className={`${INPUT_CLASSES} bg-green-300`}
-        />
+        </FormElement>
+        <Actions actions={[{label: 'Update', color: 'bg-green-300'}]} />
       </form>
-    </div>
+    </Page>
   )
 }
 

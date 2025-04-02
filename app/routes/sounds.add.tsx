@@ -7,6 +7,7 @@ import {
   unstable_parseMultipartFormData,
   type LoaderFunctionArgs
 } from '@remix-run/node'
+import {useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 import path from 'path'
 import fs from 'fs'
@@ -14,6 +15,7 @@ import fs from 'fs'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 const {rename} = fs.promises
 
@@ -88,38 +90,46 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const AddSound = () => {
+  const navigate = useNavigate()
+
   return (
-    <div className="box">
-      <h2>Add Sound</h2>
+    <Page title="Add Sound">
       <form method="post" encType="multipart/form-data">
-        <label>
-          Name
+        <FormElement label="Name" helperText="Descriptive name for the sound.">
           <input name="name" className={INPUT_CLASSES} />
-        </label>
-        <label>
-          MP3
+        </FormElement>
+        <FormElement
+          label="MP3 File"
+          helperText="The MP3 file to be used as the sound."
+        >
           <input
             name="file"
             type="file"
             accept="audio/mp3"
             className={INPUT_CLASSES}
           />
-        </label>
-        <label>
-          Ringer Wire
+        </FormElement>
+        <FormElement
+          label="Ringer Wire"
+          helperText="Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF, e.g. 1,3,1,3. make sure to end with an off time."
+        >
           <input name="ringer-wire" className={INPUT_CLASSES} />
-          <span className="text-gray-400">
-            Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF,
-            e.g. 1,3,1,3. make sure to end with an off time.
-          </span>
-        </label>
-        <input
-          type="submit"
-          value="Add"
-          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate('/sounds')
+              }
+            },
+            {label: 'Add Sound', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

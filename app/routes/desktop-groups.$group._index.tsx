@@ -3,6 +3,7 @@ import {useLoaderData} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {Page} from '~/lib/ui'
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -24,10 +25,9 @@ const Day = () => {
   const {desktopGroup} = useLoaderData<typeof loader>()
 
   return (
-    <div className="box">
-      <h1>{desktopGroup.name}</h1>
+    <Page title={desktopGroup.name}>
       <p>Key: {desktopGroup.key}</p>
-    </div>
+    </Page>
   )
 }
 

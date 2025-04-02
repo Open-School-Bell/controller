@@ -4,12 +4,13 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -107,11 +108,12 @@ export const action: ActionFunction = async ({request, params}) => {
 
 const EditSchedule = () => {
   const {zones, days, sounds, schedule} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="border border-gray-300 p-2">
+    <Page title="Edit Schedule">
       <form method="post">
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 border-b border-b-stone-100 mb-4">
           {[
             'Monday',
             'Tuesday',
@@ -122,7 +124,7 @@ const EditSchedule = () => {
             'Sunday'
           ].map((day, i) => {
             return (
-              <label key={i} className="text-center cursor-pointer">
+              <label key={i} className="text-center cursor-pointer mb-4">
                 <p>{day}</p>
                 <input
                   type="checkbox"
@@ -136,71 +138,76 @@ const EditSchedule = () => {
             )
           })}
         </div>
-        <div className="grid grid-cols-4 mt-2">
-          <label className="p-2">
-            Time
-            <input
-              type="time"
-              name="time"
-              className={`${INPUT_CLASSES}`}
-              defaultValue={schedule.time}
-            />
-            <span className="text-gray-400">
-              The time that the scheduled bell will occur.
-            </span>
-          </label>
-          <label className="p-2">
-            Day Type
-            <select
-              name="dayType"
-              defaultValue={schedule.dayTypeId ? schedule.dayTypeId : '_'}
-              className={`${INPUT_CLASSES}`}
-            >
-              <option value="_">Default</option>
-              {days.map(({id, name}) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
-            </select>
-            <span className="text-gray-400">
-              The day type that this schedule applies to.
-            </span>
-          </label>
-          <label className="p-2">
-            Zone
-            <select
-              name="zone"
-              className={INPUT_CLASSES}
-              defaultValue={schedule.zoneId}
-            >
-              {zones.map(({id, name}) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
-            </select>
-          </label>
-          <label className="p-2">
-            Sound
-            <select
-              name="sound"
-              className={INPUT_CLASSES}
-              defaultValue={schedule.audioId}
-            >
-              {sounds.map(({id, name}) => {
-                return (
-                  <option key={id} value={id}>
-                    {name}
-                  </option>
-                )
-              })}
-            </select>
-          </label>
+        <FormElement
+          label="Time"
+          helperText="The time to trigger the sound. Will be triggered at 0 seconds past the minute."
+        >
+          <input
+            type="time"
+            name="time"
+            className={`${INPUT_CLASSES}`}
+            defaultValue={schedule.time}
+          />
+        </FormElement>
+        <FormElement
+          label="Day"
+          helperText="The type of day this schedule applies to."
+        >
+          <select
+            name="dayType"
+            defaultValue={schedule.dayTypeId!}
+            className={`${INPUT_CLASSES}`}
+          >
+            <option value="_">Default</option>
+            {days.map(({id, name}) => {
+              return (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </FormElement>
+        <FormElement
+          label="Zone"
+          helperText="Which zone does this schedule apply to?"
+        >
+          <select
+            name="zone"
+            className={INPUT_CLASSES}
+            defaultValue={schedule.zoneId}
+          >
+            {zones.map(({id, name}) => {
+              return (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </FormElement>
+        <FormElement
+          label="Sound"
+          helperText="Which sound should be played for this schedule?"
+        >
+          <select
+            name="sound"
+            className={INPUT_CLASSES}
+            defaultValue={schedule.audioId}
+          >
+            {sounds.map(({id, name}) => {
+              return (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </FormElement>
+        <FormElement
+          label="Count"
+          helperText="How many times should the sound be played"
+        >
           <label>
             Count
             <input
@@ -210,14 +217,22 @@ const EditSchedule = () => {
               className={INPUT_CLASSES}
             />
           </label>
-        </div>
-        <input
-          type="submit"
-          value="Update"
-          className={`${INPUT_CLASSES} bg-green-300 cursor-pointer`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate('/schedule')
+              }
+            },
+            {label: 'Edit Schedule', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

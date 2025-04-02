@@ -17,7 +17,7 @@
 }
 
 @utility box {
-  @apply border border-gray-200 p-2;
+  @apply border-b border-b-gray-200 p-2;
 }
 
 html,
@@ -39,7 +39,7 @@ h2 {
 }
 
 .box-table {
-  @apply border-spacing-2;
+  @apply border-spacing-2 w-full;
 }
 
 .box-table thead {

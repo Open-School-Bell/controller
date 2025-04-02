@@ -8,6 +8,7 @@ import {invariant} from '@arcath/utils'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {getSession, commitSession, jwtCreate} from '~/lib/session'
 import {getSetting} from '~/lib/settings.server'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Login')}]
@@ -35,20 +36,14 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const Login = () => {
   return (
-    <div className="border border-gray-300 p-2">
-      <h1>Login</h1>
+    <Page title="Login">
       <form method="post">
-        <label>
-          Password
+        <FormElement label="Password" helperText="">
           <input name="password" type="password" className={INPUT_CLASSES} />
-        </label>
-        <input
-          type="submit"
-          value="Login"
-          className={`${INPUT_CLASSES} bg-green-300 mt-4`}
-        />
+        </FormElement>
+        <Actions actions={[{label: 'Login', color: 'bg-green-300'}]} />
       </form>
-    </div>
+    </Page>
   )
 }
 

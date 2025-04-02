@@ -4,12 +4,13 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle, INPUT_CLASSES} from '~/lib/utils'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Zones', 'Edit')}]
@@ -54,26 +55,33 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 const AddZone = () => {
   const {zone} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="box">
-      <h2>Edit Zone</h2>
+    <Page title="Edit Zone">
       <form method="post">
-        <label>
-          Name
+        <FormElement label="Name" helperText="Descriptive name for the zone.">
           <input
             name="name"
             className={INPUT_CLASSES}
             defaultValue={zone.name}
           />
-        </label>
-        <input
-          type="submit"
-          value="Edit"
-          className={`${INPUT_CLASSES} bg-green-300 mt-2`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate(`/zones/${zone.id}`)
+              }
+            },
+            {label: 'Edit Zone', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

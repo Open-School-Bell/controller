@@ -3,11 +3,12 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {Outlet, useLoaderData, Link} from '@remix-run/react'
+import {useLoaderData, Link, useNavigate} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Actions')}]
@@ -27,13 +28,13 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {actions}
 }
 
-const Actions = () => {
+const ActionsPage = () => {
   const {actions} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="box">
-        <h1>Actions ({actions.length})</h1>
+    <Page title={`Actions (${actions.length})`}>
+      <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
@@ -46,11 +47,11 @@ const Actions = () => {
             {actions.map(({id, name, action}) => {
               return (
                 <tr key={id}>
-                  <td>
+                  <td className="text-center">
                     <Link to={`/actions/${id}`}>{name}</Link>
                   </td>
-                  <td>{action}</td>
-                  <td>
+                  <td className="text-center">{action}</td>
+                  <td className="text-center">
                     <form method="post" action={`/actions/${id}/delete`}>
                       <button className="cursor-pointer">🗑️</button>
                     </form>
@@ -60,11 +61,18 @@ const Actions = () => {
             })}
           </tbody>
         </table>
-        <Link to="/actions/add">Add</Link>
       </div>
-      <Outlet />
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Action',
+            color: 'bg-green-300',
+            onClick: () => navigate('/actions/add')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 
-export default Actions
+export default ActionsPage

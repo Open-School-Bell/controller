@@ -1,5 +1,7 @@
 import {NavLink} from '@remix-run/react'
 
+import {INPUT_CLASSES} from './utils'
+
 export const SidebarLink: React.FC<{
   to: string
   children: React.ReactNode
@@ -48,6 +50,30 @@ export const FormElement: React.FC<{
         <div className="row-span-2">{children}</div>
         <span className="text-neutral-400">{helperText}</span>
       </label>
+    </div>
+  )
+}
+
+export const Actions: React.FC<{
+  actions: {
+    label: string
+    onClick?: React.MouseEventHandler<HTMLButtonElement>
+    color: string
+  }[]
+}> = ({actions}) => {
+  return (
+    <div className="flex flex-row justify-end w-full gap-4">
+      {actions.map(({label, onClick, color}, i) => {
+        return (
+          <button
+            key={i}
+            onClick={onClick}
+            className={`${color} p-2 rounded-md shadow-md cursor-pointer`}
+          >
+            {label}
+          </button>
+        )
+      })}
     </div>
   )
 }

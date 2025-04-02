@@ -34,10 +34,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData()
 
   const ttsSpeed = formData.get('ttsSpeed') as string | undefined
+  const password = formData.get('password') as string | undefined
+  const checkPassword = formData.get('confirmPassword') as string | undefined
 
   invariant(ttsSpeed)
 
   await setSetting('ttsSpeed', ttsSpeed)
+
+  if (password && checkPassword && password === checkPassword) {
+    await setSetting('password', password)
+  }
 
   return redirect('/settings')
 }
@@ -57,6 +63,18 @@ const Settings = () => {
             name="ttsSpeed"
             className={INPUT_CLASSES}
             defaultValue={ttsSpeed}
+          />
+        </FormElement>
+        <FormElement label="Change Password" helperText="">
+          <input
+            type="password"
+            name="password"
+            className={`${INPUT_CLASSES} mb-4`}
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            className={INPUT_CLASSES}
           />
         </FormElement>
         <input

@@ -3,11 +3,12 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {Outlet, useLoaderData, Link} from '@remix-run/react'
+import {useNavigate, useLoaderData, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Zones')}]
@@ -32,11 +33,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Zones = () => {
   const {zones} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="box">
-        <h1>Zones ({zones.length})</h1>
+    <Page title={`Zones (${zones.length})`}>
+      <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
@@ -65,10 +66,17 @@ const Zones = () => {
             })}
           </tbody>
         </table>
-        <Link to="/zones/add">Add</Link>
       </div>
-      <Outlet />
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Zone',
+            color: 'bg-green-300',
+            onClick: () => navigate('/zones/add')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 

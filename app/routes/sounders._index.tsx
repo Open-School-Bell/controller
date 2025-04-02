@@ -3,11 +3,12 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {Outlet, useLoaderData, Link} from '@remix-run/react'
+import {useLoaderData, Link, useNavigate} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Sounders')}]
@@ -29,11 +30,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Sounders = () => {
   const {sounders} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="box">
-        <h1>Sounders ({sounders.length})</h1>
+    <Page title={`Sounders (${sounders.length})`}>
+      <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
@@ -53,10 +54,17 @@ const Sounders = () => {
             })}
           </tbody>
         </table>
-        <Link to="/sounders/add">Add</Link>
       </div>
-      <Outlet />
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Sounder',
+            color: 'bg-green-300',
+            onClick: () => navigate('/sounders/add')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 

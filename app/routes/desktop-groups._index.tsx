@@ -1,8 +1,9 @@
 import {type LoaderFunctionArgs, type MetaFunction} from '@remix-run/node'
-import {Link, Outlet, useLoaderData} from '@remix-run/react'
+import {Link, useNavigate, useLoaderData} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Desktop Groups')}]
@@ -20,11 +21,11 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 
 const DesktopGroups = () => {
   const {desktopGroups} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      <div className="box">
-        <h1>Desktop Groups ({desktopGroups.length})</h1>
+    <Page title={`Desktop Groups (${desktopGroups.length})`}>
+      <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
@@ -45,10 +46,17 @@ const DesktopGroups = () => {
             })}
           </tbody>
         </table>
-        <Link to="/desktop-groups/add">Add</Link>
       </div>
-      <Outlet />
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Desktop Group',
+            color: 'bg-green-300',
+            onClick: () => navigate('/desktop-groups/add')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 

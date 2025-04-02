@@ -1,11 +1,4 @@
-import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  NavLink
-} from '@remix-run/react'
+import {Links, Meta, Outlet, Scripts, ScrollRestoration} from '@remix-run/react'
 import {type LinksFunction} from '@remix-run/node'
 import BellIcon from '@heroicons/react/24/outline/BellIcon'
 import BellAlertIcon from '@heroicons/react/24/outline/BellAlertIcon'
@@ -17,6 +10,10 @@ import SpeakerIcon from '@heroicons/react/24/outline/SpeakerWaveIcon'
 import InfoIcon from '@heroicons/react/24/outline/InformationCircleIcon'
 import BoxIcon from '@heroicons/react/24/outline/ArchiveBoxArrowDownIcon'
 import ArrowIcon from '@heroicons/react/24/outline/ArrowTopRightOnSquareIcon'
+import LogoutIcon from '@heroicons/react/24/outline/ArrowRightStartOnRectangleIcon'
+import ComputerIcon from '@heroicons/react/24/outline/ComputerDesktopIcon'
+import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
+import MusicIcon from '@heroicons/react/24/outline/MusicalNoteIcon'
 
 import './tailwind.css'
 
@@ -70,11 +67,20 @@ const App = () => {
         <SidebarLink to="/sounders">
           <SpeakerIcon className="w-6 mr-2" /> <span>Sounders</span>
         </SidebarLink>
+        <SidebarLink to="/sounds">
+          <MusicIcon className="w-6 mr-2" /> <span>Sounds</span>
+        </SidebarLink>
+        <SidebarLink to="/desktop-groups">
+          <ComputerIcon className="w-6 mr-2" /> <span>Desktop Groups</span>
+        </SidebarLink>
         <SidebarLink to="/actions">
           <ArrowIcon className="w-6 mr-2" /> <span>Actions</span>
         </SidebarLink>
         <SidebarLink to="/zones">
           <Square3StackIcon className="w-6 mr-2" /> <span>Zones</span>
+        </SidebarLink>
+        <SidebarLink to="/lockdown">
+          <LockClosedIcon className="w-6 mr-2" /> <span>Lockdown</span>
         </SidebarLink>
         <NavSep />
         <SidebarLink to="/settings">
@@ -85,6 +91,10 @@ const App = () => {
         </SidebarLink>
         <SidebarLink to="/backup">
           <BoxIcon className="w-6 mr-2" /> <span>Backup</span>
+        </SidebarLink>
+        <NavSep />
+        <SidebarLink to="/logout">
+          <LogoutIcon className="w-6 mr-2" /> <span>Logout</span>
         </SidebarLink>
       </div>
       <div className="text-sm text-gray-400 p-2 text-center">

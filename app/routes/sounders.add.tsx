@@ -4,11 +4,13 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/node'
+import {useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {makeKey, INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Sounders', 'Add')}]
@@ -49,25 +51,38 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const AddSounder = () => {
+  const navigate = useNavigate()
+
   return (
-    <div className="box">
-      <h2>Add Sounder</h2>
+    <Page title="Add Sounder">
       <form method="post">
-        <label>
-          Name
+        <FormElement
+          label="Name"
+          helperText="The descriptive name of the sounder"
+        >
           <input name="name" className={INPUT_CLASSES} />
-        </label>
-        <label>
-          IP
+        </FormElement>
+        <FormElement
+          label="IP"
+          helperText="The IP address the controller can contact the sounder on."
+        >
           <input name="ip" className={INPUT_CLASSES} />
-        </label>
-        <input
-          type="submit"
-          value="Add"
-          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate('/sounders')
+              }
+            },
+            {label: 'Add Sounder', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

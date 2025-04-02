@@ -4,12 +4,13 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Actions', 'Edit')}]
@@ -64,29 +65,35 @@ export const action = async ({params, request}: ActionFunctionArgs) => {
 
 const AddAction = () => {
   const {sounds, action} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="box">
-      <h2>Edit Action</h2>
+    <Page title={`Edit ${action.name}`}>
       <form method="post">
-        <label>
-          Name
+        <FormElement
+          label="Name"
+          helperText="The name of the action as it will appear on the screens"
+        >
           <input
             name="name"
             className={INPUT_CLASSES}
             defaultValue={action.name}
           />
-        </label>
-        <label>
-          Icon
+        </FormElement>
+        <FormElement
+          label="Icon"
+          helperText="An Emoji to use as the actions icon. Be aware that Emojis render differently on the RPi screen."
+        >
           <input
             name="icon"
             className={INPUT_CLASSES}
             defaultValue={action.icon}
           />
-        </label>
-        <label>
-          Type
+        </FormElement>
+        <FormElement
+          label="Type"
+          helperText="Broadcast runs a broadcast to the supplied zone. Lockdown triggers a system wide lockdown."
+        >
           <select
             name="action"
             className={INPUT_CLASSES}
@@ -95,9 +102,11 @@ const AddAction = () => {
             <option value="broadcast">Broadcast</option>
             <option value="lockdown">Lockdown Toggle</option>
           </select>
-        </label>
-        <label>
-          Sound
+        </FormElement>
+        <FormElement
+          label="Sound"
+          helperText="When Broadcasting which sound should be used?"
+        >
           <select
             name="sound"
             className={INPUT_CLASSES}
@@ -111,14 +120,22 @@ const AddAction = () => {
               )
             })}
           </select>
-        </label>
-        <input
-          type="submit"
-          value="Edit"
-          className={`${INPUT_CLASSES} bg-green-300 mt-2`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              onClick: e => {
+                e.preventDefault()
+                navigate(`/actions/${action.id}`)
+              },
+              color: 'bg-stone-200'
+            },
+            {label: 'Edit', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

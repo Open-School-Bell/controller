@@ -3,11 +3,12 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData, Link} from '@remix-run/react'
+import {useLoaderData, Link, useNavigate} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Actions')}]
@@ -32,18 +33,33 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 
 const Action = () => {
   const {action} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="box">
-      <h1>{action.name}</h1>
-      <Link to={`/actions/${action.id}/edit`}>Edit</Link>
-      <p>Icon: {action.icon}</p>
-      <p>Type: {action.action}</p>
-      <p>
-        Sound:{' '}
-        <Link to={`/sounds/${action.audioId}`}>{action.audio!.name}</Link>
-      </p>
-    </div>
+    <Page title={action.name}>
+      <div className="box mb-4">
+        <p>Icon: {action.icon}</p>
+        <p>Type: {action.action}</p>
+        <p>
+          Sound:{' '}
+          <Link to={`/sounds/${action.audioId}`}>{action.audio!.name}</Link>
+        </p>
+      </div>
+      <Actions
+        actions={[
+          {
+            label: 'Back',
+            color: 'bg-stone-200',
+            onClick: () => navigate('/actions')
+          },
+          {
+            label: 'Edit',
+            color: 'bg-blue-300',
+            onClick: () => navigate(`/actions/${action.id}/edit`)
+          }
+        ]}
+      />
+    </Page>
   )
 }
 

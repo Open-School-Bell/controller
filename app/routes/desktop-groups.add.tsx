@@ -3,11 +3,13 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs
 } from '@remix-run/node'
+import {useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, makeKey} from '~/lib/utils'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -44,21 +46,32 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const AddDay = () => {
+  const navigate = useNavigate()
+
   return (
-    <div className="box">
-      <h2>Add Desktop Group</h2>
+    <Page title="Add Desktop Group">
       <form method="post">
-        <label>
-          Name
+        <FormElement label="Name" helperText="The name of the desktop group">
           <input name="name" className={INPUT_CLASSES} />
-        </label>
-        <input
-          type="submit"
-          value="Add"
-          className={`${INPUT_CLASSES} bg-green-300 mt-2`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate('/desktop-groups')
+              }
+            },
+            {
+              label: 'Add Desktop Group',
+              color: 'bg-green-300'
+            }
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

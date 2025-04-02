@@ -13,6 +13,7 @@ import fs from 'fs'
 
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {Page} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Backups')}]
@@ -68,29 +69,30 @@ const Backups = () => {
   const {files} = useLoaderData<typeof loader>()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="box">
-        Backups
-        <form method="post">
-          <input
-            type="submit"
-            value="Create Backup"
-            className={INPUT_CLASSES}
-          />
-        </form>
+    <Page title="Backups">
+      <div className="grid grid-cols-2 gap-8">
+        <div className="box">
+          <form method="post">
+            <input
+              type="submit"
+              value="Create Backup"
+              className={INPUT_CLASSES}
+            />
+          </form>
+        </div>
+        <div className="box">
+          <ul>
+            {files.map(fileName => {
+              return (
+                <li key={fileName}>
+                  <a href={`/backups/${fileName}`}>{fileName}</a>
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </div>
-      <div className="box">
-        <ul>
-          {files.map(fileName => {
-            return (
-              <li key={fileName}>
-                <a href={`/backups/${fileName}`}>{fileName}</a>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
-    </div>
+    </Page>
   )
 }
 

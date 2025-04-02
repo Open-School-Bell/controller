@@ -1,8 +1,18 @@
-import {type LoaderFunctionArgs, redirect} from '@remix-run/node'
-import {Outlet, useLoaderData, Link} from '@remix-run/react'
+import {
+  type LoaderFunctionArgs,
+  type MetaFunction,
+  redirect
+} from '@remix-run/node'
+import {useLoaderData, useNavigate, Link} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {pageTitle} from '~/lib/utils'
+import {Page, Actions} from '~/lib/ui'
+
+export const meta: MetaFunction = () => {
+  return [{title: pageTitle('Sounds')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -20,11 +30,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Sounds = () => {
   const {sounds} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="grid grid-cols-2 gap-8">
-      <div className="box">
-        <h1>Sounds ({sounds.length})</h1>
+    <Page title={`Sounds (${sounds.length})`}>
+      <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
@@ -49,13 +59,22 @@ const Sounds = () => {
             })}
           </tbody>
         </table>
-        <Link to="/sounds/add" className="pr-2">
-          Add
-        </Link>
-        <Link to="/sounds/add-tts">Add Text-To-Speech</Link>
       </div>
-      <Outlet />
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Sound',
+            color: 'bg-green-300',
+            onClick: () => navigate('/sounds/add')
+          },
+          {
+            label: 'Add Text-To-Speech Sound',
+            color: 'bg-green-300',
+            onClick: () => navigate('/sounds/add-tts')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 

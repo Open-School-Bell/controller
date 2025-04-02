@@ -4,12 +4,13 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -68,52 +69,66 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 const EditSounder = () => {
   const {sounder} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="box">
-      <h2>Edit Sounder</h2>
+    <Page title="Edit Sounder">
       <form method="post">
-        <label>
-          Name
+        <FormElement
+          label="Name"
+          helperText="The descriptive name of the sounder"
+        >
           <input
             name="name"
             defaultValue={sounder.name}
             className={INPUT_CLASSES}
           />
-        </label>
-        <label>
-          IP
+        </FormElement>
+        <FormElement
+          label="IP"
+          helperText="The IP address the controller can contact the sounder on."
+        >
           <input
             name="ip"
             defaultValue={sounder.ip}
             className={INPUT_CLASSES}
           />
-        </label>
-        <label>
-          Ringer PIN
+        </FormElement>
+        <FormElement
+          label="Ringer PIN"
+          helperText="The GPIO pin number to activate the ringer wire"
+        >
           <input
             name="ringer"
             defaultValue={sounder.ringerPin}
             className={INPUT_CLASSES}
           />
-        </label>
-        <label>
-          Screen
+        </FormElement>
+        <FormElement
+          label="Screen"
+          helperText="Enable the screen interface on this sounder? You will need to restart your sounder after changing this option."
+        >
           <input
             type="checkbox"
-            className={INPUT_CLASSES}
             defaultChecked={sounder.screen}
             name="screen"
           />
-          <p>Please restart your sounder after changing the screen option.</p>
-        </label>
-        <input
-          type="submit"
-          value="Edit"
-          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate(`/sounders/${sounder.id}`)
+              }
+            },
+            {label: 'Edit Sounder', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

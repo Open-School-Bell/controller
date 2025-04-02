@@ -8,7 +8,7 @@ import {
   unstable_parseMultipartFormData,
   type MetaFunction
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 import path from 'path'
 import fs from 'fs'
@@ -16,6 +16,7 @@ import fs from 'fs'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {Page, FormElement, Actions} from '~/lib/ui'
 
 const {rename} = fs.promises
 
@@ -103,50 +104,55 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 
 const AddSound = () => {
   const {sound} = useLoaderData<typeof loader>()
+  const navigate = useNavigate()
 
   return (
-    <div className="box">
-      <h2>Edit Sound</h2>
+    <Page title="Edit Sound">
       <form method="post" encType="multipart/form-data">
-        <label>
-          Name
+        <FormElement label="Name" helperText="Descriptive name for the sound.">
           <input
             name="name"
             className={INPUT_CLASSES}
             defaultValue={sound.name}
           />
-        </label>
-        <label>
-          MP3
+        </FormElement>
+        <FormElement
+          label="MP3 File"
+          helperText="Supply a new MP3 to replace the existing one."
+        >
           <input
             name="file"
             type="file"
             accept="audio/mp3"
             className={INPUT_CLASSES}
           />
-          <span className="text-gray-400">
-            Supply a new MP3 to replace the existing one.
-          </span>
-        </label>
-        <label>
+        </FormElement>
+        <FormElement
+          label="Ringer Wire"
+          helperText="Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF, e.g. 1,3,1,3. make sure to end with an off time."
+        >
           Ringer Wire
           <input
             name="ringer-wire"
             className={INPUT_CLASSES}
             defaultValue={sound.ringerWire}
           />
-          <span className="text-gray-400">
-            Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF,
-            e.g. 1,3,1,3. make sure to end with an off time.
-          </span>
-        </label>
-        <input
-          type="submit"
-          value="Update"
-          className={`${INPUT_CLASSES} mt-2 bg-green-300`}
+        </FormElement>
+        <Actions
+          actions={[
+            {
+              label: 'Cancel',
+              color: 'bg-stone-200',
+              onClick: e => {
+                e.preventDefault()
+                navigate(`/sounds/${sound.id}`)
+              }
+            },
+            {label: 'Edit Sound', color: 'bg-green-300'}
+          ]}
         />
       </form>
-    </div>
+    </Page>
   )
 }
 

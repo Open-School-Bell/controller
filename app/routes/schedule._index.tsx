@@ -3,12 +3,13 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {Link, useLoaderData} from '@remix-run/react'
+import {Link, useLoaderData, useNavigate} from '@remix-run/react'
 import {useState} from 'react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Schedule')}]
@@ -38,10 +39,10 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const Schedule = () => {
   const {schedules, days} = useLoaderData<typeof loader>()
   const [day, setDay] = useState<null | string>(null)
+  const navigate = useNavigate()
 
   return (
-    <div className="border border-gray-200 p-2">
-      <h1>Schedules</h1>
+    <Page title="Schedule">
       <select
         className={INPUT_CLASSES}
         onChange={e => {
@@ -57,7 +58,7 @@ const Schedule = () => {
           )
         })}
       </select>
-      <table>
+      <table className="box-table">
         <thead>
           <tr>
             <th className="p-2">Time</th>
@@ -122,15 +123,17 @@ const Schedule = () => {
               )
             })}
         </tbody>
-        <tfoot>
-          <tr>
-            <td className="py-4">
-              <Link to="/schedule/add">Add</Link>
-            </td>
-          </tr>
-        </tfoot>
       </table>
-    </div>
+      <Actions
+        actions={[
+          {
+            label: 'Add Schedule',
+            color: 'bg-green-300',
+            onClick: () => navigate('/schedule/add')
+          }
+        ]}
+      />
+    </Page>
   )
 }
 
