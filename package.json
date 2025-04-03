@@ -31,7 +31,8 @@
     "mkdirp": "^3.0.1",
     "prisma": "^6.5.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "semver": "^7.7.1"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.16.1",
@@ -40,6 +41,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
+    "@types/semver": "^7.7.0",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
     "autoprefixer": "^10.4.21",
