@@ -172,12 +172,12 @@ const About = () => {
             <td>piper</td>
             <td className="text-center">{piperData.piperVersion}</td>
             <td
-              className={`text-center ${semver.gt(piperData.piperVersion, piperData.version) ? 'bg-red-300' : ''}`}
+              className={`text-center ${semver.gt(piperData.piperVersion, piperData.piperVersion) ? 'bg-red-300' : ''}`}
             >
               {piperData.piperVersion}
             </td>
             <td
-              className={`text-center ${semver.gt(RequiredVersions.piper, piperData.version) ? 'bg-red-300' : ''}`}
+              className={`text-center ${semver.gt(RequiredVersions.piper, piperData.piperVersion) ? 'bg-red-300' : ''}`}
             >
               {RequiredVersions.piper}
             </td>
