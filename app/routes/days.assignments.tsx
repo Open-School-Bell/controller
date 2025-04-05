@@ -6,11 +6,12 @@ import {
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
-import {subDays} from 'date-fns'
+import {subDays, format} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {Page} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Days', 'Assignments')}]
@@ -57,16 +58,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
     data: {date: new Date(date), dayTypeId: day}
   })
 
-  return redirect(`/days`)
+  return redirect(`/days/assignments`)
 }
 
 const DayAssignments = () => {
   const {dayAssigments, days} = useLoaderData<typeof loader>()
 
   return (
-    <div className="border border-gray-200 p-2 col-span-3">
+    <Page title="Day Assignments">
       <form method="post">
-        <table>
+        <table className="box-table">
           <thead>
             <tr>
               <th>Date</th>
@@ -78,9 +79,16 @@ const DayAssignments = () => {
             {dayAssigments.map(({id, dayType, date}) => {
               return (
                 <tr key={id}>
-                  <td>{date.toString()}</td>
+                  <td>{format(date, 'dd/MM/yyyy')}</td>
                   <td>{dayType.name}</td>
-                  <td></td>
+                  <td className="text-center">
+                    <form
+                      method="post"
+                      action={`/days/assignments/${id}/delete`}
+                    >
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
+                  </td>
                 </tr>
               )
             })}
@@ -112,7 +120,7 @@ const DayAssignments = () => {
           </tfoot>
         </table>
       </form>
-    </div>
+    </Page>
   )
 }
 
