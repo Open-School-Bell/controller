@@ -1,7 +1,7 @@
 # Start with the node debian image
 FROM node:22-bullseye-slim AS base
 
-# Install openssl for Prisma and NGINX
+# Install openssl for Prisma
 RUN apt-get update && apt-get install openssl -y
 
 # Create a new temp container called `deps` from `base`
