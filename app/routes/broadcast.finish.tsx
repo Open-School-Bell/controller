@@ -67,7 +67,7 @@ const BroadcastFinish = () => {
   const {sound, zone, desktopGroup} = data
 
   return (
-    <Page title="Boardcast">
+    <Page title="Broadcast">
       <div className="box mb-4">Broadcast Sent!</div>
       <form method="post">
         <input type="hidden" name="sound" value={sound} />
