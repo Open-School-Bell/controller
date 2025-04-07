@@ -112,7 +112,8 @@ const BroadcastTTS = () => {
             {
               label: 'Back',
               color: 'bg-stone-200',
-              onClick: () => {
+              onClick: e => {
+                e.preventDefault()
                 navigate('/broadcast')
               }
             },

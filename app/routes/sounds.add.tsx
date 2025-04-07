@@ -5,6 +5,7 @@ import {
   unstable_createFileUploadHandler,
   unstable_createMemoryUploadHandler,
   unstable_parseMultipartFormData,
+  type MetaFunction,
   type LoaderFunctionArgs
 } from '@remix-run/node'
 import {useNavigate} from '@remix-run/react'
@@ -14,10 +15,14 @@ import fs from 'fs'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, FormElement, Actions} from '~/lib/ui'
 
 const {rename} = fs.promises
+
+export const meta: MetaFunction<typeof loader> = () => {
+  return [{title: pageTitle('Sounds', 'Add Sound')}]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)

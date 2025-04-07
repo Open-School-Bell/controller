@@ -181,15 +181,12 @@ const AddSchedule = () => {
           label="Count"
           helperText="How many times should the sound be played"
         >
-          <label>
-            Count
-            <input
-              type="number"
-              defaultValue={1}
-              name="count"
-              className={INPUT_CLASSES}
-            />
-          </label>
+          <input
+            type="number"
+            defaultValue={1}
+            name="count"
+            className={INPUT_CLASSES}
+          />
         </FormElement>
         <Actions
           actions={[
