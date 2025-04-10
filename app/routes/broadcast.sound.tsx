@@ -57,6 +57,17 @@ const BroadcastSound = () => {
             })}
           </select>
         </FormElement>
+        <FormElement
+          label="Count"
+          helperText="How many times should the sound be played?"
+        >
+          <input
+            name="count"
+            type="number"
+            className={INPUT_CLASSES}
+            defaultValue={1}
+          />
+        </FormElement>
         <Actions
           actions={[
             {

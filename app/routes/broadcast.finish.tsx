@@ -30,20 +30,22 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const sound = formData.get('sound') as string | undefined
   const zone = formData.get('zone') as string | undefined
   const desktopGroup = formData.get('desktopGroup') as string | undefined
+  const count = formData.get('count') as string | undefined
 
   invariant(sound)
   invariant(zone)
   invariant(desktopGroup)
+  invariant(count)
 
   if (zone !== '_') {
-    await broadcast(zone, sound, 1)
+    await broadcast(zone, sound, parseInt(count))
   }
   if (desktopGroup !== '_') {
     const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
 
     const playData = JSON.stringify({
       fileName: audio.fileName,
-      times: 1,
+      times: parseInt(count),
       triggerTime: new Date().toJSON()
     })
 

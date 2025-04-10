@@ -5,9 +5,9 @@ import {
 } from '@remix-run/node'
 import {useNavigate, useSearchParams} from '@remix-run/react'
 
-import {pageTitle} from '~/lib/utils'
+import {pageTitle, INPUT_CLASSES} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
-import {Actions, Page} from '~/lib/ui'
+import {Actions, Page, FormElement} from '~/lib/ui'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Broadcast', 'Test to Speech')}]
@@ -39,6 +39,17 @@ const BroadcastSound = () => {
       <form method="post" action="/broadcast/zone">
         <div className="box mb-4">Broadcast Generated!</div>
         <input type="hidden" value={searchParams.get('tts')!} name="sound" />
+        <FormElement
+          label="Count"
+          helperText="How many times should the sound be played?"
+        >
+          <input
+            name="count"
+            type="number"
+            className={INPUT_CLASSES}
+            defaultValue={1}
+          />
+        </FormElement>
         <Actions
           actions={[
             {
