@@ -55,7 +55,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     })
   }
 
-  return {sound, zone, desktopGroup}
+  return {sound, zone, desktopGroup, count}
 }
 
 const BroadcastFinish = () => {
@@ -66,7 +66,7 @@ const BroadcastFinish = () => {
     return <div>Error</div>
   }
 
-  const {sound, zone, desktopGroup} = data
+  const {sound, zone, desktopGroup, count} = data
 
   return (
     <Page title="Broadcast">
@@ -75,6 +75,7 @@ const BroadcastFinish = () => {
         <input type="hidden" name="sound" value={sound} />
         <input type="hidden" name="zone" value={zone} />
         <input type="hidden" name="desktopGroup" value={desktopGroup} />
+        <input type="hidden" name="count" value={count} />
         <Actions
           actions={[
             {
