@@ -6,6 +6,9 @@ import {
 import {useLoaderData} from '@remix-run/react'
 import {asyncForEach} from '@arcath/utils'
 import semver from 'semver'
+import fs from 'fs'
+import path from 'path'
+import {nl2br} from '@arcath/utils'
 
 import {pageTitle} from '~/lib/utils'
 import {Page} from '~/lib/ui'
@@ -13,6 +16,8 @@ import {VERSION, RequiredVersions} from '~/lib/constants'
 import {getRedis} from '~/lib/redis.server.mjs'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+
+const {readFile} = fs.promises
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -108,13 +113,18 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     sounderVersions[id] = version ? version : '0.0.0'
   })
 
+  const license = (
+    await readFile(path.join(process.cwd(), 'LICENSE'))
+  ).toString()
+
   return {
     piperData,
     sounders,
     sounderVersions,
     sounderLatest,
     ttsLatest,
-    controllerLatest
+    controllerLatest,
+    license
   }
 }
 
@@ -129,7 +139,8 @@ const About = () => {
     sounderVersions,
     sounderLatest,
     ttsLatest,
-    controllerLatest
+    controllerLatest,
+    license
   } = useLoaderData<typeof loader>()
 
   return (
@@ -202,6 +213,11 @@ const About = () => {
           })}
         </tbody>
       </table>
+
+      <div
+        className="box text-gray-600"
+        dangerouslySetInnerHTML={{__html: nl2br(license)}}
+      />
     </Page>
   )
 }
