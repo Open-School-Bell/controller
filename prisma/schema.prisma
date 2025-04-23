@@ -104,6 +104,8 @@ model Action {
 
   audio   Audio?  @relation(fields: [audioId], references: [id])
   audioId String?
+
+  webhooks Webhook[]
 }
 
 model Setting {
@@ -113,8 +115,17 @@ model Setting {
 }
 
 model DesktopAlertGroup {
-  id   String @id @default(uuid())
-  name String
-  key  String @unique()
+  id       String @id @default(uuid())
+  name     String
+  key      String @unique()
   playData String @default("{}")
+}
+
+model Webhook {
+  id   String @id @default(uuid())
+  slug String @unique()
+  key  String
+
+  action   Action @relation(fields: [actionId], references: [id])
+  actionId String
 }

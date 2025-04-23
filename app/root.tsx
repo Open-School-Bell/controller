@@ -14,6 +14,7 @@ import LogoutIcon from '@heroicons/react/24/outline/ArrowRightStartOnRectangleIc
 import ComputerIcon from '@heroicons/react/24/outline/ComputerDesktopIcon'
 import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
 import MusicIcon from '@heroicons/react/24/outline/MusicalNoteIcon'
+import CodeIcon from '@heroicons/react/24/outline/CodeBracketIcon'
 
 import './tailwind.css'
 
@@ -75,6 +76,9 @@ const App = () => {
         </SidebarLink>
         <SidebarLink to="/actions">
           <ArrowIcon className="w-6 mr-2" /> <span>Actions</span>
+        </SidebarLink>
+        <SidebarLink to="/webhooks">
+          <CodeIcon className="w-6 mr-2" /> <span>Webhooks</span>
         </SidebarLink>
         <SidebarLink to="/zones">
           <Square3StackIcon className="w-6 mr-2" /> <span>Zones</span>
