@@ -1,0 +1,6 @@
+-- CreateTable
+CREATE TABLE "Log" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "time" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "message" TEXT NOT NULL
+);

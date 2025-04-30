@@ -9,6 +9,7 @@ import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {getSession, commitSession, jwtCreate} from '~/lib/session'
 import {getSetting} from '~/lib/settings.server'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {trigger} from '~/lib/trigger'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Login')}]
@@ -24,12 +25,15 @@ export const action = async ({request}: ActionFunctionArgs) => {
   invariant(password)
 
   if (password !== checkPassword) {
+    await trigger('🔒 Bad password supplied', 'ignore')
     return {error: 'Incorrect Password'}
   }
 
   const session = await getSession(request.headers.get('Cookie'))
 
   session.set('token', jwtCreate())
+
+  await trigger('🔓 Logged in', 'login')
 
   return redirect('/', {headers: {'Set-Cookie': await commitSession(session)}})
 }

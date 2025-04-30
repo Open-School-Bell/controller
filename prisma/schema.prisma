@@ -129,3 +129,9 @@ model Webhook {
   action   Action @relation(fields: [actionId], references: [id])
   actionId String
 }
+
+model Log {
+  id      String   @id @default(uuid())
+  time    DateTime @default(now())
+  message String
+}
