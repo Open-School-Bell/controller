@@ -4,12 +4,12 @@ import {
   redirect
 } from '@remix-run/node'
 import {Link, useLoaderData, useNavigate} from '@remix-run/react'
-import {useState} from 'react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, Actions} from '~/lib/ui'
+import {useStatefulLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Schedule')}]
@@ -38,7 +38,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Schedule = () => {
   const {schedules, days} = useLoaderData<typeof loader>()
-  const [day, setDay] = useState<null | string>(null)
+  const [day, setDay] = useStatefulLocalStorage<string>('day', '_')
   const navigate = useNavigate()
 
   return (
@@ -46,8 +46,9 @@ const Schedule = () => {
       <select
         className={INPUT_CLASSES}
         onChange={e => {
-          setDay(e.target.value === '_' ? null : e.target.value)
+          setDay(e.target.value)
         }}
+        value={day}
       >
         <option value="_">Default</option>
         {days.map(({id, name}) => {
@@ -58,7 +59,7 @@ const Schedule = () => {
           )
         })}
       </select>
-      <table className="box-table">
+      <table className="box-table mb-4">
         <thead>
           <tr>
             <th className="p-2">Time</th>
@@ -78,7 +79,7 @@ const Schedule = () => {
         <tbody>
           {schedules
             .filter(({dayTypeId}) => {
-              return dayTypeId === day
+              return dayTypeId === (day === '_' ? null : day)
             })
             .map(({id, time, weekDays, zone, audio, count}) => {
               const days = weekDays.split(',')

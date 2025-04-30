@@ -11,6 +11,7 @@ import {Page, FormElement, Actions} from '~/lib/ui'
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
+import {useLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Schedule', 'Add')}]
@@ -102,6 +103,10 @@ export const action: ActionFunction = async ({request}) => {
 const AddSchedule = () => {
   const {zones, days, sounds} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const [day, setDay] = useLocalStorage<string>('day', '_')
+  const [zone, setZone] = useLocalStorage<string>('zone', zones[0].id)
+  const [sound, setSound] = useLocalStorage<string>('sound', sounds[0].id)
+  const [count, setCount] = useLocalStorage<string>('count', '1')
 
   return (
     <Page title="Add Schedule">
@@ -136,8 +141,11 @@ const AddSchedule = () => {
         >
           <select
             name="dayType"
-            defaultValue={'_'}
+            defaultValue={day}
             className={`${INPUT_CLASSES}`}
+            onChange={e => {
+              setDay(e.target.value)
+            }}
           >
             <option value="_">Default</option>
             {days.map(({id, name}) => {
@@ -153,7 +161,14 @@ const AddSchedule = () => {
           label="Zone"
           helperText="Which zone does this schedule apply to?"
         >
-          <select name="zone" className={INPUT_CLASSES}>
+          <select
+            name="zone"
+            className={INPUT_CLASSES}
+            defaultValue={zone}
+            onChange={e => {
+              setZone(e.target.value)
+            }}
+          >
             {zones.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -167,7 +182,14 @@ const AddSchedule = () => {
           label="Sound"
           helperText="Which sound should be played for this schedule?"
         >
-          <select name="sound" className={INPUT_CLASSES}>
+          <select
+            name="sound"
+            className={INPUT_CLASSES}
+            defaultValue={sound}
+            onChange={e => {
+              setSound(e.target.value)
+            }}
+          >
             {sounds.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -183,9 +205,12 @@ const AddSchedule = () => {
         >
           <input
             type="number"
-            defaultValue={1}
+            defaultValue={parseInt(count)}
             name="count"
             className={INPUT_CLASSES}
+            onChange={e => {
+              setCount(e.target.value)
+            }}
           />
         </FormElement>
         <Actions
