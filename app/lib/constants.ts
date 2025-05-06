@@ -6,3 +6,13 @@ export const RequiredVersions = {
   piper: '1.2.0',
   sounder: '1.1.1'
 }
+
+export const EVENT_TYPES = [
+  'action',
+  'newAction',
+  'deleteAction',
+  'ignore',
+  'lockdownEnd',
+  'lockdownStart',
+  'login'
+] as const

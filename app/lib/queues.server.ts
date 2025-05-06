@@ -14,6 +14,7 @@ export type Jobs = {
     times: number
   }
   lockdown: {ip: string; key: string}
+  outboundWebhook: {target: string; key: string}
 }
 
 export type JobName = keyof Jobs

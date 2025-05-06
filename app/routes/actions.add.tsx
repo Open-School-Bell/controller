@@ -11,6 +11,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {trigger} from '~/lib/trigger'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Actions', 'Add')}]
@@ -54,6 +55,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const newAction = await prisma.action.create({
     data: {name, icon, action, audioId: sound}
   })
+
+  void trigger(`New Action: ${name}`, 'newAction')
 
   return redirect(`/actions/${newAction.id}`)
 }

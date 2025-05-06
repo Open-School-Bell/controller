@@ -65,4 +65,13 @@ createHandler('lockdown', async ({ip, key}) => {
   }).catch(() => {})
 })
 
+createHandler('outboundWebhook', async ({target, key}) => {
+  console.log(`Sending Webhook call to ${target}`)
+  await fetch(target, {
+    body: JSON.stringify({key}),
+    headers: {'Content-Type': 'application/json'},
+    method: 'post'
+  })
+})
+
 console.log('Ready to accept jobs')
