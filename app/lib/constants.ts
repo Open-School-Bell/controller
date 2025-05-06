@@ -7,6 +7,8 @@ export const RequiredVersions = {
   sounder: '1.1.1'
 }
 
+export const DOCS_URL = `https://openschoolbell.co.uk`
+
 export const EVENT_TYPES = [
   'action',
   'newAction',
