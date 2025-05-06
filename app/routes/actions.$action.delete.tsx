@@ -10,7 +10,7 @@ export const action = async ({params}: ActionFunctionArgs) => {
     where: {id: params.action}
   })
 
-  trigger(`Deleted action: ${action.name}`, 'deleteAction')
+  await trigger(`Deleted action: ${action.name}`, 'deleteAction')
 
   await prisma.action.delete({where: {id: params.action}})
 

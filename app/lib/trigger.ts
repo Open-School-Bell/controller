@@ -1,7 +1,7 @@
 import {getPrisma} from './prisma.server'
 import {addJob} from './queues.server'
 
-import {EVENT_TYPES} from './constants'
+import {type EVENT_TYPES} from './constants'
 
 type EventType = (typeof EVENT_TYPES)[number]
 

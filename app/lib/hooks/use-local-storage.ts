@@ -27,7 +27,7 @@ export const useStatefulLocalStorage = <ValueType extends string>(
 
   useEffect(() => {
     setLS(value)
-  }, [value])
+  }, [value, setLS])
 
   return [value, set] as const
 }

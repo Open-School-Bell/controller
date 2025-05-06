@@ -3,7 +3,6 @@ import {type ActionFunctionArgs} from '@remix-run/node'
 import {getPrisma} from '~/lib/prisma.server'
 import {broadcast} from '~/lib/broadcast.server'
 import {toggleLockdown} from '~/lib/lockdown.server'
-import {invariant} from '@arcath/utils'
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
   const prisma = getPrisma()

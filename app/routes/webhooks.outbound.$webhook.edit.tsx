@@ -8,7 +8,7 @@ import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES, pageTitle, makeKey} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {EVENT_TYPES} from '~/lib/constants'
