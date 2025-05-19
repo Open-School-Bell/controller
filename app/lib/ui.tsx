@@ -1,5 +1,7 @@
 import {NavLink} from '@remix-run/react'
 
+import {docsLink} from './utils'
+
 export const SidebarLink: React.FC<{
   to: string
   children: React.ReactNode
@@ -24,12 +26,22 @@ export const Page: React.FC<{
   children: React.ReactNode
   title: string
   wide?: boolean
-}> = ({title, wide, children}) => {
+  helpLink?: string
+}> = ({title, wide, children, helpLink}) => {
   return (
     <div className={`grid ${wide ? 'grid-cols-wide' : 'grid-cols-narrow'}`}>
       <div className="col-start-2">
         <h1 className="font-light mb-2 pb-2 border-b-stone-200 border-b">
           {title}
+          {helpLink ? (
+            <span className="float-right text-base pt-3">
+              <a href={docsLink(helpLink)} target="_blank">
+                📖 Docs
+              </a>
+            </span>
+          ) : (
+            ''
+          )}
         </h1>
         {children}
       </div>

@@ -1,3 +1,5 @@
+import {DOCS_URL} from './constants'
+
 export const makeKey = () => {
   let result = ''
   const characters =
@@ -16,4 +18,8 @@ export const INPUT_CLASSES =
 
 export const pageTitle = (...parts: string[]) => {
   return ['Open School Bell', ...parts].join(' / ')
+}
+
+export const docsLink = (path: string) => {
+  return `${DOCS_URL}${path}`
 }

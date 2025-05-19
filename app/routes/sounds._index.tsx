@@ -33,7 +33,10 @@ const Sounds = () => {
   const navigate = useNavigate()
 
   return (
-    <Page title={`Sounds (${sounds.length})`}>
+    <Page
+      title={`Sounds (${sounds.length})`}
+      helpLink="/docs/configuration/sound/"
+    >
       <div className="box mb-4">
         <table className="box-table">
           <thead>

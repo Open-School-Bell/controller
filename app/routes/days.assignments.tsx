@@ -12,6 +12,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page} from '~/lib/ui'
+import {useLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
   return [{title: pageTitle('Days', 'Assignments')}]
@@ -63,6 +64,11 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const DayAssignments = () => {
   const {dayAssigments, days} = useLoaderData<typeof loader>()
+  const [day, setDay] = useLocalStorage<string>('day', days[0].id)
+  const [assignmentDate, setAssignmentDate] = useLocalStorage<string>(
+    'assignmentDate',
+    format(new Date(), 'yyyy-LL-dd')
+  )
 
   return (
     <Page title="Day Assignments">
@@ -96,10 +102,25 @@ const DayAssignments = () => {
           <tfoot>
             <tr>
               <td>
-                <input type="date" className={INPUT_CLASSES} name="date" />
+                <input
+                  type="date"
+                  className={INPUT_CLASSES}
+                  name="date"
+                  defaultValue={assignmentDate}
+                  onChange={e => {
+                    setAssignmentDate(e.target.value)
+                  }}
+                />
               </td>
               <td>
-                <select className={INPUT_CLASSES} name="day">
+                <select
+                  className={INPUT_CLASSES}
+                  name="day"
+                  defaultValue={day}
+                  onChange={e => {
+                    setDay(e.target.value)
+                  }}
+                >
                   {days.map(({id, name}) => {
                     return (
                       <option key={id} value={id}>

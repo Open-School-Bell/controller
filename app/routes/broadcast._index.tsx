@@ -27,7 +27,7 @@ const Broadcast = () => {
   const navigate = useNavigate()
 
   return (
-    <Page title="Broadcast">
+    <Page title="Broadcast" helpLink="/guides/broadcast/">
       <div className="w-full bg-gray-100 rounded-3xl h-1.5 my-4 ">
         <div
           role="progressbar"

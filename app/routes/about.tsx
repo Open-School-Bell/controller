@@ -4,11 +4,10 @@ import {
   redirect
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
-import {asyncForEach} from '@arcath/utils'
+import {asyncForEach, nl2br} from '@arcath/utils'
 import semver from 'semver'
 import fs from 'fs'
 import path from 'path'
-import {nl2br} from '@arcath/utils'
 
 import {pageTitle} from '~/lib/utils'
 import {Page} from '~/lib/ui'

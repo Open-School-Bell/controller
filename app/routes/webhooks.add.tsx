@@ -8,13 +8,12 @@ import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle, makeKey} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
-import {trigger} from '~/lib/trigger'
 
 export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Actions', 'Add')}]
+  return [{title: pageTitle('Webhooks', 'Add')}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -26,9 +25,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const prisma = getPrisma()
 
-  const sounds = await prisma.audio.findMany({orderBy: {name: 'asc'}})
+  const actions = await prisma.action.findMany({orderBy: {name: 'asc'}})
 
-  return {sounds}
+  return {actions}
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
@@ -42,59 +41,40 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const formData = await request.formData()
 
-  const name = formData.get('name') as string | undefined
-  const icon = formData.get('icon') as string | undefined
+  const slug = formData.get('slug') as string | undefined
   const action = formData.get('action') as string | undefined
-  const sound = formData.get('sound') as string | undefined
 
-  invariant(name)
-  invariant(icon)
+  invariant(slug)
   invariant(action)
-  invariant(sound)
 
-  const newAction = await prisma.action.create({
-    data: {name, icon, action, audioId: sound}
+  const key = makeKey()
+
+  const newWebhook = await prisma.webhook.create({
+    data: {slug, key, actionId: action}
   })
 
-  void trigger(`New Action: ${name}`, 'newAction')
-
-  return redirect(`/actions/${newAction.id}`)
+  return redirect(`/webhooks/${newWebhook.id}`)
 }
 
-const AddAction = () => {
-  const {sounds} = useLoaderData<typeof loader>()
+const AddWebhook = () => {
+  const {actions} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
 
   return (
-    <Page title="Add Action">
+    <Page title="Add Webhook">
       <form method="post">
         <FormElement
-          label="Name"
+          label="Slug"
           helperText="The name of the action as it will appear on the screens"
         >
-          <input name="name" className={INPUT_CLASSES} />
+          <input name="slug" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Icon"
-          helperText="An Emoji to use as the actions icon. Be aware that Emojis render differently on the RPi screen."
-        >
-          <input name="icon" className={INPUT_CLASSES} />
-        </FormElement>
-        <FormElement
-          label="Type"
-          helperText="Broadcast runs a broadcast to the supplied zone. Lockdown triggers a system wide lockdown."
+          label="Action"
+          helperText="When triggered which action should be run?"
         >
           <select name="action" className={INPUT_CLASSES}>
-            <option value="broadcast">Broadcast</option>
-            <option value="lockdown">Lockdown Toggle</option>
-          </select>
-        </FormElement>
-        <FormElement
-          label="Sound"
-          helperText="When Broadcasting which sound should be used?"
-        >
-          <select name="sound" className={INPUT_CLASSES}>
-            {sounds.map(({id, name}) => {
+            {actions.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
                   {name}
@@ -109,7 +89,7 @@ const AddAction = () => {
               label: 'Cancel',
               onClick: e => {
                 e.preventDefault()
-                navigate('/actions')
+                navigate('/webhooks')
               },
               color: 'bg-stone-200'
             },
@@ -121,4 +101,4 @@ const AddAction = () => {
   )
 }
 
-export default AddAction
+export default AddWebhook

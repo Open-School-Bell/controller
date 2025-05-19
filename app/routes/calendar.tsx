@@ -87,7 +87,7 @@ const CalendarPage = () => {
   const navigate = useNavigate()
 
   return (
-    <Page title="Calendar" wide>
+    <Page title="Calendar" wide helpLink="/docs/configuration/calendar/">
       <div className="grid grid-cols-7">
         <button
           className="cursor-pointer"
