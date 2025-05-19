@@ -37,7 +37,10 @@ const WebhooksPage = () => {
 
   return (
     <div>
-      <Page title={`Inbound Webhooks (${webhooks.length})`}>
+      <Page
+        title={`Inbound Webhooks (${webhooks.length})`}
+        helpLink="/docs/configuration/webhooks/"
+      >
         <div className="box mb-4">
           <table className="box-table">
             <thead>
@@ -74,7 +77,7 @@ const WebhooksPage = () => {
           ]}
         />
       </Page>
-      <Page title={`Outbound Webhooks ${outboundWebhooks.length}`}>
+      <Page title={`Outbound Webhooks (${outboundWebhooks.length})`}>
         <div className="box mb-4">
           <table className="box-table">
             <thead>
