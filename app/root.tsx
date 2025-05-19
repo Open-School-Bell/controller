@@ -15,6 +15,7 @@ import ComputerIcon from '@heroicons/react/24/outline/ComputerDesktopIcon'
 import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
 import MusicIcon from '@heroicons/react/24/outline/MusicalNoteIcon'
 import CodeIcon from '@heroicons/react/24/outline/CodeBracketIcon'
+import LogIcon from '@heroicons/react/24/outline/ClipboardDocumentCheckIcon'
 
 import './tailwind.css'
 
@@ -92,6 +93,9 @@ const App = () => {
         </SidebarLink>
         <SidebarLink to="/about">
           <InfoIcon className="w-6 mr-2" /> <span>About</span>
+        </SidebarLink>
+        <SidebarLink to="/log">
+          <LogIcon className="w-6 mr-2" /> <span>Log</span>
         </SidebarLink>
         <SidebarLink to="/backup">
           <BoxIcon className="w-6 mr-2" /> <span>Backup</span>
