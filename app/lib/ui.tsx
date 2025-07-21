@@ -59,10 +59,16 @@ export const FormElement: React.FC<{
       <label className="grid grid-cols-2 gap-4 mb-2">
         <span className="font-semibold">{label}</span>
         <div className="row-span-2">{children}</div>
-        <span className="text-neutral-400">{helperText}</span>
+        <HelperText>{helperText}</HelperText>
       </label>
     </div>
   )
+}
+
+export const HelperText: React.FC<{
+  children: React.ReactNode
+}> = ({children}) => {
+  return <span className="text-neutral-400">{children}</span>
 }
 
 export const Actions: React.FC<{
