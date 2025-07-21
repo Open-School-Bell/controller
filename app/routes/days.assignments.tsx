@@ -11,7 +11,7 @@ import {subDays, format, eachDayOfInterval} from 'date-fns'
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
-import {Page, FormElement, Actions} from '~/lib/ui'
+import {Page, FormElement, Actions, HelperText} from '~/lib/ui'
 import {useLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
@@ -83,6 +83,10 @@ const DayAssignments = () => {
   return (
     <div className="grid grid-cols-1 gap-4">
       <Page title="Day Assignments">
+        <HelperText>
+          These assignments change the day type for the given days to that day
+          types schedule.
+        </HelperText>
         <table className="box-table">
           <thead>
             <tr>
