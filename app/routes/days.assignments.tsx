@@ -4,14 +4,14 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant, asyncForEach} from '@arcath/utils'
 import {subDays, format, eachDayOfInterval} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
-import {Page} from '~/lib/ui'
+import {Page, FormElement, Actions} from '~/lib/ui'
 import {useLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
@@ -78,10 +78,11 @@ const DayAssignments = () => {
     'assignmentDate',
     format(new Date(), 'yyyy-LL-dd')
   )
+  const navigate = useNavigate()
 
   return (
-    <Page title="Day Assignments">
-      <form method="post">
+    <div className="grid grid-cols-1 gap-4">
+      <Page title="Day Assignments">
         <table className="box-table">
           <thead>
             <tr>
@@ -108,64 +109,78 @@ const DayAssignments = () => {
               )
             })}
           </tbody>
-          <tfoot>
-            <tr>
-              <td>
-                From:{' '}
-                <input
-                  type="date"
-                  className={INPUT_CLASSES}
-                  name="startDate"
-                  defaultValue={assignmentDate}
-                  onChange={e => {
-                    setAssignmentDate(e.target.value)
-                  }}
-                />
-              </td>
-              <td rowSpan={2}>
-                <select
-                  className={INPUT_CLASSES}
-                  name="day"
-                  defaultValue={day}
-                  onChange={e => {
-                    setDay(e.target.value)
-                  }}
-                >
-                  {days.map(({id, name}) => {
-                    return (
-                      <option key={id} value={id}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select>
-              </td>
-              <td rowSpan={2}>
-                <input
-                  type="submit"
-                  value="Add"
-                  className={`${INPUT_CLASSES} bg-green-400`}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                To:
-                <input
-                  type="date"
-                  className={INPUT_CLASSES}
-                  name="endDate"
-                  defaultValue={assignmentDate}
-                  onChange={e => {
-                    setAssignmentDate(e.target.value)
-                  }}
-                />
-              </td>
-            </tr>
-          </tfoot>
         </table>
-      </form>
-    </Page>
+      </Page>
+      <Page title="Add Assignments">
+        <form method="post">
+          <FormElement
+            label="From"
+            helperText="The date to start assigning from. To only assign one day set both From and To to the same date."
+          >
+            <input
+              type="date"
+              name="startDate"
+              className={INPUT_CLASSES}
+              defaultValue={assignmentDate}
+              onChange={e => {
+                setAssignmentDate(e.target.value)
+              }}
+            />
+          </FormElement>
+          <FormElement
+            label="To"
+            helperText="The date to end assignments. To only assign one day set both From and To to the same date."
+          >
+            <input
+              type="date"
+              className={INPUT_CLASSES}
+              name="endDate"
+              defaultValue={assignmentDate}
+              onChange={e => {
+                setAssignmentDate(e.target.value)
+              }}
+            />
+          </FormElement>
+          <FormElement
+            label="Day"
+            helperText="The day type to assign to these dates"
+          >
+            <select
+              className={INPUT_CLASSES}
+              name="day"
+              defaultValue={day}
+              onChange={e => {
+                setDay(e.target.value)
+              }}
+            >
+              {days.map(({id, name}) => {
+                return (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                )
+              })}
+            </select>
+          </FormElement>
+          <Actions
+            actions={[
+              {
+                label: 'Cancel',
+                color: 'bg-stone-200',
+                onClick: e => {
+                  e.preventDefault()
+                  navigate('/calendar')
+                }
+              },
+              {
+                label: 'Add Assignments',
+                color: 'bg-green-300'
+              }
+            ]}
+          />
+        </form>
+      </Page>
+    </div>
   )
 }
 
