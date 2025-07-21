@@ -5,8 +5,8 @@ import {
   redirect
 } from '@remix-run/node'
 import {useLoaderData} from '@remix-run/react'
-import {invariant} from '@arcath/utils'
-import {subDays, format} from 'date-fns'
+import {invariant, asyncForEach} from '@arcath/utils'
+import {subDays, format, eachDayOfInterval} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
@@ -49,14 +49,23 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const formData = await request.formData()
 
-  const date = formData.get('date') as string | undefined
+  const startDate = formData.get('startDate') as string | undefined
+  const endDate = formData.get('endDate') as string | undefined
   const day = formData.get('day') as string | undefined
 
-  invariant(date)
+  invariant(startDate)
+  invariant(endDate)
   invariant(day)
 
-  await prisma.dayTypeAssignment.create({
-    data: {date: new Date(date), dayTypeId: day}
+  const days = eachDayOfInterval({
+    start: new Date(startDate),
+    end: new Date(endDate)
+  })
+
+  await asyncForEach(days, async date => {
+    await prisma.dayTypeAssignment.create({
+      data: {date, dayTypeId: day}
+    })
   })
 
   return redirect(`/days/assignments`)
@@ -102,17 +111,18 @@ const DayAssignments = () => {
           <tfoot>
             <tr>
               <td>
+                From:{' '}
                 <input
                   type="date"
                   className={INPUT_CLASSES}
-                  name="date"
+                  name="startDate"
                   defaultValue={assignmentDate}
                   onChange={e => {
                     setAssignmentDate(e.target.value)
                   }}
                 />
               </td>
-              <td>
+              <td rowSpan={2}>
                 <select
                   className={INPUT_CLASSES}
                   name="day"
@@ -130,11 +140,25 @@ const DayAssignments = () => {
                   })}
                 </select>
               </td>
-              <td>
+              <td rowSpan={2}>
                 <input
                   type="submit"
                   value="Add"
                   className={`${INPUT_CLASSES} bg-green-400`}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                To:
+                <input
+                  type="date"
+                  className={INPUT_CLASSES}
+                  name="endDate"
+                  defaultValue={assignmentDate}
+                  onChange={e => {
+                    setAssignmentDate(e.target.value)
+                  }}
                 />
               </td>
             </tr>
