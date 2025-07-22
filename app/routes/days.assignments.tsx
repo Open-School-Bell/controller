@@ -4,14 +4,14 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
-import {invariant} from '@arcath/utils'
-import {subDays, format} from 'date-fns'
+import {useLoaderData, useNavigate} from '@remix-run/react'
+import {invariant, asyncForEach} from '@arcath/utils'
+import {subDays, format, eachDayOfInterval} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
-import {Page} from '~/lib/ui'
+import {Page, FormElement, Actions, HelperText} from '~/lib/ui'
 import {useLocalStorage} from '~/lib/hooks/use-local-storage'
 
 export const meta: MetaFunction = () => {
@@ -49,14 +49,23 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const formData = await request.formData()
 
-  const date = formData.get('date') as string | undefined
+  const startDate = formData.get('startDate') as string | undefined
+  const endDate = formData.get('endDate') as string | undefined
   const day = formData.get('day') as string | undefined
 
-  invariant(date)
+  invariant(startDate)
+  invariant(endDate)
   invariant(day)
 
-  await prisma.dayTypeAssignment.create({
-    data: {date: new Date(date), dayTypeId: day}
+  const days = eachDayOfInterval({
+    start: new Date(startDate),
+    end: new Date(endDate)
+  })
+
+  await asyncForEach(days, async date => {
+    await prisma.dayTypeAssignment.create({
+      data: {date, dayTypeId: day}
+    })
   })
 
   return redirect(`/days/assignments`)
@@ -69,10 +78,15 @@ const DayAssignments = () => {
     'assignmentDate',
     format(new Date(), 'yyyy-LL-dd')
   )
+  const navigate = useNavigate()
 
   return (
-    <Page title="Day Assignments">
-      <form method="post">
+    <div className="grid grid-cols-1 gap-4">
+      <Page title="Day Assignments">
+        <HelperText>
+          These assignments change the day type for the given days to that day
+          types schedule.
+        </HelperText>
         <table className="box-table">
           <thead>
             <tr>
@@ -99,49 +113,78 @@ const DayAssignments = () => {
               )
             })}
           </tbody>
-          <tfoot>
-            <tr>
-              <td>
-                <input
-                  type="date"
-                  className={INPUT_CLASSES}
-                  name="date"
-                  defaultValue={assignmentDate}
-                  onChange={e => {
-                    setAssignmentDate(e.target.value)
-                  }}
-                />
-              </td>
-              <td>
-                <select
-                  className={INPUT_CLASSES}
-                  name="day"
-                  defaultValue={day}
-                  onChange={e => {
-                    setDay(e.target.value)
-                  }}
-                >
-                  {days.map(({id, name}) => {
-                    return (
-                      <option key={id} value={id}>
-                        {name}
-                      </option>
-                    )
-                  })}
-                </select>
-              </td>
-              <td>
-                <input
-                  type="submit"
-                  value="Add"
-                  className={`${INPUT_CLASSES} bg-green-400`}
-                />
-              </td>
-            </tr>
-          </tfoot>
         </table>
-      </form>
-    </Page>
+      </Page>
+      <Page title="Add Assignments">
+        <form method="post">
+          <FormElement
+            label="From"
+            helperText="The date to start assigning from. To only assign one day set both From and To to the same date."
+          >
+            <input
+              type="date"
+              name="startDate"
+              className={INPUT_CLASSES}
+              defaultValue={assignmentDate}
+              onChange={e => {
+                setAssignmentDate(e.target.value)
+              }}
+            />
+          </FormElement>
+          <FormElement
+            label="To"
+            helperText="The date to end assignments. To only assign one day set both From and To to the same date."
+          >
+            <input
+              type="date"
+              className={INPUT_CLASSES}
+              name="endDate"
+              defaultValue={assignmentDate}
+              onChange={e => {
+                setAssignmentDate(e.target.value)
+              }}
+            />
+          </FormElement>
+          <FormElement
+            label="Day"
+            helperText="The day type to assign to these dates"
+          >
+            <select
+              className={INPUT_CLASSES}
+              name="day"
+              defaultValue={day}
+              onChange={e => {
+                setDay(e.target.value)
+              }}
+            >
+              {days.map(({id, name}) => {
+                return (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                )
+              })}
+            </select>
+          </FormElement>
+          <Actions
+            actions={[
+              {
+                label: 'Cancel',
+                color: 'bg-stone-200',
+                onClick: e => {
+                  e.preventDefault()
+                  navigate('/calendar')
+                }
+              },
+              {
+                label: 'Add Assignments',
+                color: 'bg-green-300'
+              }
+            ]}
+          />
+        </form>
+      </Page>
+    </div>
   )
 }
 

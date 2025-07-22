@@ -1,9 +1,9 @@
-export const VERSION = '1.1.0'
+export const VERSION = '1.2.0'
 
 export const RequiredVersions = {
   controller: VERSION,
-  tts: '1.0.1',
-  piper: '1.2.0',
+  tts: '2.0.0',
+  piper: '1.3.0',
   sounder: '1.1.1'
 }
 
