@@ -28,15 +28,28 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const piperData = await new Promise<{
     version: string
     piperVersion: string
+    pythonVersion: string
   }>(resolve => {
-    fetch(`${process.env.TTS_API}/status`)
+    fetch(`${process.env.TTS_API}/status.json`)
       .then(response => {
         response
           .json()
           .then(data => resolve(data))
-          .catch(() => resolve({version: '0.0.0', piperVersion: '0.0.0'}))
+          .catch(() =>
+            resolve({
+              version: '0.0.0',
+              piperVersion: '0.0.0',
+              pythonVersion: '0.0.0'
+            })
+          )
       })
-      .catch(() => resolve({version: '0.0.0', piperVersion: '0.0.0'}))
+      .catch(() => {
+        resolve({
+          version: '0.0.0',
+          piperVersion: '0.0.0',
+          pythonVersion: '0.0.0'
+        })
+      })
   })
 
   const sounderLatest = await new Promise<string>(resolve => {
