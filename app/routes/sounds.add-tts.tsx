@@ -62,9 +62,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const downloadResponse = await fetch(`${process.env.TTS_API}/piper`, {
     body: JSON.stringify({
-      target: `${sound.id}.wav`,
       text: tts,
-      speed
+      length_scale: speed
     }),
     headers: {'Content-Type': 'application/json'},
     method: 'post'
