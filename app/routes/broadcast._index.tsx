@@ -43,14 +43,9 @@ const Broadcast = () => {
         <Actions
           actions={[
             {
-              label: 'Existing Sound',
+              label: 'Build Broadcast',
               color: 'bg-blue-300',
-              onClick: () => navigate('/broadcast/sound')
-            },
-            {
-              label: 'New Text to Speech',
-              color: 'bg-blue-300',
-              onClick: () => navigate('/broadcast/tts')
+              onClick: () => navigate('/broadcast/builder')
             }
           ]}
         />

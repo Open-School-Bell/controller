@@ -25,7 +25,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const formData = await request.formData()
 
-  const sound = formData.get('sound') as string | undefined
+  const queue = formData.get('queue') as string | undefined
   const count = formData.get('count') as string | undefined
 
   const desktopAlertGroups = await prisma.desktopAlertGroup.findMany({
@@ -33,7 +33,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   })
   const zones = await prisma.zone.findMany({orderBy: {name: 'asc'}})
 
-  return {sound, zones, desktopAlertGroups, count}
+  return {queue, zones, desktopAlertGroups, count}
 }
 
 const BroadcastZone = () => {
@@ -44,7 +44,7 @@ const BroadcastZone = () => {
     return <div>ERROR</div>
   }
 
-  const {sound, zones, desktopAlertGroups, count} = data
+  const {queue, zones, desktopAlertGroups, count} = data
 
   return (
     <Page title="Broadcast (Zone)">
@@ -90,7 +90,7 @@ const BroadcastZone = () => {
             })}
           </select>
         </FormElement>
-        <input type="hidden" name="sound" value={sound} />
+        <input type="hidden" name="queue" value={queue} />
         <input type="hidden" name="count" value={count} />
         <Actions
           actions={[
