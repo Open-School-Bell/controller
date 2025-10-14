@@ -65,10 +65,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     ),
     lockdown: {
       enable: lockdownMode === '1',
-      entrySound: entrySound.fileName,
-      entrySoundRingerWire: entrySound.ringerWire,
-      exitSound: exitSound.fileName,
-      exitSoundRingerWire: exitSound.ringerWire,
+      entrySound: entrySound.id,
+      exitSound: exitSound.id,
       times: parseInt(lockdownRepetitions),
       exitTimes: parseInt(lockdownExitRepeat),
       interval: parseInt(lockdownRepeat),

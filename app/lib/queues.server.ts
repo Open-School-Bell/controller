@@ -9,9 +9,7 @@ export type Jobs = {
   broadcast: {
     ip: string
     key: string
-    fileName: string
-    ringerWire: string
-    times: number
+    sounds: string
   }
   lockdown: {ip: string; key: string}
   outboundWebhook: {target: string; key: string}

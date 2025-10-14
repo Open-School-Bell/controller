@@ -42,18 +42,18 @@ createHandler('updateConfig', async ({ip, key}) => {
   }).catch(() => {})
 })
 
-createHandler('broadcast', async ({ip, key, times, fileName, ringerWire}) => {
+createHandler('broadcast', async ({ip, key, sounds}) => {
   console.log(`Broadcasting to ${ip}`)
   await fetch(`http://${ip}:3000/play`, {
     body: JSON.stringify({
       key: key,
-      sound: fileName,
-      ringerWire: ringerWire,
-      times
+      sounds
     }),
     headers: {'Content-Type': 'application/json'},
     method: 'post'
-  }).catch(() => {})
+  }).catch(() => {
+    console.log(`Failed to broadcast to ${ip}`)
+  })
 })
 
 createHandler('lockdown', async ({ip, key}) => {
