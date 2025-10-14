@@ -17,6 +17,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {updateSounders} from '~/lib/update-sounders.server'
 
 const {rename} = fs.promises
 
@@ -90,6 +91,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     where: {id: sound.id},
     data: {fileName: `${sound.id}${path.extname(fileData.filepath)}`}
   })
+
+  await updateSounders()
 
   return redirect(`/sounds/${sound.id}`)
 }
