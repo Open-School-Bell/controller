@@ -23,3 +23,15 @@ export const pageTitle = (...parts: string[]) => {
 export const docsLink = (path: string) => {
   return `${DOCS_URL}${path}`
 }
+
+export const getSecondsAsTime = (seconds: number) => {
+  let secondTime = seconds
+  let minuteTime = Math.floor(secondTime / 60)
+
+  secondTime %= 60
+  minuteTime %= 60
+
+  return [minuteTime.toString(), secondTime.toString().padStart(2, '0')].join(
+    ':'
+  )
+}

@@ -7,7 +7,7 @@ import {useNavigate, useLoaderData, useSearchParams} from '@remix-run/react'
 import {useState, useEffect} from 'react'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {pageTitle, INPUT_CLASSES} from '~/lib/utils'
+import {pageTitle, INPUT_CLASSES, getSecondsAsTime} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Actions, Page, FormElement} from '~/lib/ui'
 import {
@@ -52,6 +52,8 @@ const BroadcastSound = () => {
     }
   }, [searchParams, queue, setQueue])
 
+  let duration = 0
+
   return (
     <Page title="Broadcast Builder">
       <div className="w-full bg-gray-100 rounded-3xl h-1.5 my-4 ">
@@ -87,14 +89,17 @@ const BroadcastSound = () => {
               return id === queuedId
             })[0]
 
+            duration += sound.duration
+
             return (
               <div
                 key={`${sound.id}-${i}`}
-                className="border-b border-b-stone-100 mb-2 pb-2"
+                className="border-b border-b-stone-100 mb-2 pb-2 grid grid-cols-5"
               >
-                {sound.name}{' '}
+                <p className="col-span-4">{sound.name}</p>
                 <button
-                  className="cursor-pointer"
+                  className="cursor-pointer row-span-2"
+                  type="button"
                   onClick={e => {
                     e.preventDefault()
                     setQueue([
@@ -106,10 +111,14 @@ const BroadcastSound = () => {
                 >
                   ❌
                 </button>
+                <p className="col-span-4 text-sm text-gray-400">
+                  {getSecondsAsTime(sound.duration)}
+                </p>
               </div>
             )
           })}
         </div>
+        <div>Total Duration {getSecondsAsTime(duration)}</div>
         <Actions
           actions={[
             {

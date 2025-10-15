@@ -12,6 +12,7 @@ import {useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 import path from 'path'
 import fs from 'fs'
+import {parseFile} from 'music-metadata'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
@@ -87,9 +88,22 @@ export const action = async ({request}: ActionFunctionArgs) => {
     )
   )
 
+  const meta = await parseFile(
+    path.join(
+      process.cwd(),
+      'public',
+      'sounds',
+      `${sound.id}${path.extname(fileData.filepath)}`
+    )
+  )
+
   await prisma.audio.update({
     where: {id: sound.id},
-    data: {fileName: `${sound.id}${path.extname(fileData.filepath)}`}
+    data: {
+      fileName: `${sound.id}${path.extname(fileData.filepath)}`,
+      duration: meta.format.duration,
+      audioContainer: meta.format.container
+    }
   })
 
   await updateSounders()
