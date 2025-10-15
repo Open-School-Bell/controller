@@ -1,3 +1,4 @@
+/* eslint react-hooks/exhaustive-deps: 0 */
 import {
   type LoaderFunctionArgs,
   type MetaFunction,
@@ -50,7 +51,7 @@ const BroadcastSound = () => {
     if (searchParams.get('tts') !== null) {
       setQueue([...queue, searchParams.get('tts')!])
     }
-  }, [searchParams, queue, setQueue])
+  }, [searchParams])
 
   let duration = 0
 
