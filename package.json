@@ -29,6 +29,7 @@
     "isbot": "^5.1.30",
     "jsonwebtoken": "^9.0.2",
     "mkdirp": "^3.0.1",
+    "music-metadata": "^11.9.0",
     "prisma": "^6.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

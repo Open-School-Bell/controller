@@ -87,10 +87,12 @@ model DayTypeAssignment {
 }
 
 model Audio {
-  id         String @id @default(uuid())
-  name       String
-  fileName   String
-  ringerWire String @default("")
+  id             String @id @default(uuid())
+  name           String
+  fileName       String
+  ringerWire     String @default("")
+  duration       Int    @default(0)
+  audioContainer String @default("")
 
   schedules Schedule[]
   actions   Action[]
