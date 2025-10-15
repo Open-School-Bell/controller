@@ -44,7 +44,7 @@ const BroadcastZone = () => {
     return <div>ERROR</div>
   }
 
-  const {queue, zones, desktopAlertGroups, count} = data
+  const {queue, zones, count} = data
 
   return (
     <Page title="Broadcast (Zone)">
@@ -63,25 +63,6 @@ const BroadcastZone = () => {
           <select name="zone" className={INPUT_CLASSES} defaultValue="_">
             <option value="_">None</option>
             {zones.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
-        <FormElement
-          label="Desktop Group"
-          helperText="The desktop group to broadcast the sound to."
-        >
-          <select
-            name="desktopGroup"
-            className={INPUT_CLASSES}
-            defaultValue="_"
-          >
-            <option value="_">None</option>
-            {desktopAlertGroups.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
                   {name}

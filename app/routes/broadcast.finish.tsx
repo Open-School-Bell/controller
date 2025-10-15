@@ -26,11 +26,11 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const queue = formData.get('queue') as string | undefined
   const zone = formData.get('zone') as string | undefined
-  const desktopGroup = formData.get('desktopGroup') as string | undefined
+  //const desktopGroup = formData.get('desktopGroup') as string | undefined
 
   invariant(queue)
   invariant(zone)
-  invariant(desktopGroup)
+  //invariant(desktopGroup)
 
   if (zone !== '_') {
     await broadcast(zone, queue)
@@ -50,7 +50,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
     })
   }*/
 
-  return {queue, zone, desktopGroup}
+  return {queue, zone}
 }
 
 const BroadcastFinish = () => {
@@ -61,7 +61,7 @@ const BroadcastFinish = () => {
     return <div>Error</div>
   }
 
-  const {queue, zone, desktopGroup} = data
+  const {queue, zone} = data
 
   return (
     <Page title="Broadcast">
@@ -69,7 +69,6 @@ const BroadcastFinish = () => {
       <form method="post">
         <input type="hidden" name="queue" value={queue} />
         <input type="hidden" name="zone" value={zone} />
-        <input type="hidden" name="desktopGroup" value={desktopGroup} />
         <Actions
           actions={[
             {
