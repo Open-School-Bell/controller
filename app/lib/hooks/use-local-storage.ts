@@ -31,3 +31,7 @@ export const useStatefulLocalStorage = <ValueType extends string>(
 
   return [value, set] as const
 }
+
+export const clearLocalStorage = (key: string) => {
+  localStorage.removeItem(key)
+}

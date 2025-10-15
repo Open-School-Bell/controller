@@ -7,7 +7,6 @@ import {useActionData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {checkSession} from '~/lib/session'
-import {getPrisma} from '~/lib/prisma.server'
 import {broadcast} from '~/lib/broadcast.server'
 import {Actions, Page} from '~/lib/ui'
 import {pageTitle} from '~/lib/utils'
@@ -23,24 +22,20 @@ export const action = async ({request}: ActionFunctionArgs) => {
     return redirect('/login')
   }
 
-  const prisma = getPrisma()
-
   const formData = await request.formData()
 
-  const sound = formData.get('sound') as string | undefined
+  const queue = formData.get('queue') as string | undefined
   const zone = formData.get('zone') as string | undefined
-  const desktopGroup = formData.get('desktopGroup') as string | undefined
-  const count = formData.get('count') as string | undefined
+  //const desktopGroup = formData.get('desktopGroup') as string | undefined
 
-  invariant(sound)
+  invariant(queue)
   invariant(zone)
-  invariant(desktopGroup)
-  invariant(count)
+  //invariant(desktopGroup)
 
   if (zone !== '_') {
-    await broadcast(zone, sound, parseInt(count))
+    await broadcast(zone, queue)
   }
-  if (desktopGroup !== '_') {
+  /*if (desktopGroup !== '_') {
     const audio = await prisma.audio.findFirstOrThrow({where: {id: sound}})
 
     const playData = JSON.stringify({
@@ -53,9 +48,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
       where: {id: desktopGroup},
       data: {playData}
     })
-  }
+  }*/
 
-  return {sound, zone, desktopGroup, count}
+  return {queue, zone}
 }
 
 const BroadcastFinish = () => {
@@ -66,16 +61,14 @@ const BroadcastFinish = () => {
     return <div>Error</div>
   }
 
-  const {sound, zone, desktopGroup, count} = data
+  const {queue, zone} = data
 
   return (
     <Page title="Broadcast">
       <div className="box mb-4">Broadcast Sent!</div>
       <form method="post">
-        <input type="hidden" name="sound" value={sound} />
+        <input type="hidden" name="queue" value={queue} />
         <input type="hidden" name="zone" value={zone} />
-        <input type="hidden" name="desktopGroup" value={desktopGroup} />
-        <input type="hidden" name="count" value={count} />
         <Actions
           actions={[
             {

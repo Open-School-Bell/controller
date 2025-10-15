@@ -10,6 +10,7 @@ import path from 'path'
 import fs from 'fs'
 import {finished} from 'stream/promises'
 import {Readable} from 'stream'
+import {parseFile} from 'music-metadata'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {updateSounders} from '~/lib/update-sounders.server'
@@ -76,9 +77,17 @@ export const action = async ({request}: ActionFunctionArgs) => {
     Readable.fromWeb(downloadResponse!.body as any).pipe(downloadStream)
   )
 
+  const meta = await parseFile(
+    path.join(process.cwd(), 'public', 'sounds', `${sound.id}.wav`)
+  )
+
   await prisma.audio.update({
     where: {id: sound.id},
-    data: {fileName: `${sound.id}.wav`}
+    data: {
+      fileName: `${sound.id}.wav`,
+      duration: meta.format.duration,
+      audioContainer: meta.format.container
+    }
   })
 
   await updateSounders()

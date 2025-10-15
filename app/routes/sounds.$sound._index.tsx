@@ -4,10 +4,12 @@ import {
   redirect
 } from '@remix-run/node'
 import {useLoaderData, useNavigate} from '@remix-run/react'
+import {parseFile} from 'music-metadata'
+import path from 'path'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
-import {pageTitle} from '~/lib/utils'
+import {pageTitle, getSecondsAsTime} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
@@ -27,6 +29,24 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
     where: {id: params.sound}
   })
 
+  if (sound.audioContainer === '' || sound.duration === 0) {
+    console.log('updating meta data')
+    const meta = await parseFile(
+      path.join(process.cwd(), 'public', 'sounds', sound.fileName)
+    )
+
+    await prisma.audio.update({
+      where: {id: sound.id},
+      data: {
+        duration: meta.format.duration,
+        audioContainer: meta.format.container
+      }
+    })
+
+    sound.audioContainer = meta.format.container ? meta.format.container : ''
+    sound.duration = meta.format.duration ? meta.format.duration : 0
+  }
+
   return {sound}
 }
 
@@ -41,6 +61,8 @@ const Sound = () => {
           <source src={`/sounds/${sound.fileName}`} type="audio/mp3" />
         </audio>
         <p>Ringer Wire: {sound.ringerWire}</p>
+        <p>Duration: {getSecondsAsTime(sound.duration)}</p>
+        <p>Audio Type: {sound.audioContainer}</p>
       </div>
       <Actions
         actions={[

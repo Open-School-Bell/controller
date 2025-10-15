@@ -6,6 +6,9 @@ node_modules
 
 prisma/*.db
 prisma/*.db-journal
+prisma/**/*.db
+prisma/**/*.db-journal
+
 
 public/sounds
 public/backups

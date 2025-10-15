@@ -82,7 +82,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   await updateSounders()
 
-  return redirect(`/broadcast/tts-complete?tts=${sound.id}`)
+  return redirect(`/broadcast/builder?tts=${sound.id}`)
 }
 
 const BroadcastTTS = () => {
