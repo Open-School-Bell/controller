@@ -7,7 +7,6 @@ import {useActionData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {checkSession} from '~/lib/session'
-import {getPrisma} from '~/lib/prisma.server'
 import {broadcast} from '~/lib/broadcast.server'
 import {Actions, Page} from '~/lib/ui'
 import {pageTitle} from '~/lib/utils'
@@ -22,8 +21,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
   if (!result) {
     return redirect('/login')
   }
-
-  const prisma = getPrisma()
 
   const formData = await request.formData()
 

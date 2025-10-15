@@ -50,7 +50,7 @@ const BroadcastSound = () => {
     if (searchParams.get('tts') !== null) {
       setQueue([...queue, searchParams.get('tts')!])
     }
-  }, [searchParams])
+  }, [searchParams, queue, setQueue])
 
   return (
     <Page title="Broadcast Builder">
