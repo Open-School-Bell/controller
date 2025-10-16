@@ -29,7 +29,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   switch (dbAction.action) {
     case 'broadcast':
       if (dbAction.audioId) {
-        await broadcast(zone, dbAction.audioId)
+        await broadcast(zone, JSON.stringify([dbAction.audioId]))
       }
       break
     case 'lockdown':
