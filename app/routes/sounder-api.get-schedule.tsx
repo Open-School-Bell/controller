@@ -11,8 +11,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const prisma = getPrisma()
 
+  const sounder = await prisma.sounder.findFirstOrThrow({
+    where: {key, enrolled: true},
+    include: {zones: true}
+  })
+
   const schedules = await prisma.schedule.findMany({
-    where: {dayTypeId: day === 'null' ? undefined : day}
+    where: {
+      dayTypeId: day === 'null' ? undefined : day,
+      zoneId: {in: sounder.zones.map(({zoneId}) => zoneId)}
+    }
   })
 
   const data = schedules.map(({time, dayTypeId, weekDays, audioId, count}) => {
