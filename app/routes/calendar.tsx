@@ -114,7 +114,11 @@ const CalendarPage = () => {
   const weekdays = weekdayKeys.map(key => t(key))
 
   return (
-    <Page title={t('calendar.metaTitle')} wide helpLink="/docs/configuration/calendar/">
+    <Page
+      title={t('calendar.metaTitle')}
+      wide
+      helpLink="/docs/configuration/calendar/"
+    >
       <div className="grid grid-cols-7">
         <button
           className="cursor-pointer"

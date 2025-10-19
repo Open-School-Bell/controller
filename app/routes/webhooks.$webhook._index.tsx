@@ -56,9 +56,7 @@ const Webhook = () => {
         <p className="bg-stone-200 p-2 rounded-md">
           {`curl -H 'Content-Type: application/json' -d '{"key": "${webhook.key}"}' -X POST ${controllerUrl}/hook/${webhook.slug}`}
         </p>
-        <p>
-          {t('webhooks.detail.broadcastNotice')}{' '}
-        </p>
+        <p>{t('webhooks.detail.broadcastNotice')} </p>
       </div>
       <Actions
         actions={[

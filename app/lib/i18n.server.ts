@@ -5,7 +5,9 @@ import type {Messages} from './i18n.shared'
 
 const FALLBACK_LOCALE: SupportedLocale = 'en'
 
-const resolveLocale = (request: LoaderFunctionArgs['request']): SupportedLocale => {
+const resolveLocale = (
+  request: LoaderFunctionArgs['request']
+): SupportedLocale => {
   const acceptLanguage = request.headers.get('accept-language')
 
   if (acceptLanguage) {
@@ -17,7 +19,9 @@ const resolveLocale = (request: LoaderFunctionArgs['request']): SupportedLocale 
     for (const requested of requestedLocales) {
       const normalized = requested.toLowerCase()
 
-      const exactMatch = Object.keys(locales).find(locale => locale === normalized)
+      const exactMatch = Object.keys(locales).find(
+        locale => locale === normalized
+      )
       if (exactMatch) {
         return exactMatch as SupportedLocale
       }

@@ -25,8 +25,10 @@ export const en = {
   'dashboard.lockdown.message': 'Lockdown mode {{status}}',
   'dashboard.lockdown.status.enabled': 'enabled',
   'dashboard.lockdown.status.disabled': 'disabled',
-  'dashboard.lockdown.confirmEnable': 'Are you sure you want to enable lockdown?',
-  'dashboard.lockdown.confirmDisable': 'Are you sure you want to disable lockdown?',
+  'dashboard.lockdown.confirmEnable':
+    'Are you sure you want to enable lockdown?',
+  'dashboard.lockdown.confirmDisable':
+    'Are you sure you want to disable lockdown?',
   'dashboard.lockdown.button.enable': 'Enable',
   'dashboard.lockdown.button.disable': 'Disable',
   'about.title': 'About',
@@ -43,7 +45,8 @@ export const en = {
   'actions.buttons.add': 'Add Action',
   'actions.add.pageTitle': 'Add Action',
   'actions.form.name.label': 'Name',
-  'actions.form.name.helper': 'The name of the action as it will appear on the screens.',
+  'actions.form.name.helper':
+    'The name of the action as it will appear on the screens.',
   'actions.form.icon.label': 'Icon',
   'actions.form.icon.helper':
     'An emoji to use as the action icon. Note that emoji render differently on the RPi screen.',
@@ -131,7 +134,7 @@ export const en = {
   'days.assignments.metaTitle': 'Day assignments',
   'days.assignments.title': 'Day assignments',
   'days.assignments.helper':
-    'These assignments change the day type for the given dates to that type\'s schedule.',
+    "These assignments change the day type for the given dates to that type's schedule.",
   'days.assignments.table.date': 'Date',
   'days.assignments.table.dayType': 'Day type',
   'days.assignments.addTitle': 'Add assignments',
@@ -142,7 +145,8 @@ export const en = {
   'days.assignments.form.to.helper':
     'End date. To assign a single day, set both From and To to the same date.',
   'days.assignments.form.day.label': 'Day type',
-  'days.assignments.form.day.helper': 'Day type to assign to the selected dates.',
+  'days.assignments.form.day.helper':
+    'Day type to assign to the selected dates.',
   'days.assignments.addButton': 'Add assignments',
   'desktopGroups.metaTitle': 'Desktop groups',
   'desktopGroups.titleWithCount': 'Desktop groups ({{count}})',
@@ -193,11 +197,14 @@ export const en = {
     'Whether to trigger the ringer wire on repeats to avoid ambiguity between start and end.',
   'settings.pageTitle': 'Settings',
   'settings.controllerUrl.label': 'Controller URL',
-  'settings.controllerUrl.helper': 'Network address of the controller (without the trailing /).',
+  'settings.controllerUrl.helper':
+    'Network address of the controller (without the trailing /).',
   'settings.ttsSpeed.label': 'Text-to-speech speed',
-  'settings.ttsSpeed.helper': 'Speed factor for text-to-speech generation. Default is 1; lower is faster.',
+  'settings.ttsSpeed.helper':
+    'Speed factor for text-to-speech generation. Default is 1; lower is faster.',
   'settings.password.label': 'Change password',
-  'settings.password.helper': 'Leave fields empty to keep the current password.',
+  'settings.password.helper':
+    'Leave fields empty to keep the current password.',
   'settings.password.placeholderNew': 'New password',
   'settings.password.placeholderConfirm': 'Repeat new password',
   'schedule.metaTitle': 'Schedule',
@@ -210,7 +217,8 @@ export const en = {
   'schedule.addButton': 'Add entry',
   'schedule.add.pageTitle': 'Add schedule entry',
   'schedule.form.time.label': 'Time',
-  'schedule.form.time.helper': 'Time when the sound should trigger (always at 0 seconds past the minute).',
+  'schedule.form.time.helper':
+    'Time when the sound should trigger (always at 0 seconds past the minute).',
   'schedule.form.day.label': 'Day type',
   'schedule.form.day.helper': 'Day type that this schedule entry applies to.',
   'schedule.form.zone.label': 'Zone',
@@ -231,7 +239,8 @@ export const en = {
   'sounders.form.name.label': 'Name',
   'sounders.form.name.helper': 'Descriptive name of the sounder.',
   'sounders.form.ip.label': 'IP address',
-  'sounders.form.ip.helper': 'IP address where the controller can reach the sounder.',
+  'sounders.form.ip.helper':
+    'IP address where the controller can reach the sounder.',
   'sounders.add.submit': 'Add sounder',
   'sounders.detail.metaFallback': 'Sounder',
   'sounders.detail.infoTitle': 'About',
@@ -250,7 +259,8 @@ export const en = {
   'sounders.edit.metaTitle': 'Edit {{name}}',
   'sounders.edit.pageTitle': 'Edit sounder {{name}}',
   'sounders.form.ringer.label': 'Ringer pin',
-  'sounders.form.ringer.helper': 'GPIO pin number that activates the ringer wire.',
+  'sounders.form.ringer.helper':
+    'GPIO pin number that activates the ringer wire.',
   'sounders.form.screen.label': 'Screen',
   'sounders.form.screen.helper':
     'Enable the screen interface on this sounder? Restart required after changing.',
@@ -280,7 +290,8 @@ export const en = {
   'sounds.detail.editButton': 'Edit sound',
   'sounds.edit.metaTitle': 'Edit {{name}}',
   'sounds.edit.pageTitle': 'Edit sound {{name}}',
-  'sounds.form.file.helperEdit': 'Upload a new MP3 to replace the existing sound.',
+  'sounds.form.file.helperEdit':
+    'Upload a new MP3 to replace the existing sound.',
   'webhooks.metaTitle': 'Webhooks',
   'webhooks.inbound.titleWithCount': 'Inbound webhooks ({{count}})',
   'webhooks.inbound.table.webhook': 'Webhook',
@@ -293,14 +304,16 @@ export const en = {
   'webhooks.form.slug.label': 'Slug (identifier)',
   'webhooks.form.slug.helper': 'Name that will be shown on screens.',
   'webhooks.form.action.label': 'Action',
-  'webhooks.form.action.helper': 'Which action should run when the webhook fires?',
+  'webhooks.form.action.helper':
+    'Which action should run when the webhook fires?',
   'webhooks.add.submit': 'Add',
   'webhooks.outbound.add.metaTitle': 'Add outbound webhook',
   'webhooks.outbound.add.pageTitle': 'Add outbound webhook',
   'webhooks.outbound.form.target.label': 'Target URL',
   'webhooks.outbound.form.target.helper': 'Full URL for the outbound webhook.',
   'webhooks.outbound.form.event.label': 'Event type',
-  'webhooks.outbound.form.event.helper': 'Which events should trigger this webhook?',
+  'webhooks.outbound.form.event.helper':
+    'Which events should trigger this webhook?',
   'webhooks.outbound.add.submit': 'Add outbound webhook',
   'webhooks.outbound.edit.metaTitle': 'Edit outbound webhook',
   'webhooks.outbound.edit.pageTitle': 'Edit outbound webhook',

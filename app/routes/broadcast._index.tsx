@@ -41,9 +41,7 @@ const Broadcast = () => {
         />
       </div>
       <div>
-        <div className="box mb-4">
-          {t('broadcast.description')}
-        </div>
+        <div className="box mb-4">{t('broadcast.description')}</div>
         <Actions
           actions={[
             {

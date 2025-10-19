@@ -15,7 +15,9 @@ import {getRootI18n} from '~/lib/i18n.meta'
 
 export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
   const {messages} = getRootI18n(matches)
-  const name = data ? data.zone.name : translate(messages, 'zones.detail.metaFallback')
+  const name = data
+    ? data.zone.name
+    : translate(messages, 'zones.detail.metaFallback')
   return [{title: pageTitle(translate(messages, 'zones.metaTitle'), name)}]
 }
 

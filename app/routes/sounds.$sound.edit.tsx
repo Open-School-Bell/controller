@@ -25,7 +25,9 @@ const {rename} = fs.promises
 
 export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
   const {messages} = getRootI18n(matches)
-  const name = data ? data.sound.name : translate(messages, 'sounds.detail.metaFallback')
+  const name = data
+    ? data.sound.name
+    : translate(messages, 'sounds.detail.metaFallback')
   return [
     {
       title: pageTitle(

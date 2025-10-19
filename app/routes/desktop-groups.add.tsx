@@ -17,7 +17,14 @@ import {getRootI18n} from '~/lib/i18n.meta'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
-  return [{title: pageTitle(translate(messages, 'desktopGroups.metaTitle'), translate(messages, 'desktopGroups.add.pageTitle'))}]
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'desktopGroups.metaTitle'),
+        translate(messages, 'desktopGroups.add.pageTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {

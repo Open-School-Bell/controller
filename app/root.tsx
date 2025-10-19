@@ -1,5 +1,17 @@
-import {Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useRouteLoaderData} from '@remix-run/react'
-import {json, type LinksFunction, type LoaderFunctionArgs} from '@remix-run/node'
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useRouteLoaderData
+} from '@remix-run/react'
+import {
+  json,
+  type LinksFunction,
+  type LoaderFunctionArgs
+} from '@remix-run/node'
 import BellIcon from '@heroicons/react/24/outline/BellIcon'
 import BellAlertIcon from '@heroicons/react/24/outline/BellAlertIcon'
 import Square3StackIcon from '@heroicons/react/24/outline/Square3Stack3DIcon'
@@ -40,7 +52,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 }
 
 export function Layout({children}: {children: React.ReactNode}) {
-  const data = useRouteLoaderData<typeof loader>('root') ?? FALLBACK_TRANSLATIONS
+  const data =
+    useRouteLoaderData<typeof loader>('root') ?? FALLBACK_TRANSLATIONS
   const locale = data.locale ?? FALLBACK_LOCALE
   return (
     <html lang={locale}>
@@ -76,13 +89,15 @@ const AppContent = () => {
           <BellIcon className="w-6 mr-2" /> <span>{t('nav.dashboard')}</span>
         </SidebarLink>
         <SidebarLink to="/broadcast">
-          <BellAlertIcon className="w-6 mr-2" /> <span>{t('nav.broadcast')}</span>
+          <BellAlertIcon className="w-6 mr-2" />{' '}
+          <span>{t('nav.broadcast')}</span>
         </SidebarLink>
         <SidebarLink to="/schedule">
           <CalendarIcon className="w-6 mr-2" /> <span>{t('nav.schedule')}</span>
         </SidebarLink>
         <SidebarLink to="/calendar">
-          <CalendarDaysIcon className="w-6 mr-2" /> <span>{t('nav.calendar')}</span>
+          <CalendarDaysIcon className="w-6 mr-2" />{' '}
+          <span>{t('nav.calendar')}</span>
         </SidebarLink>
         <SidebarLink to="/sounders">
           <SpeakerIcon className="w-6 mr-2" /> <span>{t('nav.sounders')}</span>
@@ -91,7 +106,8 @@ const AppContent = () => {
           <MusicIcon className="w-6 mr-2" /> <span>{t('nav.sounds')}</span>
         </SidebarLink>
         <SidebarLink to="/desktop-groups">
-          <ComputerIcon className="w-6 mr-2" /> <span>{t('nav.desktopGroups')}</span>
+          <ComputerIcon className="w-6 mr-2" />{' '}
+          <span>{t('nav.desktopGroups')}</span>
         </SidebarLink>
         <SidebarLink to="/actions">
           <ArrowIcon className="w-6 mr-2" /> <span>{t('nav.actions')}</span>
@@ -100,10 +116,12 @@ const AppContent = () => {
           <CodeIcon className="w-6 mr-2" /> <span>{t('nav.webhooks')}</span>
         </SidebarLink>
         <SidebarLink to="/zones">
-          <Square3StackIcon className="w-6 mr-2" /> <span>{t('nav.zones')}</span>
+          <Square3StackIcon className="w-6 mr-2" />{' '}
+          <span>{t('nav.zones')}</span>
         </SidebarLink>
         <SidebarLink to="/lockdown">
-          <LockClosedIcon className="w-6 mr-2" /> <span>{t('nav.lockdown')}</span>
+          <LockClosedIcon className="w-6 mr-2" />{' '}
+          <span>{t('nav.lockdown')}</span>
         </SidebarLink>
         <NavSep />
         <SidebarLink to="/settings">

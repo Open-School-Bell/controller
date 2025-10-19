@@ -17,11 +17,11 @@ import {getRootI18n} from '~/lib/i18n.meta'
 
 export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
   const {messages} = getRootI18n(matches)
-  const name = data ? data.sounder.name : translate(messages, 'sounders.detail.metaFallback')
+  const name = data
+    ? data.sounder.name
+    : translate(messages, 'sounders.detail.metaFallback')
 
-  return [
-    {title: pageTitle(translate(messages, 'sounders.metaTitle'), name)}
-  ]
+  return [{title: pageTitle(translate(messages, 'sounders.metaTitle'), name)}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {

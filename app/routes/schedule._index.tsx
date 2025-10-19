@@ -66,7 +66,7 @@ const Schedule = () => {
       </select>
       <table className="box-table mb-4">
         <thead>
-            <tr>
+          <tr>
             <th className="p-2">{t('schedule.table.time')}</th>
             <th className="p-2">{t('calendar.weekdays.monday')}</th>
             <th className="p-2">{t('calendar.weekdays.tuesday')}</th>

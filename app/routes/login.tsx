@@ -52,7 +52,9 @@ const Login = () => {
         <FormElement label={t('auth.login.password.label')} helperText="">
           <input name="password" type="password" className={INPUT_CLASSES} />
         </FormElement>
-        <Actions actions={[{label: t('auth.login.submit'), color: 'bg-green-300'}]} />
+        <Actions
+          actions={[{label: t('auth.login.submit'), color: 'bg-green-300'}]}
+        />
       </form>
     </Page>
   )

@@ -17,7 +17,9 @@ import {getRootI18n} from '~/lib/i18n.meta'
 
 export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
   const {messages} = getRootI18n(matches)
-  const name = data ? data.sound.name : translate(messages, 'sounds.detail.metaFallback')
+  const name = data
+    ? data.sound.name
+    : translate(messages, 'sounds.detail.metaFallback')
   return [{title: pageTitle(translate(messages, 'sounds.metaTitle'), name)}]
 }
 

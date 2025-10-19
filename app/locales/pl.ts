@@ -34,7 +34,7 @@ export const pl = {
   'about.table.version': 'Wersja',
   'about.table.latest': 'Najnowsza wersja',
   'about.table.required': 'Wymagana wersja',
-  'u': 'Urządzenie: {{name}}',
+  u: 'Urządzenie: {{name}}',
   'actions.title': 'Akcje',
   'actions.titleWithCount': 'Akcje ({{count}})',
   'actions.table.action': 'Akcja',
@@ -72,7 +72,8 @@ export const pl = {
   'broadcast.builder.metaTitle': 'Dźwięk',
   'broadcast.builder.pageTitle': 'Kreator transmisji',
   'broadcast.builder.sound.label': 'Dźwięk',
-  'broadcast.builder.sound.helper': 'Dźwięk, który ma zostać dodany do kolejki.',
+  'broadcast.builder.sound.helper':
+    'Dźwięk, który ma zostać dodany do kolejki.',
   'broadcast.builder.totalDuration': 'Łączny czas {{duration}}',
   'broadcast.builder.createTts': 'Utwórz nowy TTS',
   'button.next': 'Dalej',
@@ -80,7 +81,8 @@ export const pl = {
   'broadcast.zone.metaTitle': 'Strefa',
   'broadcast.zone.pageTitle': 'Nadawanie (strefa)',
   'broadcast.zone.field.zone.label': 'Strefa',
-  'broadcast.zone.field.zone.helper': 'Strefa urządzeń, do której ma zostać nadany dźwięk.',
+  'broadcast.zone.field.zone.helper':
+    'Strefa urządzeń, do której ma zostać nadany dźwięk.',
   'broadcast.zone.noneOption': 'Brak',
   'broadcast.zone.submit': 'Nadaj!',
   'broadcast.finish.metaTitle': 'Zakończono',
@@ -180,23 +182,28 @@ export const pl = {
   'lockdown.field.entrySound.helper':
     'Dźwięk odtwarzany przy rozpoczęciu blokady oraz podczas powtórzeń.',
   'lockdown.field.exitSound.label': 'Dźwięk zakończenia blokady',
-  'lockdown.field.exitSound.helper': 'Dźwięk odtwarzany przy zakończeniu blokady.',
+  'lockdown.field.exitSound.helper':
+    'Dźwięk odtwarzany przy zakończeniu blokady.',
   'lockdown.field.startCount.label': 'Liczba powtórzeń startu',
   'lockdown.field.startCount.helper':
     'Ile razy odtworzyć dźwięk rozpoczęcia blokady – zarówno przy starcie, jak i przy powtórzeniach.',
   'lockdown.field.exitCount.label': 'Liczba powtórzeń zakończenia',
-  'lockdown.field.exitCount.helper': 'Ile razy odtworzyć dźwięk zakończenia blokady.',
+  'lockdown.field.exitCount.helper':
+    'Ile razy odtworzyć dźwięk zakończenia blokady.',
   'lockdown.field.repeatInterval.label': 'Interwał powtórzeń blokady (minuty)',
   'lockdown.field.repeatInterval.helper':
     'Co ile minut powtarzać dźwięk rozpoczęcia blokady.',
-  'lockdown.field.repeatRinger.label': 'Aktywować przewód dzwonka przy powtórzeniach?',
+  'lockdown.field.repeatRinger.label':
+    'Aktywować przewód dzwonka przy powtórzeniach?',
   'lockdown.field.repeatRinger.helper':
     'Czy uruchamiać przewód dzwonka przy powtórzeniach, aby uniknąć niejednoznaczności co do liczby dzwonków oznaczających start lub koniec blokady.',
   'settings.pageTitle': 'Ustawienia',
   'settings.controllerUrl.label': 'Adres kontrolera',
-  'settings.controllerUrl.helper': 'Adres kontrolera w sieci (bez końcowego ukośnika).',
+  'settings.controllerUrl.helper':
+    'Adres kontrolera w sieci (bez końcowego ukośnika).',
   'settings.ttsSpeed.label': 'Prędkość syntezy mowy',
-  'settings.ttsSpeed.helper': 'Współczynnik prędkości generowania mowy. Domyślnie 1; mniejsza wartość oznacza szybsze odtwarzanie.',
+  'settings.ttsSpeed.helper':
+    'Współczynnik prędkości generowania mowy. Domyślnie 1; mniejsza wartość oznacza szybsze odtwarzanie.',
   'settings.password.label': 'Zmień hasło',
   'settings.password.helper': 'Pozostaw pola puste, aby nie zmieniać hasła.',
   'settings.password.placeholderNew': 'Nowe hasło',
@@ -211,9 +218,11 @@ export const pl = {
   'schedule.addButton': 'Dodaj wpis',
   'schedule.add.pageTitle': 'Dodaj wpis harmonogramu',
   'schedule.form.time.label': 'Godzina',
-  'schedule.form.time.helper': 'Godzina uruchomienia dźwięku (zawsze o 0 sekund w danej minucie).',
+  'schedule.form.time.helper':
+    'Godzina uruchomienia dźwięku (zawsze o 0 sekund w danej minucie).',
   'schedule.form.day.label': 'Dzień',
-  'schedule.form.day.helper': 'Typ dnia, którego dotyczy ten wpis harmonogramu.',
+  'schedule.form.day.helper':
+    'Typ dnia, którego dotyczy ten wpis harmonogramu.',
   'schedule.form.zone.label': 'Strefa',
   'schedule.form.zone.helper': 'Strefa, której dotyczy ten wpis.',
   'schedule.form.sound.label': 'Dźwięk',
@@ -232,7 +241,8 @@ export const pl = {
   'sounders.form.name.label': 'Nazwa',
   'sounders.form.name.helper': 'Opisowa nazwa urządzenia.',
   'sounders.form.ip.label': 'Adres IP',
-  'sounders.form.ip.helper': 'Adres IP, pod którym kontroler łączy się z urządzeniem.',
+  'sounders.form.ip.helper':
+    'Adres IP, pod którym kontroler łączy się z urządzeniem.',
   'sounders.add.submit': 'Dodaj urządzenie',
   'sounders.detail.metaFallback': 'Urządzenie',
   'sounders.detail.infoTitle': 'Informacje',
@@ -251,7 +261,8 @@ export const pl = {
   'sounders.edit.metaTitle': 'Edytuj {{name}}',
   'sounders.edit.pageTitle': 'Edytuj urządzenie {{name}}',
   'sounders.form.ringer.label': 'PIN dzwonka',
-  'sounders.form.ringer.helper': 'Numer pinu GPIO aktywującego przewód dzwonka.',
+  'sounders.form.ringer.helper':
+    'Numer pinu GPIO aktywującego przewód dzwonka.',
   'sounders.form.screen.label': 'Ekran',
   'sounders.form.screen.helper':
     'Włączyć interfejs ekranowy na tym urządzeniu? Po zmianie opcji należy zrestartować urządzenie.',
@@ -294,14 +305,16 @@ export const pl = {
   'webhooks.form.slug.label': 'Slug (identyfikator)',
   'webhooks.form.slug.helper': 'Nazwa akcji wyświetlana na ekranach.',
   'webhooks.form.action.label': 'Akcja',
-  'webhooks.form.action.helper': 'Jaka akcja ma zostać uruchomiona po wywołaniu webhooka?',
+  'webhooks.form.action.helper':
+    'Jaka akcja ma zostać uruchomiona po wywołaniu webhooka?',
   'webhooks.add.submit': 'Dodaj',
   'webhooks.outbound.add.metaTitle': 'Dodaj webhook wychodzący',
   'webhooks.outbound.add.pageTitle': 'Dodaj webhook wychodzący',
   'webhooks.outbound.form.target.label': 'Adres docelowy',
   'webhooks.outbound.form.target.helper': 'Pełny adres URL webhooka.',
   'webhooks.outbound.form.event.label': 'Typ zdarzenia',
-  'webhooks.outbound.form.event.helper': 'Które zdarzenia mają uruchamiać ten webhook?',
+  'webhooks.outbound.form.event.helper':
+    'Które zdarzenia mają uruchamiać ten webhook?',
   'webhooks.outbound.add.submit': 'Dodaj webhook wychodzący',
   'webhooks.outbound.edit.metaTitle': 'Edytuj webhook wychodzący',
   'webhooks.outbound.edit.pageTitle': 'Edytuj webhook wychodzący',

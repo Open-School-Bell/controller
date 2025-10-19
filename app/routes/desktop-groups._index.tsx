@@ -29,7 +29,9 @@ const DesktopGroups = () => {
   const {t} = useTranslation()
 
   return (
-    <Page title={t('desktopGroups.titleWithCount', {count: desktopGroups.length})}>
+    <Page
+      title={t('desktopGroups.titleWithCount', {count: desktopGroups.length})}
+    >
       <div className="box mb-4">
         <table className="box-table">
           <thead>

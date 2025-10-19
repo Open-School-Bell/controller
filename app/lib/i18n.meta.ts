@@ -15,7 +15,11 @@ type RootData = {
 export const getRootI18n = (matches: MatchWithData[]): RootData => {
   const rootMatch = matches.find(match => match.id === ROOT_ID)
 
-  if (rootMatch && typeof rootMatch.data === 'object' && rootMatch.data !== null) {
+  if (
+    rootMatch &&
+    typeof rootMatch.data === 'object' &&
+    rootMatch.data !== null
+  ) {
     const {locale, messages} = rootMatch.data as RootData
     return {locale, messages}
   }
