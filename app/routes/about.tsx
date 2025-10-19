@@ -15,6 +15,9 @@ import {VERSION, RequiredVersions} from '~/lib/constants'
 import {getRedis} from '~/lib/redis.server.mjs'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
 const {readFile} = fs.promises
 
@@ -140,8 +143,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   }
 }
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('About')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'about.title'))}]
 }
 
 const About = () => {
@@ -154,16 +158,17 @@ const About = () => {
     controllerLatest,
     license
   } = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="About">
+    <Page title={t('about.title')}>
       <table className="box-table">
         <thead>
           <tr>
-            <th>Component</th>
-            <th>Version</th>
-            <th>Latest Version</th>
-            <th>Required Version</th>
+            <th>{t('about.table.component')}</th>
+            <th>{t('about.table.version')}</th>
+            <th>{t('about.table.latest')}</th>
+            <th>{t('about.table.required')}</th>
           </tr>
         </thead>
         <tbody>
@@ -208,7 +213,7 @@ const About = () => {
           {sounders.map(({id, name}) => {
             return (
               <tr key={id}>
-                <td>Sounder: {name}</td>
+                <td>{`Sounder: ${name}`}</td>
                 <td className="text-center">{sounderVersions[id]}</td>
                 <td
                   className={`text-center ${semver.gt(sounderLatest, sounderVersions[id]) ? 'bg-red-300' : ''}`}

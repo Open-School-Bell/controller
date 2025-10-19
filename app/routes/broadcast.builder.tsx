@@ -15,9 +15,20 @@ import {
   useStatefulLocalStorage,
   clearLocalStorage
 } from '~/lib/hooks/use-local-storage'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Broadcast', 'Sound')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'broadcast.pageTitle'),
+        translate(messages, 'broadcast.builder.metaTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -40,6 +51,7 @@ const BroadcastSound = () => {
   const [LSqueue, setLSQueue] = useStatefulLocalStorage('broadcast-queue', '[]')
   const [selectedSound, setSelectedSound] = useState(sounds[0].id)
   const [searchParams] = useSearchParams()
+  const {t} = useTranslation()
 
   const queue = JSON.parse(LSqueue) as string[]
 
@@ -56,7 +68,7 @@ const BroadcastSound = () => {
   let duration = 0
 
   return (
-    <Page title="Broadcast Builder">
+    <Page title={t('broadcast.builder.pageTitle')}>
       <div className="w-full bg-gray-100 rounded-3xl h-1.5 my-4 ">
         <div
           role="progressbar"
@@ -65,7 +77,10 @@ const BroadcastSound = () => {
         />
       </div>
       <form method="post" action="/broadcast/zone">
-        <FormElement label="Sound" helperText="The sound to add to the queue.">
+        <FormElement
+          label={t('broadcast.builder.sound.label')}
+          helperText={t('broadcast.builder.sound.helper')}
+        >
           <select
             name="sound"
             className={INPUT_CLASSES}
@@ -119,11 +134,15 @@ const BroadcastSound = () => {
             )
           })}
         </div>
-        <div>Total Duration {getSecondsAsTime(duration)}</div>
+        <div>
+          {t('broadcast.builder.totalDuration', {
+            duration: getSecondsAsTime(duration)
+          })}
+        </div>
         <Actions
           actions={[
             {
-              label: 'Back',
+              label: t('button.back'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
@@ -131,7 +150,7 @@ const BroadcastSound = () => {
               }
             },
             {
-              label: 'Add',
+              label: t('button.add'),
               color: 'bg-green-300',
               onClick: e => {
                 e.preventDefault()
@@ -139,7 +158,7 @@ const BroadcastSound = () => {
               }
             },
             {
-              label: 'Create new TTS',
+              label: t('broadcast.builder.createTts'),
               color: 'bg-green-300',
               onClick: e => {
                 e.preventDefault()
@@ -147,7 +166,7 @@ const BroadcastSound = () => {
               }
             },
             {
-              label: 'Next',
+              label: t('button.next'),
               color: 'bg-blue-300',
               onClick: () => {
                 clearLocalStorage('broadcast-queue')

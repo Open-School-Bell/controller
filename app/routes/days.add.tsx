@@ -1,7 +1,8 @@
 import {
   redirect,
   type ActionFunctionArgs,
-  type LoaderFunctionArgs
+  type LoaderFunctionArgs,
+  type MetaFunction
 } from '@remix-run/node'
 import {useNavigate, useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
@@ -9,7 +10,22 @@ import {invariant} from '@arcath/utils'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
-import {INPUT_CLASSES} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
+
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'calendar.metaTitle'),
+        translate(messages, 'days.add.pageTitle')
+      )
+    }
+  ]
+}
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -62,22 +78,26 @@ export const action = async ({request}: ActionFunctionArgs) => {
 const AddDay = () => {
   const navigate = useNavigate()
   const {days} = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Add Day">
+    <Page title={t('days.add.pageTitle')}>
       <form method="post">
-        <FormElement label="Name" helperText="Descriptive name for the day.">
+        <FormElement
+          label={t('days.form.name.label')}
+          helperText={t('days.form.name.helper')}
+        >
           <input name="name" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Copy From"
-          helperText="The day type to copy the schedule from"
+          label={t('days.form.copy.label')}
+          helperText={t('days.form.copy.helper')}
         >
           <select name="copyFrom" className={INPUT_CLASSES}>
             <option value="-" selected>
-              None
+              {t('days.form.copy.none')}
             </option>
-            <option value="_">Default</option>
+            <option value="_">{t('days.form.copy.default')}</option>
             {days.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -90,7 +110,7 @@ const AddDay = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
@@ -98,7 +118,7 @@ const AddDay = () => {
               }
             },
             {
-              label: 'Add Day',
+              label: t('days.add.submit'),
               color: 'bg-green-300'
             }
           ]}

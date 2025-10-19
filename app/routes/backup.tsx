@@ -14,9 +14,13 @@ import fs from 'fs'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Backups')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'backup.pageTitle'))}]
 }
 
 const BACKUPS_DIR = path.join(process.cwd(), 'public', 'backups')
@@ -67,15 +71,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const Backups = () => {
   const {files} = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Backups">
+    <Page title={t('backup.pageTitle')}>
       <div className="grid grid-cols-2 gap-8">
         <div className="box">
           <form method="post">
             <input
               type="submit"
-              value="Create Backup"
+              value={t('backup.create')}
               className={INPUT_CLASSES}
             />
           </form>

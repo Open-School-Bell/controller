@@ -10,9 +10,20 @@ import {checkSession} from '~/lib/session'
 import {broadcast} from '~/lib/broadcast.server'
 import {Actions, Page} from '~/lib/ui'
 import {pageTitle} from '~/lib/utils'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Broadcast', 'Finished!')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'broadcast.pageTitle'),
+        translate(messages, 'broadcast.finish.metaTitle')
+      )
+    }
+  ]
 }
 
 export const action = async ({request}: ActionFunctionArgs) => {
@@ -56,30 +67,31 @@ export const action = async ({request}: ActionFunctionArgs) => {
 const BroadcastFinish = () => {
   const data = useActionData<typeof action>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   if (!data) {
-    return <div>Error</div>
+    return <div>{t('common.error')}</div>
   }
 
   const {queue, zone} = data
 
   return (
-    <Page title="Broadcast">
-      <div className="box mb-4">Broadcast Sent!</div>
+    <Page title={t('broadcast.pageTitle')}>
+      <div className="box mb-4">{t('broadcast.finish.message')}</div>
       <form method="post">
         <input type="hidden" name="queue" value={queue} />
         <input type="hidden" name="zone" value={zone} />
         <Actions
           actions={[
             {
-              label: 'Start Again',
+              label: t('broadcast.finish.startAgain'),
               color: 'bg-blue-300',
               onClick: e => {
                 e.preventDefault()
                 navigate('/broadcast')
               }
             },
-            {label: 'Re-Broadcast', color: 'bg-green-300'}
+            {label: t('broadcast.finish.rebroadcast'), color: 'bg-green-300'}
           ]}
         />
       </form>

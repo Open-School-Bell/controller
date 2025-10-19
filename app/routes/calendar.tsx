@@ -12,9 +12,13 @@ import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
 import {checkSession} from '~/lib/session'
 import {getPrisma} from '~/lib/prisma.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Calendar')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'calendar.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -37,20 +41,36 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {dayAssigments, days}
 }
 
-const MONTHS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December'
-]
+const MONTH_LABELS: Record<string, string[]> = {
+  en: [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ],
+  pl: [
+    'Styczeń',
+    'Luty',
+    'Marzec',
+    'Kwiecień',
+    'Maj',
+    'Czerwiec',
+    'Lipiec',
+    'Sierpień',
+    'Wrzesień',
+    'Październik',
+    'Listopad',
+    'Grudzień'
+  ]
+}
 
 const getStateDate = (date = new Date()) => {
   const year = date.getFullYear()
@@ -70,24 +90,47 @@ const getStateDate = (date = new Date()) => {
   }
 }
 
-const dateOrdinal = (d: number) => {
-  return 31 == d || 21 == d || 1 == d
-    ? 'st'
-    : 22 == d || 2 == d
-      ? 'nd'
-      : 23 == d || 3 == d
-        ? 'rd'
-        : 'th'
+const dateOrdinal = (locale: string, day: number) => {
+  if (locale !== 'en') {
+    return ''
+  }
+
+  if (day % 100 >= 11 && day % 100 <= 13) {
+    return 'th'
+  }
+
+  switch (day % 10) {
+    case 1:
+      return 'st'
+    case 2:
+      return 'nd'
+    case 3:
+      return 'rd'
+    default:
+      return 'th'
+  }
 }
 
 const CalendarPage = () => {
+  const {t, locale} = useTranslation()
   const [{month, year, startOffset, daysInMonth, endOffset}, setDate] =
     useState(getStateDate())
   const {days, dayAssigments} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const monthLabels = MONTH_LABELS[locale] ?? MONTH_LABELS.en
+  const weekdayKeys = [
+    'calendar.weekdays.monday',
+    'calendar.weekdays.tuesday',
+    'calendar.weekdays.wednesday',
+    'calendar.weekdays.thursday',
+    'calendar.weekdays.friday',
+    'calendar.weekdays.saturday',
+    'calendar.weekdays.sunday'
+  ]
+  const weekdays = weekdayKeys.map(key => t(key))
 
   return (
-    <Page title="Calendar" wide helpLink="/docs/configuration/calendar/">
+    <Page title={t('calendar.metaTitle')} wide helpLink="/docs/configuration/calendar/">
       <div className="grid grid-cols-7">
         <button
           className="cursor-pointer"
@@ -95,10 +138,10 @@ const CalendarPage = () => {
             setDate(getStateDate(new Date(year, month - 1, 1)))
           }}
         >
-          {'<< Previous Month'}
+          {t('calendar.previous')}
         </button>
         <div className="col-span-5 text-center font-bold text-3xl pb-2">
-          {MONTHS[month]} {year}
+          {monthLabels[month]} {year}
         </div>
         <button
           className="text-right cursor-pointer"
@@ -106,30 +149,19 @@ const CalendarPage = () => {
             setDate(getStateDate(new Date(year, month + 1, 1)))
           }}
         >
-          {'Next Month >>'}
+          {t('calendar.next')}
         </button>
 
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Monday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Tuesday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Wednesday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Thursday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Friday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Saturday
-        </div>
-        <div className="bg-stone-200 font-semibold text-center border border-stone-200">
-          Sunday
-        </div>
+        {weekdays.map(weekday => {
+          return (
+            <div
+              key={weekday}
+              className="bg-stone-200 font-semibold text-center border border-stone-200"
+            >
+              {weekday}
+            </div>
+          )
+        })}
         {numberArray(1, startOffset).map(n => {
           return (
             <div className="bg-stone-100 border border-stone-200" key={n} />
@@ -144,6 +176,8 @@ const CalendarPage = () => {
             )
           })
 
+          const ordinal = dateOrdinal(locale, n)
+
           return (
             <div
               className={`border ${assignments.length > 1 ? 'border-red-200' : 'border-stone-200'} min-h-24 p-2`}
@@ -151,7 +185,7 @@ const CalendarPage = () => {
             >
               <strong>
                 {n}
-                <sup>{dateOrdinal(n)}</sup>
+                {ordinal ? <sup>{ordinal}</sup> : null}
               </strong>
               <p className="mt-3 text-center">
                 {assignments.map(({dayType}) => dayType.name).join(', ')}
@@ -166,11 +200,11 @@ const CalendarPage = () => {
         })}
       </div>
       <div className="box mb-4">
-        <h2>Day Types</h2>
+        <h2>{t('calendar.dayTypes')}</h2>
         <table className="box-table">
           <thead>
             <tr>
-              <th>Day</th>
+              <th>{t('calendar.dayTypesTable.day')}</th>
               <th></th>
               <th></th>
             </tr>
@@ -197,12 +231,12 @@ const CalendarPage = () => {
       <Actions
         actions={[
           {
-            label: 'Add Day',
+            label: t('calendar.buttons.addDay'),
             color: 'bg-green-300',
             onClick: () => navigate('/days/add')
           },
           {
-            label: 'Manage Assignments',
+            label: t('calendar.buttons.manageAssignments'),
             color: 'bg-blue-300',
             onClick: () => navigate('/days/assignments')
           }

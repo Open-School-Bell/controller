@@ -11,13 +11,21 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
   return [
     {
       title: pageTitle(
-        'Sounders',
-        data ? `Edit ${data.sounder.name}` : 'Edit Sounder'
+        translate(messages, 'sounders.metaTitle'),
+        data
+          ? translate(messages, 'sounders.edit.metaTitle', {
+              name: data.sounder.name
+            })
+          : translate(messages, 'sounders.edit.metaTitle', {name: ''})
       )
     }
   ]
@@ -70,13 +78,14 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 const EditSounder = () => {
   const {sounder} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Edit Sounder">
+    <Page title={t('sounders.edit.pageTitle', {name: sounder.name})}>
       <form method="post">
         <FormElement
-          label="Name"
-          helperText="The descriptive name of the sounder"
+          label={t('sounders.form.name.label')}
+          helperText={t('sounders.form.name.helper')}
         >
           <input
             name="name"
@@ -85,8 +94,8 @@ const EditSounder = () => {
           />
         </FormElement>
         <FormElement
-          label="IP"
-          helperText="The IP address the controller can contact the sounder on."
+          label={t('sounders.form.ip.label')}
+          helperText={t('sounders.form.ip.helper')}
         >
           <input
             name="ip"
@@ -95,8 +104,8 @@ const EditSounder = () => {
           />
         </FormElement>
         <FormElement
-          label="Ringer PIN"
-          helperText="The GPIO pin number to activate the ringer wire"
+          label={t('sounders.form.ringer.label')}
+          helperText={t('sounders.form.ringer.helper')}
         >
           <input
             name="ringer"
@@ -105,8 +114,8 @@ const EditSounder = () => {
           />
         </FormElement>
         <FormElement
-          label="Screen"
-          helperText="Enable the screen interface on this sounder? You will need to restart your sounder after changing this option."
+          label={t('sounders.form.screen.label')}
+          helperText={t('sounders.form.screen.helper')}
         >
           <input
             type="checkbox"
@@ -117,14 +126,14 @@ const EditSounder = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate(`/sounders/${sounder.id}`)
               }
             },
-            {label: 'Edit Sounder', color: 'bg-green-300'}
+            {label: t('button.saveChanges'), color: 'bg-green-300'}
           ]}
         />
       </form>

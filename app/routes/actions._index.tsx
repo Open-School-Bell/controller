@@ -9,9 +9,13 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Actions')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'actions.title'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -31,15 +35,20 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const ActionsPage = () => {
   const {actions} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
+  const typeLabels: Record<string, string> = {
+    broadcast: t('actions.types.broadcast'),
+    lockdown: t('actions.types.lockdown')
+  }
 
   return (
-    <Page title={`Actions (${actions.length})`}>
+    <Page title={t('actions.titleWithCount', {count: actions.length})}>
       <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
-              <th>Action</th>
-              <th>Type</th>
+              <th>{t('actions.table.action')}</th>
+              <th>{t('actions.table.type')}</th>
               <th></th>
             </tr>
           </thead>
@@ -50,7 +59,9 @@ const ActionsPage = () => {
                   <td className="text-center">
                     <Link to={`/actions/${id}`}>{name}</Link>
                   </td>
-                  <td className="text-center">{action}</td>
+                  <td className="text-center">
+                    {typeLabels[action] ? typeLabels[action] : action}
+                  </td>
                   <td className="text-center">
                     <form method="post" action={`/actions/${id}/delete`}>
                       <button className="cursor-pointer">🗑️</button>
@@ -65,7 +76,7 @@ const ActionsPage = () => {
       <Actions
         actions={[
           {
-            label: 'Add Action',
+            label: t('actions.buttons.add'),
             color: 'bg-green-300',
             onClick: () => navigate('/actions/add')
           }

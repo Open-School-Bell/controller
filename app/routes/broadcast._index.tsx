@@ -8,9 +8,13 @@ import {useNavigate} from '@remix-run/react'
 import {pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Actions, Page} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Broadcast')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'broadcast.pageTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -25,9 +29,10 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Broadcast = () => {
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Broadcast" helpLink="/guides/broadcast/">
+    <Page title={t('broadcast.pageTitle')} helpLink="/guides/broadcast/">
       <div className="w-full bg-gray-100 rounded-3xl h-1.5 my-4 ">
         <div
           role="progressbar"
@@ -37,13 +42,12 @@ const Broadcast = () => {
       </div>
       <div>
         <div className="box mb-4">
-          Broadcast a sound (and its ringer wire) to a given zone or desktop
-          group.
+          {t('broadcast.description')}
         </div>
         <Actions
           actions={[
             {
-              label: 'Build Broadcast',
+              label: t('broadcast.buildButton'),
               color: 'bg-blue-300',
               onClick: () => navigate('/broadcast/builder')
             }

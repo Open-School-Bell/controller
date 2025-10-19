@@ -11,9 +11,22 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Actions', 'Edit')}]
+export const meta: MetaFunction<typeof loader> = ({matches, data}) => {
+  const {messages} = getRootI18n(matches)
+  const name = data?.action.name ?? ''
+
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'actions.title'),
+        translate(messages, 'actions.edit.metaTitle', {name})
+      )
+    }
+  ]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -66,13 +79,14 @@ export const action = async ({params, request}: ActionFunctionArgs) => {
 const AddAction = () => {
   const {sounds, action} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title={`Edit ${action.name}`}>
+    <Page title={t('actions.edit.pageTitle', {name: action.name})}>
       <form method="post">
         <FormElement
-          label="Name"
-          helperText="The name of the action as it will appear on the screens"
+          label={t('actions.form.name.label')}
+          helperText={t('actions.form.name.helper')}
         >
           <input
             name="name"
@@ -81,8 +95,8 @@ const AddAction = () => {
           />
         </FormElement>
         <FormElement
-          label="Icon"
-          helperText="An Emoji to use as the actions icon. Be aware that Emojis render differently on the RPi screen."
+          label={t('actions.form.icon.label')}
+          helperText={t('actions.form.icon.helper')}
         >
           <input
             name="icon"
@@ -91,21 +105,21 @@ const AddAction = () => {
           />
         </FormElement>
         <FormElement
-          label="Type"
-          helperText="Broadcast runs a broadcast to the supplied zone. Lockdown triggers a system wide lockdown."
+          label={t('actions.form.type.label')}
+          helperText={t('actions.form.type.helper')}
         >
           <select
             name="action"
             className={INPUT_CLASSES}
             defaultValue={action.action}
           >
-            <option value="broadcast">Broadcast</option>
-            <option value="lockdown">Lockdown Toggle</option>
+            <option value="broadcast">{t('actions.types.broadcast')}</option>
+            <option value="lockdown">{t('actions.types.lockdown')}</option>
           </select>
         </FormElement>
         <FormElement
-          label="Sound"
-          helperText="When Broadcasting which sound should be used?"
+          label={t('actions.form.sound.label')}
+          helperText={t('actions.form.sound.helper')}
         >
           <select
             name="sound"
@@ -124,14 +138,14 @@ const AddAction = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               onClick: e => {
                 e.preventDefault()
                 navigate(`/actions/${action.id}`)
               },
               color: 'bg-stone-200'
             },
-            {label: 'Edit', color: 'bg-green-300'}
+            {label: t('button.save'), color: 'bg-green-300'}
           ]}
         />
       </form>

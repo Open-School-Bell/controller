@@ -11,9 +11,20 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle, makeKey} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Webhooks', 'Add')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'webhooks.metaTitle'),
+        translate(messages, 'webhooks.add.metaTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -59,19 +70,20 @@ export const action = async ({request}: ActionFunctionArgs) => {
 const AddWebhook = () => {
   const {actions} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Add Webhook">
+    <Page title={t('webhooks.add.pageTitle')}>
       <form method="post">
         <FormElement
-          label="Slug"
-          helperText="The name of the action as it will appear on the screens"
+          label={t('webhooks.form.slug.label')}
+          helperText={t('webhooks.form.slug.helper')}
         >
           <input name="slug" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Action"
-          helperText="When triggered which action should be run?"
+          label={t('webhooks.form.action.label')}
+          helperText={t('webhooks.form.action.helper')}
         >
           <select name="action" className={INPUT_CLASSES}>
             {actions.map(({id, name}) => {
@@ -86,14 +98,14 @@ const AddWebhook = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               onClick: e => {
                 e.preventDefault()
                 navigate('/webhooks')
               },
               color: 'bg-stone-200'
             },
-            {label: 'Add', color: 'bg-green-300'}
+            {label: t('webhooks.add.submit'), color: 'bg-green-300'}
           ]}
         />
       </form>

@@ -10,9 +10,13 @@ import {pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page} from '~/lib/ui'
 import {getPrisma} from '~/lib/prisma.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Log')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'log.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -31,14 +35,15 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
 const Log = () => {
   const {logs} = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Log">
+    <Page title={t('log.pageTitle')}>
       <table className="box-table">
         <thead>
           <tr>
-            <th>Time</th>
-            <th>Message</th>
+            <th>{t('log.columns.time')}</th>
+            <th>{t('log.columns.message')}</th>
           </tr>
         </thead>
         <tbody>
