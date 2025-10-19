@@ -41,36 +41,20 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {dayAssigments, days}
 }
 
-const MONTH_LABELS: Record<string, string[]> = {
-  en: [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ],
-  pl: [
-    'Styczeń',
-    'Luty',
-    'Marzec',
-    'Kwiecień',
-    'Maj',
-    'Czerwiec',
-    'Lipiec',
-    'Sierpień',
-    'Wrzesień',
-    'Październik',
-    'Listopad',
-    'Grudzień'
-  ]
-}
+const MONTH_KEYS: readonly string[] = [
+  'calendar.months.january',
+  'calendar.months.february',
+  'calendar.months.march',
+  'calendar.months.april',
+  'calendar.months.may',
+  'calendar.months.june',
+  'calendar.months.july',
+  'calendar.months.august',
+  'calendar.months.september',
+  'calendar.months.october',
+  'calendar.months.november',
+  'calendar.months.december'
+]
 
 const getStateDate = (date = new Date()) => {
   const year = date.getFullYear()
@@ -117,7 +101,7 @@ const CalendarPage = () => {
     useState(getStateDate())
   const {days, dayAssigments} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
-  const monthLabels = MONTH_LABELS[locale] ?? MONTH_LABELS.en
+  const monthLabels = MONTH_KEYS.map(key => t(key))
   const weekdayKeys = [
     'calendar.weekdays.monday',
     'calendar.weekdays.tuesday',
