@@ -53,7 +53,7 @@ const Log = () => {
                 <td className="text-center">
                   {format(time, 'dd/MM/yy HH:mm')}
                 </td>
-                <td>{message}</td>
+                <td>{translateLogMessage(message, t)}</td>
               </tr>
             )
           })}
@@ -64,3 +64,36 @@ const Log = () => {
 }
 
 export default Log
+
+const translateLogMessage = (
+  message: string,
+  t: ReturnType<typeof useTranslation>['t']
+) => {
+  const trimmedMessage = message.trim()
+
+  const staticMessages: Record<string, string> = {
+    '🔓 Logged in': 'log.messages.loggedIn',
+    '🔒 Bad password supplied': 'log.messages.badPassword',
+    '🔐 Lockdown Start': 'log.messages.lockdownStart',
+    '🔐 Lockdown End': 'log.messages.lockdownEnd'
+  }
+
+  const staticKey = staticMessages[trimmedMessage]
+  if (staticKey) {
+    return t(staticKey)
+  }
+
+  const newActionPrefix = 'New Action: '
+  if (trimmedMessage.startsWith(newActionPrefix)) {
+    const name = trimmedMessage.slice(newActionPrefix.length).trim()
+    return t('log.messages.newAction', {name})
+  }
+
+  const deleteActionPrefix = 'Deleted action: '
+  if (trimmedMessage.startsWith(deleteActionPrefix)) {
+    const name = trimmedMessage.slice(deleteActionPrefix.length).trim()
+    return t('log.messages.deletedAction', {name})
+  }
+
+  return message
+}
