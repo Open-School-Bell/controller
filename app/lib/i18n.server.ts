@@ -1,7 +1,7 @@
-import type {LoaderFunctionArgs} from '@remix-run/node'
+import {type LoaderFunctionArgs} from '@remix-run/node'
 
 import {locales, type SupportedLocale} from '~/locales'
-import type {Messages} from './i18n.shared'
+import {type Messages} from './i18n.shared'
 
 const FALLBACK_LOCALE: SupportedLocale = 'en'
 

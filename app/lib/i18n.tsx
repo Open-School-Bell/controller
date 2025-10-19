@@ -1,7 +1,10 @@
 import {createContext, useContext} from 'react'
 
-import type {Messages, TranslateReplacements} from './i18n.shared'
-import {translate as baseTranslate} from './i18n.shared'
+import {
+  translate as baseTranslate,
+  type Messages,
+  type TranslateReplacements
+} from './i18n.shared'
 
 type I18nContextValue = {
   locale: string

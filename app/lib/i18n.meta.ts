@@ -1,4 +1,4 @@
-import type {Messages} from './i18n.shared'
+import {type Messages} from './i18n.shared'
 
 type MatchWithData = {
   id: string

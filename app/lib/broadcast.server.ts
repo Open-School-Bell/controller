@@ -22,7 +22,7 @@ export const broadcast = async (zone: string, sounds: string) => {
   try {
     const parsed = JSON.parse(sounds) as unknown
     soundQueue = Array.isArray(parsed) ? parsed : []
-  } catch (error) {
+  } catch {
     soundQueue = []
   }
 
