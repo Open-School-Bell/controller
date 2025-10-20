@@ -9,9 +9,16 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: pageTitle('Zones', data ? data.zone.name : 'View Zone')}]
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const name = data
+    ? data.zone.name
+    : translate(messages, 'zones.detail.metaFallback')
+  return [{title: pageTitle(translate(messages, 'zones.metaTitle'), name)}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -34,11 +41,12 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 const Zone = () => {
   const {zone} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <Page title={zone.name}>
       <div className="box mb-4">
-        <h2>Sounders</h2>
+        <h2>{t('zones.detail.soundersTitle')}</h2>
         <ul>
           {zone.sounders.map(({sounder}) => {
             return (
@@ -52,12 +60,12 @@ const Zone = () => {
       <Actions
         actions={[
           {
-            label: 'Back',
+            label: t('button.back'),
             color: 'bg-stone-200',
             onClick: () => navigate('/zones')
           },
           {
-            label: 'Edit Zone',
+            label: t('zones.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/zones/${zone.id}/edit`)
           }

@@ -1,5 +1,6 @@
 import {type ActionFunctionArgs, redirect} from '@remix-run/node'
 import {getSession, destroySession} from '~/lib/session'
+import {useTranslation} from '~/lib/i18n'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const session = await getSession(request.headers.get('Cookie'))
@@ -11,11 +12,12 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 export default function LogoutRoute() {
+  const {t} = useTranslation()
   return (
     <>
-      <p>Are you sure you want to log out?</p>
+      <p>{t('auth.logout.message')}</p>
       <form method="post">
-        <button>Logout</button>
+        <button>{t('auth.logout.submit')}</button>
       </form>
     </>
   )

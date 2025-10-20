@@ -9,9 +9,13 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Webhooks')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'webhooks.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -34,18 +38,19 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const WebhooksPage = () => {
   const {webhooks, outboundWebhooks} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <div>
       <Page
-        title={`Inbound Webhooks (${webhooks.length})`}
+        title={t('webhooks.inbound.titleWithCount', {count: webhooks.length})}
         helpLink="/docs/configuration/webhooks/"
       >
         <div className="box mb-4">
           <table className="box-table">
             <thead>
               <tr>
-                <th>Webhook</th>
+                <th>{t('webhooks.inbound.table.webhook')}</th>
                 <th></th>
               </tr>
             </thead>
@@ -70,19 +75,23 @@ const WebhooksPage = () => {
         <Actions
           actions={[
             {
-              label: 'Add Webook',
+              label: t('webhooks.inbound.addButton'),
               color: 'bg-green-300',
               onClick: () => navigate('/webhooks/add')
             }
           ]}
         />
       </Page>
-      <Page title={`Outbound Webhooks (${outboundWebhooks.length})`}>
+      <Page
+        title={t('webhooks.outbound.titleWithCount', {
+          count: outboundWebhooks.length
+        })}
+      >
         <div className="box mb-4">
           <table className="box-table">
             <thead>
               <tr>
-                <th>Outbound Webhook</th>
+                <th>{t('webhooks.outbound.table.webhook')}</th>
                 <th></th>
               </tr>
             </thead>
@@ -110,7 +119,7 @@ const WebhooksPage = () => {
         <Actions
           actions={[
             {
-              label: 'Add Outbound Webook',
+              label: t('webhooks.outbound.addButton'),
               color: 'bg-green-300',
               onClick: () => navigate('/webhooks/outbound/add')
             }

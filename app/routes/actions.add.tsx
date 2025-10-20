@@ -12,9 +12,20 @@ import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {trigger} from '~/lib/trigger'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Actions', 'Add')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'actions.title'),
+        translate(messages, 'actions.add.pageTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -64,34 +75,35 @@ export const action = async ({request}: ActionFunctionArgs) => {
 const AddAction = () => {
   const {sounds} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Add Action">
+    <Page title={t('actions.add.pageTitle')}>
       <form method="post">
         <FormElement
-          label="Name"
-          helperText="The name of the action as it will appear on the screens"
+          label={t('actions.form.name.label')}
+          helperText={t('actions.form.name.helper')}
         >
           <input name="name" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Icon"
-          helperText="An Emoji to use as the actions icon. Be aware that Emojis render differently on the RPi screen."
+          label={t('actions.form.icon.label')}
+          helperText={t('actions.form.icon.helper')}
         >
           <input name="icon" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Type"
-          helperText="Broadcast runs a broadcast to the supplied zone. Lockdown triggers a system wide lockdown."
+          label={t('actions.form.type.label')}
+          helperText={t('actions.form.type.helper')}
         >
           <select name="action" className={INPUT_CLASSES}>
-            <option value="broadcast">Broadcast</option>
-            <option value="lockdown">Lockdown Toggle</option>
+            <option value="broadcast">{t('actions.types.broadcast')}</option>
+            <option value="lockdown">{t('actions.types.lockdown')}</option>
           </select>
         </FormElement>
         <FormElement
-          label="Sound"
-          helperText="When Broadcasting which sound should be used?"
+          label={t('actions.form.sound.label')}
+          helperText={t('actions.form.sound.helper')}
         >
           <select name="sound" className={INPUT_CLASSES}>
             {sounds.map(({id, name}) => {
@@ -106,14 +118,14 @@ const AddAction = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               onClick: e => {
                 e.preventDefault()
                 navigate('/actions')
               },
               color: 'bg-stone-200'
             },
-            {label: 'Add', color: 'bg-green-300'}
+            {label: t('button.add'), color: 'bg-green-300'}
           ]}
         />
       </form>

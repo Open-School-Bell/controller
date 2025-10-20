@@ -12,9 +12,21 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {useLocalStorage} from '~/lib/hooks/use-local-storage'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
+import {initTranslations} from '~/lib/i18n.server'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Schedule', 'Add')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'schedule.metaTitle'),
+        translate(messages, 'schedule.add.pageTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -43,6 +55,7 @@ export const action: ActionFunction = async ({request}) => {
   const prisma = getPrisma()
 
   const formData = await request.formData()
+  const {messages} = initTranslations(request)
 
   const monday = formData.get('day[1]')
   const tuesday = formData.get('day[2]')
@@ -71,7 +84,7 @@ export const action: ActionFunction = async ({request}) => {
     .join(',')
 
   if (days === '') {
-    throw new Error('Days must be defined')
+    throw new Error(translate(messages, 'schedule.error.noDays'))
   }
 
   const time = formData.get('time') as string | undefined
@@ -107,37 +120,38 @@ const AddSchedule = () => {
   const [zone, setZone] = useLocalStorage<string>('zone', zones[0].id)
   const [sound, setSound] = useLocalStorage<string>('sound', sounds[0].id)
   const [count, setCount] = useLocalStorage<string>('count', '1')
+  const {t} = useTranslation()
 
   return (
-    <Page title="Add Schedule">
+    <Page title={t('schedule.add.pageTitle')}>
       <form method="post">
         <div className="grid grid-cols-7 border-b border-b-stone-100 mb-4">
           {[
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
-          ].map((day, i) => {
+            t('calendar.weekdays.monday'),
+            t('calendar.weekdays.tuesday'),
+            t('calendar.weekdays.wednesday'),
+            t('calendar.weekdays.thursday'),
+            t('calendar.weekdays.friday'),
+            t('calendar.weekdays.saturday'),
+            t('calendar.weekdays.sunday')
+          ].map((dayLabel, i) => {
             return (
               <label key={i} className="text-center cursor-pointer mb-4">
-                <p>{day}</p>
+                <p>{dayLabel}</p>
                 <input type="checkbox" name={`day[${i + 1}]`} value={i + 1} />
               </label>
             )
           })}
         </div>
         <FormElement
-          label="Time"
-          helperText="The time to trigger the sound. Will be triggered at 0 seconds past the minute."
+          label={t('schedule.form.time.label')}
+          helperText={t('schedule.form.time.helper')}
         >
           <input type="time" name="time" className={`${INPUT_CLASSES}`} />
         </FormElement>
         <FormElement
-          label="Day"
-          helperText="The type of day this schedule applies to."
+          label={t('schedule.form.day.label')}
+          helperText={t('schedule.form.day.helper')}
         >
           <select
             name="dayType"
@@ -147,7 +161,7 @@ const AddSchedule = () => {
               setDay(e.target.value)
             }}
           >
-            <option value="_">Default</option>
+            <option value="_">{t('schedule.defaultOption')}</option>
             {days.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -158,8 +172,8 @@ const AddSchedule = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Zone"
-          helperText="Which zone does this schedule apply to?"
+          label={t('schedule.form.zone.label')}
+          helperText={t('schedule.form.zone.helper')}
         >
           <select
             name="zone"
@@ -179,8 +193,8 @@ const AddSchedule = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Sound"
-          helperText="Which sound should be played for this schedule?"
+          label={t('schedule.form.sound.label')}
+          helperText={t('schedule.form.sound.helper')}
         >
           <select
             name="sound"
@@ -200,8 +214,8 @@ const AddSchedule = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Count"
-          helperText="How many times should the sound be played"
+          label={t('schedule.form.count.label')}
+          helperText={t('schedule.form.count.helper')}
         >
           <input
             type="number"
@@ -216,14 +230,14 @@ const AddSchedule = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate('/schedule')
               }
             },
-            {label: 'Add Schedule', color: 'bg-green-300'}
+            {label: t('schedule.add.submit'), color: 'bg-green-300'}
           ]}
         />
       </form>

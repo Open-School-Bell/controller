@@ -19,11 +19,22 @@ import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {updateSounders} from '~/lib/update-sounders.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
 const {rename} = fs.promises
 
-export const meta: MetaFunction<typeof loader> = () => {
-  return [{title: pageTitle('Sounds', 'Add Sound')}]
+export const meta: MetaFunction<typeof loader> = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'sounds.metaTitle'),
+        translate(messages, 'sounds.add.metaTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -113,16 +124,20 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const AddSound = () => {
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Add Sound">
+    <Page title={t('sounds.add.pageTitle')}>
       <form method="post" encType="multipart/form-data">
-        <FormElement label="Name" helperText="Descriptive name for the sound.">
+        <FormElement
+          label={t('sounds.form.name.label')}
+          helperText={t('sounds.form.name.helper')}
+        >
           <input name="name" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="MP3 File"
-          helperText="The MP3 file to be used as the sound."
+          label={t('sounds.form.file.label')}
+          helperText={t('sounds.form.file.helper')}
         >
           <input
             name="file"
@@ -132,22 +147,22 @@ const AddSound = () => {
           />
         </FormElement>
         <FormElement
-          label="Ringer Wire"
-          helperText="Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF, e.g. 1,3,1,3. make sure to end with an off time."
+          label={t('sounds.form.ringer.label')}
+          helperText={t('sounds.form.ringer.helper')}
         >
           <input name="ringer-wire" className={INPUT_CLASSES} />
         </FormElement>
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate('/sounds')
               }
             },
-            {label: 'Add Sound', color: 'bg-green-300'}
+            {label: t('sounds.add.submit'), color: 'bg-green-300'}
           ]}
         />
       </form>

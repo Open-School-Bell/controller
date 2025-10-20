@@ -11,9 +11,16 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle, getSecondsAsTime} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: pageTitle('Sounds', data ? data.sound.name : 'View Sound')}]
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const name = data
+    ? data.sound.name
+    : translate(messages, 'sounds.detail.metaFallback')
+  return [{title: pageTitle(translate(messages, 'sounds.metaTitle'), name)}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -53,6 +60,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 const Sound = () => {
   const {sound} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <Page title={sound.name}>
@@ -60,19 +68,25 @@ const Sound = () => {
         <audio controls>
           <source src={`/sounds/${sound.fileName}`} type="audio/mp3" />
         </audio>
-        <p>Ringer Wire: {sound.ringerWire}</p>
-        <p>Duration: {getSecondsAsTime(sound.duration)}</p>
-        <p>Audio Type: {sound.audioContainer}</p>
+        <p>
+          {t('sounds.detail.ringerWire')}: {sound.ringerWire}
+        </p>
+        <p>
+          {t('sounds.detail.duration')}: {getSecondsAsTime(sound.duration)}
+        </p>
+        <p>
+          {t('sounds.detail.audioType')}: {sound.audioContainer}
+        </p>
       </div>
       <Actions
         actions={[
           {
-            label: 'Back',
+            label: t('button.back'),
             color: 'bg-stone-200',
             onClick: () => navigate('/sounds')
           },
           {
-            label: 'Edit Sound',
+            label: t('sounds.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/sounds/${sound.id}/edit`)
           }

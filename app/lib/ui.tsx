@@ -1,6 +1,7 @@
 import {NavLink} from '@remix-run/react'
 
 import {docsLink} from './utils'
+import {useTranslation} from './i18n'
 
 export const SidebarLink: React.FC<{
   to: string
@@ -28,6 +29,8 @@ export const Page: React.FC<{
   wide?: boolean
   helpLink?: string
 }> = ({title, wide, children, helpLink}) => {
+  const {t} = useTranslation()
+
   return (
     <div className={`grid ${wide ? 'grid-cols-wide' : 'grid-cols-narrow'}`}>
       <div className="col-start-2">
@@ -35,8 +38,8 @@ export const Page: React.FC<{
           {title}
           {helpLink ? (
             <span className="float-right text-base pt-3">
-              <a href={docsLink(helpLink)} target="_blank">
-                📖 Docs
+              <a href={docsLink(helpLink)} target="_blank" rel="noreferrer">
+                📖 {t('ui.docs')}
               </a>
             </span>
           ) : (

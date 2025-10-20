@@ -11,9 +11,22 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle, INPUT_CLASSES} from '~/lib/utils'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Zones', 'Edit')}]
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const name =
+    data?.zone.name ?? translate(messages, 'zones.detail.metaFallback')
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'zones.metaTitle'),
+        translate(messages, 'zones.edit.metaTitle', {name})
+      )
+    }
+  ]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -56,11 +69,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 const AddZone = () => {
   const {zone} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Edit Zone">
+    <Page title={t('zones.edit.pageTitle', {name: zone.name})}>
       <form method="post">
-        <FormElement label="Name" helperText="Descriptive name for the zone.">
+        <FormElement
+          label={t('zones.form.name.label')}
+          helperText={t('zones.form.name.helper')}
+        >
           <input
             name="name"
             className={INPUT_CLASSES}
@@ -70,14 +87,14 @@ const AddZone = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate(`/zones/${zone.id}`)
               }
             },
-            {label: 'Edit Zone', color: 'bg-green-300'}
+            {label: t('button.saveChanges'), color: 'bg-green-300'}
           ]}
         />
       </form>

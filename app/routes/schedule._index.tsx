@@ -10,9 +10,13 @@ import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, Actions} from '~/lib/ui'
 import {useStatefulLocalStorage} from '~/lib/hooks/use-local-storage'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Schedule')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'schedule.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -40,9 +44,10 @@ const Schedule = () => {
   const {schedules, days} = useLoaderData<typeof loader>()
   const [day, setDay] = useStatefulLocalStorage<string>('day', '_')
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Schedule">
+    <Page title={t('schedule.pageTitle')}>
       <select
         className={INPUT_CLASSES}
         onChange={e => {
@@ -50,7 +55,7 @@ const Schedule = () => {
         }}
         value={day}
       >
-        <option value="_">Default</option>
+        <option value="_">{t('schedule.defaultOption')}</option>
         {days.map(({id, name}) => {
           return (
             <option key={id} value={id}>
@@ -62,17 +67,17 @@ const Schedule = () => {
       <table className="box-table mb-4">
         <thead>
           <tr>
-            <th className="p-2">Time</th>
-            <th className="p-2">Monday</th>
-            <th className="p-2">Tuesday</th>
-            <th className="p-2">Wednesday</th>
-            <th className="p-2">Thursday</th>
-            <th className="p-2">Friday</th>
-            <th className="p-2">Saturday</th>
-            <th className="p-2">Sunday</th>
-            <th className="p-2">Zone</th>
-            <th className="p-2">Sound</th>
-            <th className="p-2">Count</th>
+            <th className="p-2">{t('schedule.table.time')}</th>
+            <th className="p-2">{t('calendar.weekdays.monday')}</th>
+            <th className="p-2">{t('calendar.weekdays.tuesday')}</th>
+            <th className="p-2">{t('calendar.weekdays.wednesday')}</th>
+            <th className="p-2">{t('calendar.weekdays.thursday')}</th>
+            <th className="p-2">{t('calendar.weekdays.friday')}</th>
+            <th className="p-2">{t('calendar.weekdays.saturday')}</th>
+            <th className="p-2">{t('calendar.weekdays.sunday')}</th>
+            <th className="p-2">{t('schedule.table.zone')}</th>
+            <th className="p-2">{t('schedule.table.sound')}</th>
+            <th className="p-2">{t('schedule.table.count')}</th>
             <th></th>
           </tr>
         </thead>
@@ -128,7 +133,7 @@ const Schedule = () => {
       <Actions
         actions={[
           {
-            label: 'Add Schedule',
+            label: t('schedule.addButton'),
             color: 'bg-green-300',
             onClick: () => navigate('/schedule/add')
           }

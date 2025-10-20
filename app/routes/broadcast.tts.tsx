@@ -17,9 +17,20 @@ import {Actions, Page, FormElement} from '~/lib/ui'
 import {getPrisma} from '~/lib/prisma.server'
 import {getSetting} from '~/lib/settings.server'
 import {updateSounders} from '~/lib/update-sounders.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Broadcast', 'Text to Speech')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'broadcast.pageTitle'),
+        translate(messages, 'broadcast.tts.metaTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -87,9 +98,10 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const BroadcastTTS = () => {
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Broadcast (Text to Speech)">
+    <Page title={t('broadcast.tts.pageTitle')}>
       <div className="w-full bg-gray-100 rounded-3xl h-1.5 my-4 ">
         <div
           role="progressbar"
@@ -98,19 +110,22 @@ const BroadcastTTS = () => {
         />
       </div>
       <form method="post">
-        <FormElement label="Text" helperText="The text to be broadcast.">
+        <FormElement
+          label={t('broadcast.tts.text.label')}
+          helperText={t('broadcast.tts.text.helper')}
+        >
           <input name="tts" className={INPUT_CLASSES} />
         </FormElement>
         <FormElement
-          label="Ringer Wire"
-          helperText="How to ring the ringerwire"
+          label={t('broadcast.tts.ringer.label')}
+          helperText={t('broadcast.tts.ringer.helper')}
         >
           <input name="ringerWire" className={INPUT_CLASSES} />
         </FormElement>
         <Actions
           actions={[
             {
-              label: 'Back',
+              label: t('button.back'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
@@ -118,7 +133,7 @@ const BroadcastTTS = () => {
               }
             },
             {
-              label: 'Next',
+              label: t('button.next'),
               color: 'bg-blue-300'
             }
           ]}

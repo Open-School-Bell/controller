@@ -5,12 +5,16 @@ import {
 } from '@remix-run/node'
 import {Link, useLoaderData} from '@remix-run/react'
 import {formatDistance} from 'date-fns'
+import {enUS, pl} from 'date-fns/locale'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {getSetting} from '~/lib/settings.server'
 import {Page} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -28,24 +32,27 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {sounders, lockdownMode}
 }
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Dashboard')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'dashboard.pageTitle'))}]
 }
 
 export default function Index() {
   const {sounders, lockdownMode} = useLoaderData<typeof loader>()
+  const {t, locale} = useTranslation()
+  const dateLocale = locale === 'pl' ? pl : enUS
 
   return (
-    <Page title="Open School Bell">
+    <Page title={t('dashboard.pageTitle')}>
       <div className="grid grid-cols-2 gap-4">
         <div className="box">
-          <h2>Sounders</h2>
+          <h2>{t('dashboard.devices')}</h2>
           <table className="box-table">
             <thead>
               <tr>
-                <th className="p-2">Name</th>
-                <th className="p-2">Online</th>
-                <th className="p-2">Last Seen</th>
+                <th className="p-2">{t('dashboard.table.name')}</th>
+                <th className="p-2">{t('dashboard.table.status')}</th>
+                <th className="p-2">{t('dashboard.table.lastSeen')}</th>
               </tr>
             </thead>
             <tbody>
@@ -64,7 +71,8 @@ export default function Index() {
                     </td>
                     <td>
                       {formatDistance(lastCheckIn, new Date(), {
-                        addSuffix: true
+                        addSuffix: true,
+                        locale: dateLocale
                       })}
                     </td>
                   </tr>
@@ -76,14 +84,26 @@ export default function Index() {
         <div
           className={`box ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
         >
-          <p>Lockdown Mode {lockdownMode === '0' ? 'Disabled' : 'Enabled'}</p>
+          <p>
+            {t('dashboard.lockdown.message', {
+              status: t(
+                lockdownMode === '0'
+                  ? 'dashboard.lockdown.status.disabled'
+                  : 'dashboard.lockdown.status.enabled'
+              )
+            })}
+          </p>
           <form
             action="/lockdown/trigger"
             method="post"
             onSubmit={e => {
               if (
                 !confirm(
-                  `Are you sure you want to ${lockdownMode === '0' ? 'enable' : 'disable'} lockdown?`
+                  t(
+                    lockdownMode === '0'
+                      ? 'dashboard.lockdown.confirmEnable'
+                      : 'dashboard.lockdown.confirmDisable'
+                  )
                 )
               ) {
                 e.preventDefault()
@@ -91,7 +111,11 @@ export default function Index() {
             }}
           >
             <button className="bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer">
-              {lockdownMode === '0' ? 'Enable' : 'Disable'}
+              {t(
+                lockdownMode === '0'
+                  ? 'dashboard.lockdown.button.enable'
+                  : 'dashboard.lockdown.button.disable'
+              )}
             </button>
           </form>
         </div>

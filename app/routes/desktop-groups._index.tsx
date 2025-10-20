@@ -4,9 +4,13 @@ import {Link, useNavigate, useLoaderData} from '@remix-run/react'
 import {getPrisma} from '~/lib/prisma.server'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Desktop Groups')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'desktopGroups.metaTitle'))}]
 }
 
 export const loader = async ({}: LoaderFunctionArgs) => {
@@ -22,15 +26,18 @@ export const loader = async ({}: LoaderFunctionArgs) => {
 const DesktopGroups = () => {
   const {desktopGroups} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title={`Desktop Groups (${desktopGroups.length})`}>
+    <Page
+      title={t('desktopGroups.titleWithCount', {count: desktopGroups.length})}
+    >
       <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Key</th>
+              <th>{t('desktopGroups.table.name')}</th>
+              <th>{t('desktopGroups.table.key')}</th>
             </tr>
           </thead>
           <tbody>
@@ -50,7 +57,7 @@ const DesktopGroups = () => {
       <Actions
         actions={[
           {
-            label: 'Add Desktop Group',
+            label: t('desktopGroups.addButton'),
             color: 'bg-green-300',
             onClick: () => navigate('/desktop-groups/add')
           }

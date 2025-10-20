@@ -10,9 +10,13 @@ import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
 import {getSetting} from '~/lib/settings.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Webhooks')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'webhooks.metaTitle'))}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -37,34 +41,32 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 const Webhook = () => {
   const {webhook, controllerUrl} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <Page title={webhook.slug}>
       <div className="box mb-4">
-        <p>Key: {webhook.key}</p>
         <p>
-          Action:{' '}
+          {t('webhooks.detail.key')}: {webhook.key}
+        </p>
+        <p>
+          {t('webhooks.detail.action')}{' '}
           <Link to={`/actions/${webhook.actionId}`}>{webhook.action.name}</Link>
         </p>
         <p className="bg-stone-200 p-2 rounded-md">
-          curl -H 'Content-Type: application/json' -d '
-          {`{"key": "${webhook.key}"}`}' -X POST {controllerUrl}/hook/
-          {webhook.slug}
+          {`curl -H 'Content-Type: application/json' -d '{"key": "${webhook.key}"}' -X POST ${controllerUrl}/hook/${webhook.slug}`}
         </p>
-        <p>
-          If this webhook uses an action that has the type Broadcast, your
-          request JSON must include <i>"zone": "ZONE ID"</i>
-        </p>
+        <p>{t('webhooks.detail.broadcastNotice')} </p>
       </div>
       <Actions
         actions={[
           {
-            label: 'Back',
+            label: t('button.back'),
             color: 'bg-stone-200',
             onClick: () => navigate('/webhooks')
           },
           {
-            label: 'Edit',
+            label: t('webhooks.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/webhooks/${webhook.id}/edit`)
           }
