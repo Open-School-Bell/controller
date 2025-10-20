@@ -6,4 +6,7 @@ export const locales = {
   pl
 }
 
+export const FALLBACK_LOCALE = 'en' as const
+
 export type SupportedLocale = keyof typeof locales
+export type MessageKey = keyof (typeof locales)[typeof FALLBACK_LOCALE]

@@ -5,6 +5,7 @@ import {
   type Messages,
   type TranslateReplacements
 } from './i18n.shared'
+import {type MessageKey} from '~/locales'
 
 type I18nContextValue = {
   locale: string
@@ -31,7 +32,7 @@ export const I18nProvider: React.FC<{
 export const useTranslation = () => {
   const context = useContext(I18nContext)
 
-  const t = (key: string, replacements: TranslateReplacements = {}) => {
+  const t = (key: MessageKey, replacements: TranslateReplacements = {}) => {
     return baseTranslate(context.messages, key, replacements)
   }
 

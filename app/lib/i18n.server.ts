@@ -1,9 +1,12 @@
 import {type LoaderFunctionArgs} from '@remix-run/node'
 
-import {locales, type SupportedLocale} from '~/locales'
+import {
+  locales,
+  type SupportedLocale,
+  FALLBACK_LOCALE,
+  MessageKey
+} from '~/locales'
 import {type Messages} from './i18n.shared'
-
-const FALLBACK_LOCALE: SupportedLocale = 'en'
 
 const resolveLocale = (
   request: LoaderFunctionArgs['request']
@@ -40,7 +43,13 @@ const resolveLocale = (
 }
 
 const getMessages = (locale: SupportedLocale): Messages => {
-  return locales[locale]
+  const messages: Messages = {}
+
+  ;(Object.keys(locales[FALLBACK_LOCALE]) as MessageKey[]).forEach(key => {
+    messages[key] = locales[locale][key] ?? locales[FALLBACK_LOCALE][key]
+  })
+
+  return messages
 }
 
 export const initTranslations = (request: LoaderFunctionArgs['request']) => {
