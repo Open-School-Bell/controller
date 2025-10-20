@@ -13,6 +13,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {MessageKey} from '~/locales'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -71,7 +72,7 @@ const translateLogMessage = (
 ) => {
   const trimmedMessage = message.trim()
 
-  const staticMessages: Record<string, string> = {
+  const staticMessages: Record<string, MessageKey> = {
     '🔓 Logged in': 'log.messages.loggedIn',
     '🔒 Bad password supplied': 'log.messages.badPassword',
     '🔐 Lockdown Start': 'log.messages.lockdownStart',

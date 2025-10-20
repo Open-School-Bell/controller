@@ -15,6 +15,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {MessageKey} from '~/locales'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -41,7 +42,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {dayAssigments, days}
 }
 
-const MONTH_KEYS: readonly string[] = [
+const MONTH_KEYS: readonly MessageKey[] = [
   'calendar.months.january',
   'calendar.months.february',
   'calendar.months.march',
@@ -102,7 +103,7 @@ const CalendarPage = () => {
   const {days, dayAssigments} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const monthLabels = MONTH_KEYS.map(key => t(key))
-  const weekdayKeys = [
+  const weekdayKeys: MessageKey[] = [
     'calendar.weekdays.monday',
     'calendar.weekdays.tuesday',
     'calendar.weekdays.wednesday',
