@@ -1,5 +1,4 @@
 import {type ActionFunctionArgs} from '@remix-run/node'
-import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {getSettings} from '~/lib/settings.server'
@@ -7,14 +6,20 @@ import {getSettings} from '~/lib/settings.server'
 export const action = async ({request}: ActionFunctionArgs) => {
   const {key} = (await request.json()) as {key?: string}
 
-  invariant(key)
+  if (!key || typeof key !== 'string') {
+    return Response.json({error: 'missing key'}, {status: 400})
+  }
 
   const prisma = getPrisma()
 
-  const sounder = await prisma.sounder.findFirstOrThrow({
+  const sounder = await prisma.sounder.findFirst({
     where: {key, enrolled: true},
     include: {zones: true}
   })
+
+  if (!sounder) {
+    return Response.json({error: 'invalid key'}, {status: 403})
+  }
 
   const schedules = await prisma.schedule.findMany({
     where: {zoneId: {in: sounder.zones.map(({zoneId}) => zoneId)}},

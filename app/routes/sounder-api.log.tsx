@@ -23,7 +23,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   })
 
   if (!sounder) {
-    return Response.json({error: 'sounder not found'}, {status: 401})
+    return Response.json({error: 'invalid key'}, {status: 403})
   }
 
   await prisma.sounderLog.create({data: {message, sounderId: sounder.id}})
