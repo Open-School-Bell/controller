@@ -45,6 +45,35 @@ const main = async () => {
       update: {value: sound.id}
     })
   }
+
+  const schedulesWithNoSequence = await prisma.schedule.findMany({
+    where: {audioSequence: ''}
+  })
+
+  if (schedulesWithNoSequence.length > 0) {
+    console.log('Schedules need migrating to the audio sequence system.')
+
+    const promises = schedulesWithNoSequence.map(({id, audioId, count}) => {
+      return new Promise(async resolve => {
+        const sequence = []
+
+        let i = 0
+        while (i < count) {
+          sequence.push(audioId)
+          i++
+        }
+
+        await prisma.schedule.update({
+          where: {id},
+          data: {audioSequence: JSON.stringify(sequence)}
+        })
+
+        resolve()
+      })
+    })
+
+    await Promise.all(promises)
+  }
 }
 
 main()

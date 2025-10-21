@@ -16,6 +16,7 @@ import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
 import {initTranslations} from '~/lib/i18n.server'
+import {SequenceBuilder} from '~/lib/sequence-builder'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -90,14 +91,12 @@ export const action: ActionFunction = async ({request}) => {
   const time = formData.get('time') as string | undefined
   const zone = formData.get('zone') as string | undefined
   const day = formData.get('dayType') as string | undefined
-  const sound = formData.get('sound') as string | undefined
-  const count = formData.get('count') as string | undefined
+  const sequence = formData.get('sequence') as string | undefined
 
   invariant(time)
   invariant(zone)
   invariant(day)
-  invariant(sound)
-  invariant(count)
+  invariant(sequence)
 
   await prisma.schedule.create({
     data: {
@@ -105,8 +104,9 @@ export const action: ActionFunction = async ({request}) => {
       time,
       zoneId: zone,
       dayTypeId: day === '_' ? undefined : day,
-      audioId: sound,
-      count: parseInt(count)
+      audioId: JSON.parse(sequence)[0],
+      count: 0,
+      audioSequence: sequence
     }
   })
 
@@ -192,41 +192,13 @@ const AddSchedule = () => {
             })}
           </select>
         </FormElement>
-        <FormElement
-          label={t('schedule.form.sound.label')}
-          helperText={t('schedule.form.sound.helper')}
-        >
-          <select
-            name="sound"
-            className={INPUT_CLASSES}
-            defaultValue={sound}
-            onChange={e => {
-              setSound(e.target.value)
-            }}
-          >
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
-        <FormElement
-          label={t('schedule.form.count.label')}
-          helperText={t('schedule.form.count.helper')}
-        >
-          <input
-            type="number"
-            defaultValue={parseInt(count)}
-            name="count"
-            className={INPUT_CLASSES}
-            onChange={e => {
-              setCount(e.target.value)
-            }}
-          />
-        </FormElement>
+        <SequenceBuilder
+          sounds={sounds}
+          initialQueue={[]}
+          name="sequence"
+          label={t('schedule.form.sequence.label')}
+          helperText={t('schedule.form.sequence.helper')}
+        />
         <Actions
           actions={[
             {
