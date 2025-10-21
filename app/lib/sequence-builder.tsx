@@ -1,5 +1,8 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import {type Audio} from '@prisma/client'
+
+import CopyIcon from '@heroicons/react/24/outline/DocumentDuplicateIcon'
+import PasteIcon from '@heroicons/react/24/outline/ClipboardDocumentIcon'
 
 import {getSecondsAsTime, INPUT_CLASSES} from './utils'
 import {HelperText} from './ui'
@@ -56,6 +59,33 @@ export const SequenceBuilder = ({
         >
           Add Sound
         </button>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <button
+            className={`${INPUT_CLASSES} bg-blue-300 cursor-pointer`}
+            onClick={e => {
+              e.preventDefault()
+              localStorage.setItem(
+                'sequence-builder-clipboard',
+                JSON.stringify(queue)
+              )
+              alert('Copied sequence.')
+            }}
+          >
+            <CopyIcon className="w-6 m-auto" />
+          </button>
+          <button
+            className={`${INPUT_CLASSES} bg-blue-300 cursor-pointer disabled:bg-gray-300`}
+            onClick={e => {
+              e.preventDefault()
+              const item = localStorage.getItem('sequence-builder-clipboard')
+              if (item) {
+                setQueue(JSON.parse(item))
+              }
+            }}
+          >
+            <PasteIcon className="w-6 m-auto" />
+          </button>
+        </div>
       </div>
       <div className="col-span-3 row-span-2">
         {queue.map((queuedId, i) => {
