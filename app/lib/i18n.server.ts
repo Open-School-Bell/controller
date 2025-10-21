@@ -46,7 +46,10 @@ const getMessages = (locale: SupportedLocale): Messages => {
   const messages: Messages = {}
 
   ;(Object.keys(locales[FALLBACK_LOCALE]) as MessageKey[]).forEach(key => {
-    messages[key] = locales[locale][key] ?? locales[FALLBACK_LOCALE][key]
+    messages[key] =
+      (locales[locale] as Partial<(typeof locales)[typeof FALLBACK_LOCALE]>)[
+        key
+      ] ?? locales[FALLBACK_LOCALE][key]
   })
 
   return messages
