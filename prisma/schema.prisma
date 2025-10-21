@@ -68,6 +68,8 @@ model Schedule {
 
   audio   Audio  @relation(fields: [audioId], references: [id])
   audioId String
+
+  audioSequence String @default("")
 }
 
 model DayType {

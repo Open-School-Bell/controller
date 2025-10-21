@@ -9,9 +9,13 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Zones')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'zones.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -34,16 +38,17 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const Zones = () => {
   const {zones} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title={`Zones (${zones.length})`}>
+    <Page title={t('zones.titleWithCount', {count: zones.length})}>
       <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
-              <th>Zone</th>
-              <th>Sounders</th>
-              <th>Schedules</th>
+              <th>{t('zones.table.zone')}</th>
+              <th>{t('zones.table.sounders')}</th>
+              <th>{t('zones.table.schedules')}</th>
               <th></th>
             </tr>
           </thead>
@@ -70,7 +75,7 @@ const Zones = () => {
       <Actions
         actions={[
           {
-            label: 'Add Zone',
+            label: t('zones.addButton'),
             color: 'bg-green-300',
             onClick: () => navigate('/zones/add')
           }

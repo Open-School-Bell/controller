@@ -17,12 +17,24 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
 const {rename} = fs.promises
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const name = data
+    ? data.sound.name
+    : translate(messages, 'sounds.detail.metaFallback')
   return [
-    {title: pageTitle('Sounds', data ? data.sound.name : 'Sound', 'Edit')}
+    {
+      title: pageTitle(
+        translate(messages, 'sounds.metaTitle'),
+        translate(messages, 'sounds.edit.metaTitle', {name})
+      )
+    }
   ]
 }
 
@@ -105,11 +117,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 const AddSound = () => {
   const {sound} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Edit Sound">
+    <Page title={t('sounds.edit.pageTitle', {name: sound.name})}>
       <form method="post" encType="multipart/form-data">
-        <FormElement label="Name" helperText="Descriptive name for the sound.">
+        <FormElement
+          label={t('sounds.form.name.label')}
+          helperText={t('sounds.form.name.helper')}
+        >
           <input
             name="name"
             className={INPUT_CLASSES}
@@ -117,8 +133,8 @@ const AddSound = () => {
           />
         </FormElement>
         <FormElement
-          label="MP3 File"
-          helperText="Supply a new MP3 to replace the existing one."
+          label={t('sounds.form.file.label')}
+          helperText={t('sounds.form.file.helperEdit')}
         >
           <input
             name="file"
@@ -128,10 +144,9 @@ const AddSound = () => {
           />
         </FormElement>
         <FormElement
-          label="Ringer Wire"
-          helperText="Comma seperated list of seconds to operate the relay. ON,OFF,ON,OFF, e.g. 1,3,1,3. make sure to end with an off time."
+          label={t('sounds.form.ringer.label')}
+          helperText={t('sounds.form.ringer.helper')}
         >
-          Ringer Wire
           <input
             name="ringer-wire"
             className={INPUT_CLASSES}
@@ -141,14 +156,14 @@ const AddSound = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate(`/sounds/${sound.id}`)
               }
             },
-            {label: 'Edit Sound', color: 'bg-green-300'}
+            {label: t('button.saveChanges'), color: 'bg-green-300'}
           ]}
         />
       </form>

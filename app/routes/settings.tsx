@@ -11,9 +11,13 @@ import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Lockdown')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'settings.pageTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -54,13 +58,14 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
 const Settings = () => {
   const {ttsSpeed, enrollUrl} = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Settings">
+    <Page title={t('settings.pageTitle')}>
       <form method="post">
         <FormElement
-          label="Controler URL"
-          helperText="The Address of the controller on the network. Without the trailing /"
+          label={t('settings.controllerUrl.label')}
+          helperText={t('settings.controllerUrl.helper')}
         >
           <input
             type="text"
@@ -70,8 +75,8 @@ const Settings = () => {
           />
         </FormElement>
         <FormElement
-          label="Text to Speech Speed"
-          helperText="Set the speed factor of text to speech generation. Default is 1, lower is faster."
+          label={t('settings.ttsSpeed.label')}
+          helperText={t('settings.ttsSpeed.helper')}
         >
           <input
             type="text"
@@ -80,21 +85,26 @@ const Settings = () => {
             defaultValue={ttsSpeed}
           />
         </FormElement>
-        <FormElement label="Change Password" helperText="">
+        <FormElement
+          label={t('settings.password.label')}
+          helperText={t('settings.password.helper')}
+        >
           <input
             type="password"
             name="password"
             className={`${INPUT_CLASSES} mb-4`}
+            placeholder={t('settings.password.placeholderNew')}
           />
           <input
             type="password"
             name="confirmPassword"
             className={INPUT_CLASSES}
+            placeholder={t('settings.password.placeholderConfirm')}
           />
         </FormElement>
         <input
           type="submit"
-          value="Update"
+          value={t('button.save')}
           className={`${INPUT_CLASSES} bg-green-300`}
         />
       </form>

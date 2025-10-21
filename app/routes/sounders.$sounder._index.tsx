@@ -11,11 +11,17 @@ import {checkSession} from '~/lib/session'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
 import {getSetting} from '~/lib/settings.server'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [
-    {title: pageTitle('Sounders', data ? data.sounder.name : 'View Sounder')}
-  ]
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const name = data
+    ? data.sounder.name
+    : translate(messages, 'sounders.detail.metaFallback')
+
+  return [{title: pageTitle(translate(messages, 'sounders.metaTitle'), name)}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -48,26 +54,38 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 const Sounder = () => {
   const {sounder, zones, enrollUrl} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
+  const screenLabel = sounder.screen ? t('common.yes') : t('common.no')
+  const ringerPinLabel =
+    sounder.ringerPin === 0
+      ? t('sounders.detail.ringerPin.none')
+      : String(sounder.ringerPin)
 
   return (
     <Page title={sounder.name}>
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="box">
-          <h2>About</h2>
-          <p>IP: {sounder.ip}</p>
-          <p>Screen: {sounder.screen ? 'Yes' : 'No'}</p>
+          <h2>{t('sounders.detail.infoTitle')}</h2>
           <p>
-            Ringer Pin: {sounder.ringerPin === 0 ? 'No' : sounder.ringerPin}
+            {t('sounders.detail.ipLabel')}: {sounder.ip}
+          </p>
+          <p>
+            {t('sounders.detail.screenLabel')}: {screenLabel}
+          </p>
+          <p>
+            {t('sounders.detail.ringerPinLabel')}: {ringerPinLabel}
           </p>
           {sounder.enrolled ? (
             <form method="post" action={`/sounders/${sounder.id}/reset`}>
               <button className={`${INPUT_CLASSES} bg-red-300 mt-2`}>
-                Reset Key (will require re-enroll)
+                {t('sounders.detail.resetButton')}
               </button>
             </form>
           ) : (
             <>
-              <p>Key: {sounder.key}</p>
+              <p>
+                {t('sounders.detail.keyLabel')}: {sounder.key}
+              </p>
               <div className="bg-gray-300 rounded-md p-2">
                 <pre>
                   sounder --enroll {sounder.key} --controller {enrollUrl}
@@ -77,7 +95,7 @@ const Sounder = () => {
           )}
         </div>
         <div className="box">
-          <h2>Zones</h2>
+          <h2>{t('sounders.detail.zonesTitle')}</h2>
           <ul className="mb-2">
             {sounder.zones.map(({id, zone}) => {
               return (
@@ -105,18 +123,18 @@ const Sounder = () => {
             </select>
             <input
               type="submit"
-              value="Add to Zone"
+              value={t('sounders.detail.addToZone')}
               className={`${INPUT_CLASSES} mt-2 bg-green-300`}
             />
           </form>
         </div>
         <div className="col-span-2 box">
-          <h2>Log</h2>
+          <h2>{t('sounders.detail.logTitle')}</h2>
           <table className="box-table">
             <thead>
               <tr>
-                <th>Time</th>
-                <th>Message</th>
+                <th>{t('log.columns.time')}</th>
+                <th>{t('log.columns.message')}</th>
               </tr>
             </thead>
             <tbody>
@@ -137,7 +155,7 @@ const Sounder = () => {
       <Actions
         actions={[
           {
-            label: 'Edit Sounder',
+            label: t('sounders.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/sounders/${sounder.id}/edit`)
           }

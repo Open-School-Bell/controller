@@ -1,5 +1,4 @@
 import {type ActionFunctionArgs} from '@remix-run/node'
-import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {getRedis} from '~/lib/redis.server.mjs'
@@ -10,14 +9,20 @@ export const action = async ({request}: ActionFunctionArgs) => {
     version?: string
   }
 
-  invariant(key)
+  if (!key || typeof key !== 'string') {
+    return Response.json({error: 'missing key'}, {status: 400})
+  }
 
   const prisma = getPrisma()
   const redis = getRedis()
 
-  const sounder = await prisma.sounder.findFirstOrThrow({
+  const sounder = await prisma.sounder.findFirst({
     where: {key, enrolled: true}
   })
+
+  if (!sounder) {
+    return Response.json({error: 'invalid key'}, {status: 403})
+  }
 
   await prisma.sounder.update({
     where: {id: sounder.id},

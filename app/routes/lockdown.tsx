@@ -12,9 +12,13 @@ import {getSettings, setSetting} from '~/lib/settings.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Lockdown')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'lockdown.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -107,16 +111,21 @@ const Lockdown = () => {
     lockdownRepetitions,
     sounds
   } = useLoaderData<typeof loader>()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Lockdown">
+    <Page title={t('lockdown.pageTitle')}>
       <div
         className={`${lockdownMode === '1' ? 'bg-red-300' : 'bg-green-300'} p-2 my-4`}
-      >{`${lockdownMode === '1' ? 'Lockdown Active' : 'Lockdown Inactive'} `}</div>
+      >
+        {lockdownMode === '1'
+          ? t('lockdown.status.active')
+          : t('lockdown.status.inactive')}{' '}
+      </div>
       <form method="post">
         <FormElement
-          label="Lockdown Start Sound"
-          helperText="The sound used to start the lockdown and used on repetitions."
+          label={t('lockdown.field.entrySound.label')}
+          helperText={t('lockdown.field.entrySound.helper')}
         >
           <select
             className={INPUT_CLASSES}
@@ -133,8 +142,8 @@ const Lockdown = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Lockdown End Sound"
-          helperText="The sound used to end the lockdown"
+          label={t('lockdown.field.exitSound.label')}
+          helperText={t('lockdown.field.exitSound.helper')}
         >
           <select
             className={INPUT_CLASSES}
@@ -151,8 +160,8 @@ const Lockdown = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Lockdown Start Count"
-          helperText="How many times should the start of lockdown sound be played, both when it starts and on repeats."
+          label={t('lockdown.field.startCount.label')}
+          helperText={t('lockdown.field.startCount.helper')}
         >
           <input
             type="number"
@@ -162,8 +171,8 @@ const Lockdown = () => {
           />
         </FormElement>
         <FormElement
-          label="Lockdown End Count"
-          helperText="How many times should the end of lockdown sound be played."
+          label={t('lockdown.field.exitCount.label')}
+          helperText={t('lockdown.field.exitCount.helper')}
         >
           <input
             type="number"
@@ -173,8 +182,8 @@ const Lockdown = () => {
           />
         </FormElement>
         <FormElement
-          label="Lockdown Repeat Interval"
-          helperText="How often should the start of lockdown sound be repeated in minutes."
+          label={t('lockdown.field.repeatInterval.label')}
+          helperText={t('lockdown.field.repeatInterval.helper')}
         >
           <input
             type="number"
@@ -184,8 +193,8 @@ const Lockdown = () => {
           />
         </FormElement>
         <FormElement
-          label="Ringer Wire on Repeat?"
-          helperText="Should the ringer wire be triggered on repetitions. Useful to avoid abiguity over number of bells meaning start/end of lockdown"
+          label={t('lockdown.field.repeatRinger.label')}
+          helperText={t('lockdown.field.repeatRinger.helper')}
         >
           <input
             type="checkbox"
@@ -194,7 +203,7 @@ const Lockdown = () => {
             defaultChecked={lockdownRepeatRingerWire === '1'}
           />
         </FormElement>
-        <Actions actions={[{label: 'Update', color: 'bg-green-300'}]} />
+        <Actions actions={[{label: t('button.save'), color: 'bg-green-300'}]} />
       </form>
     </Page>
   )

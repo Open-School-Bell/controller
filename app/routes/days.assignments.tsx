@@ -13,9 +13,20 @@ import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions, HelperText} from '~/lib/ui'
 import {useLocalStorage} from '~/lib/hooks/use-local-storage'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Days', 'Assignments')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [
+    {
+      title: pageTitle(
+        translate(messages, 'calendar.metaTitle'),
+        translate(messages, 'days.assignments.metaTitle')
+      )
+    }
+  ]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -79,19 +90,17 @@ const DayAssignments = () => {
     format(new Date(), 'yyyy-LL-dd')
   )
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <Page title="Day Assignments">
-        <HelperText>
-          These assignments change the day type for the given days to that day
-          types schedule.
-        </HelperText>
+      <Page title={t('days.assignments.title')}>
+        <HelperText>{t('days.assignments.helper')}</HelperText>
         <table className="box-table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Day Type</th>
+              <th>{t('days.assignments.table.date')}</th>
+              <th>{t('days.assignments.table.dayType')}</th>
               <th></th>
             </tr>
           </thead>
@@ -115,11 +124,11 @@ const DayAssignments = () => {
           </tbody>
         </table>
       </Page>
-      <Page title="Add Assignments">
+      <Page title={t('days.assignments.addTitle')}>
         <form method="post">
           <FormElement
-            label="From"
-            helperText="The date to start assigning from. To only assign one day set both From and To to the same date."
+            label={t('days.assignments.form.from.label')}
+            helperText={t('days.assignments.form.from.helper')}
           >
             <input
               type="date"
@@ -132,8 +141,8 @@ const DayAssignments = () => {
             />
           </FormElement>
           <FormElement
-            label="To"
-            helperText="The date to end assignments. To only assign one day set both From and To to the same date."
+            label={t('days.assignments.form.to.label')}
+            helperText={t('days.assignments.form.to.helper')}
           >
             <input
               type="date"
@@ -146,8 +155,8 @@ const DayAssignments = () => {
             />
           </FormElement>
           <FormElement
-            label="Day"
-            helperText="The day type to assign to these dates"
+            label={t('days.assignments.form.day.label')}
+            helperText={t('days.assignments.form.day.helper')}
           >
             <select
               className={INPUT_CLASSES}
@@ -169,7 +178,7 @@ const DayAssignments = () => {
           <Actions
             actions={[
               {
-                label: 'Cancel',
+                label: t('button.cancel'),
                 color: 'bg-stone-200',
                 onClick: e => {
                   e.preventDefault()
@@ -177,7 +186,7 @@ const DayAssignments = () => {
                 }
               },
               {
-                label: 'Add Assignments',
+                label: t('days.assignments.addButton'),
                 color: 'bg-green-300'
               }
             ]}

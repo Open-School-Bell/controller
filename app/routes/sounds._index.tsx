@@ -9,9 +9,13 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Sounds')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'sounds.metaTitle'))}]
 }
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
@@ -31,17 +35,18 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const Sounds = () => {
   const {sounds} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
     <Page
-      title={`Sounds (${sounds.length})`}
+      title={t('sounds.titleWithCount', {count: sounds.length})}
       helpLink="/docs/configuration/sound/"
     >
       <div className="box mb-4">
         <table className="box-table">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>{t('sounds.table.name')}</th>
               <th></th>
             </tr>
           </thead>
@@ -66,12 +71,12 @@ const Sounds = () => {
       <Actions
         actions={[
           {
-            label: 'Add Sound',
+            label: t('sounds.addButton'),
             color: 'bg-green-300',
             onClick: () => navigate('/sounds/add')
           },
           {
-            label: 'Add Text-To-Speech Sound',
+            label: t('sounds.addTtsButton'),
             color: 'bg-green-300',
             onClick: () => navigate('/sounds/add-tts')
           }

@@ -9,9 +9,13 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
 import {Page, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
 
-export const meta: MetaFunction = () => {
-  return [{title: pageTitle('Webhooks')}]
+export const meta: MetaFunction = ({matches}) => {
+  const {messages} = getRootI18n(matches)
+  return [{title: pageTitle(translate(messages, 'webhooks.metaTitle'))}]
 }
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
@@ -33,22 +37,27 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
 const Webhook = () => {
   const {webhook} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Outbound Webhook">
+    <Page title={t('webhooks.outbound.detail.pageTitle')}>
       <div className="box mb-4">
-        <p>Key: {webhook.key}</p>
-        <p>Target: {webhook.target}</p>
+        <p>
+          {t('webhooks.outbound.detail.key')}: {webhook.key}
+        </p>
+        <p>
+          {t('webhooks.outbound.detail.target')}: {webhook.target}
+        </p>
       </div>
       <Actions
         actions={[
           {
-            label: 'Back',
+            label: t('button.back'),
             color: 'bg-stone-200',
             onClick: () => navigate('/webhooks')
           },
           {
-            label: 'Edit',
+            label: t('webhooks.outbound.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/webhooks/outbound/${webhook.id}/edit`)
           }

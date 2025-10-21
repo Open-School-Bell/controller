@@ -11,10 +11,22 @@ import {getPrisma} from '~/lib/prisma.server'
 import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
+import {useTranslation} from '~/lib/i18n'
+import {translate} from '~/lib/i18n.shared'
+import {getRootI18n} from '~/lib/i18n.meta'
+import {initTranslations} from '~/lib/i18n.server'
+import {SequenceBuilder} from '~/lib/sequence-builder'
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
+  const {messages} = getRootI18n(matches)
+  const time = data?.schedule.time ?? ''
   return [
-    {title: pageTitle('Schedule', data ? data.schedule.time : 'View Schedule')}
+    {
+      title: pageTitle(
+        translate(messages, 'schedule.metaTitle'),
+        translate(messages, 'schedule.edit.metaTitle', {time})
+      )
+    }
   ]
 }
 
@@ -48,6 +60,7 @@ export const action: ActionFunction = async ({request, params}) => {
   const prisma = getPrisma()
 
   const formData = await request.formData()
+  const {messages} = initTranslations(request)
 
   const monday = formData.get('day[1]')
   const tuesday = formData.get('day[2]')
@@ -76,20 +89,18 @@ export const action: ActionFunction = async ({request, params}) => {
     .join(',')
 
   if (days === '') {
-    throw new Error('Days must be defined')
+    throw new Error(translate(messages, 'schedule.error.noDays'))
   }
 
   const time = formData.get('time') as string | undefined
   const zone = formData.get('zone') as string | undefined
   const day = formData.get('dayType') as string | undefined
-  const sound = formData.get('sound') as string | undefined
-  const count = formData.get('count') as string | undefined
+  const sequence = formData.get('sequence') as string | undefined
 
   invariant(time)
   invariant(zone)
   invariant(day)
-  invariant(sound)
-  invariant(count)
+  invariant(sequence)
 
   await prisma.schedule.update({
     where: {id: params.schedule},
@@ -98,8 +109,9 @@ export const action: ActionFunction = async ({request, params}) => {
       time,
       zoneId: zone,
       dayTypeId: day === '_' ? undefined : day,
-      audioId: sound,
-      count: parseInt(count)
+      audioId: JSON.parse(sequence)[0],
+      count: 0,
+      audioSequence: sequence
     }
   })
 
@@ -109,23 +121,24 @@ export const action: ActionFunction = async ({request, params}) => {
 const EditSchedule = () => {
   const {zones, days, sounds, schedule} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Edit Schedule">
+    <Page title={t('schedule.edit.pageTitle', {time: schedule.time})}>
       <form method="post">
         <div className="grid grid-cols-7 border-b border-b-stone-100 mb-4">
           {[
-            'Monday',
-            'Tuesday',
-            'Wednesday',
-            'Thursday',
-            'Friday',
-            'Saturday',
-            'Sunday'
-          ].map((day, i) => {
+            t('calendar.weekdays.monday'),
+            t('calendar.weekdays.tuesday'),
+            t('calendar.weekdays.wednesday'),
+            t('calendar.weekdays.thursday'),
+            t('calendar.weekdays.friday'),
+            t('calendar.weekdays.saturday'),
+            t('calendar.weekdays.sunday')
+          ].map((dayLabel, i) => {
             return (
               <label key={i} className="text-center cursor-pointer mb-4">
-                <p>{day}</p>
+                <p>{dayLabel}</p>
                 <input
                   type="checkbox"
                   name={`day[${i + 1}]`}
@@ -139,8 +152,8 @@ const EditSchedule = () => {
           })}
         </div>
         <FormElement
-          label="Time"
-          helperText="The time to trigger the sound. Will be triggered at 0 seconds past the minute."
+          label={t('schedule.form.time.label')}
+          helperText={t('schedule.form.time.helper')}
         >
           <input
             type="time"
@@ -150,15 +163,15 @@ const EditSchedule = () => {
           />
         </FormElement>
         <FormElement
-          label="Day"
-          helperText="The type of day this schedule applies to."
+          label={t('schedule.form.day.label')}
+          helperText={t('schedule.form.day.helper')}
         >
           <select
             name="dayType"
             defaultValue={schedule.dayTypeId!}
             className={`${INPUT_CLASSES}`}
           >
-            <option value="_">Default</option>
+            <option value="_">{t('schedule.defaultOption')}</option>
             {days.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
@@ -169,8 +182,8 @@ const EditSchedule = () => {
           </select>
         </FormElement>
         <FormElement
-          label="Zone"
-          helperText="Which zone does this schedule apply to?"
+          label={t('schedule.form.zone.label')}
+          helperText={t('schedule.form.zone.helper')}
         >
           <select
             name="zone"
@@ -186,46 +199,24 @@ const EditSchedule = () => {
             })}
           </select>
         </FormElement>
-        <FormElement
-          label="Sound"
-          helperText="Which sound should be played for this schedule?"
-        >
-          <select
-            name="sound"
-            className={INPUT_CLASSES}
-            defaultValue={schedule.audioId}
-          >
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
-        <FormElement
-          label="Count"
-          helperText="How many times should the sound be played"
-        >
-          <input
-            type="number"
-            defaultValue={schedule.count}
-            name="count"
-            className={INPUT_CLASSES}
-          />
-        </FormElement>
+        <SequenceBuilder
+          sounds={sounds}
+          initialQueue={JSON.parse(schedule.audioSequence)}
+          name="sequence"
+          label={t('schedule.form.sequence.label')}
+          helperText={t('schedule.form.sequence.helper')}
+        />
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
                 navigate('/schedule')
               }
             },
-            {label: 'Edit Schedule', color: 'bg-green-300'}
+            {label: t('button.saveChanges'), color: 'bg-green-300'}
           ]}
         />
       </form>

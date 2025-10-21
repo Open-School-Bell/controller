@@ -6,38 +6,38 @@ RUN apt-get update && apt-get install openssl -y
 
 # Create a new temp container called `deps` from `base`
 # Add the package files and install all the deps.
-  FROM base AS deps
+FROM base AS deps
 
-  RUN mkdir /app
-  WORKDIR /app
+RUN mkdir /app
+WORKDIR /app
 
-  ADD package.json package-lock.json ./
-  RUN npm install --production=false
+ADD package.json package-lock.json ./
+RUN npm install --production=false
 
 # create a new temp container called `production-deps` from `base`
 # copy the `deps` node_modules folder over and prune it to production only.
-  FROM base AS production-deps
+FROM base AS production-deps
 
-  RUN mkdir /app
-  WORKDIR /app
+RUN mkdir /app
+WORKDIR /app
 
-  COPY --from=deps /app/node_modules /app/node_modules
-  ADD package.json package-lock.json ./
-  RUN npm prune --production
+COPY --from=deps /app/node_modules /app/node_modules
+ADD package.json package-lock.json ./
+RUN npm prune --production
 
 # create a new temp container called `build` from `base`
 # Copy over the full deps and run build.
-  FROM base AS build
+FROM base AS build
 
-  ENV NODE_ENV=production
+ENV NODE_ENV=production
 
-  RUN mkdir /app
-  WORKDIR /app
+RUN mkdir /app
+WORKDIR /app
 
-  COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=deps /app/node_modules /app/node_modules
 
-  ADD . .
-  RUN npm run build
+ADD . .
+RUN npm run build
 
 # Go back to the `base` image and copy in the production deps and build
 FROM base

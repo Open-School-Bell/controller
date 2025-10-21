@@ -10,6 +10,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {INPUT_CLASSES} from '~/lib/utils'
+import {useTranslation} from '~/lib/i18n'
 
 export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -53,11 +54,15 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 const AddDay = () => {
   const {dayType} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
+  const {t} = useTranslation()
 
   return (
-    <Page title="Edit Day">
+    <Page title={t('days.edit.pageTitle', {name: dayType.name})}>
       <form method="post">
-        <FormElement label="Name" helperText="Descriptive name for the day.">
+        <FormElement
+          label={t('days.form.name.label')}
+          helperText={t('days.form.name.helper')}
+        >
           <input
             name="name"
             className={INPUT_CLASSES}
@@ -67,7 +72,7 @@ const AddDay = () => {
         <Actions
           actions={[
             {
-              label: 'Cancel',
+              label: t('button.cancel'),
               color: 'bg-stone-200',
               onClick: e => {
                 e.preventDefault()
@@ -75,7 +80,7 @@ const AddDay = () => {
               }
             },
             {
-              label: 'Edit Day',
+              label: t('button.saveChanges'),
               color: 'bg-green-300'
             }
           ]}
