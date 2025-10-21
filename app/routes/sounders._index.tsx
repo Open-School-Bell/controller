@@ -57,6 +57,21 @@ const Sounders = () => {
                   <td>
                     <Link to={`/sounders/${id}`}>{name}</Link>
                   </td>
+                  <td>
+                    <form
+                      method="post"
+                      action={`/sounders/${id}/delete`}
+                      onSubmit={e => {
+                        if (
+                          !confirm(t('sounders.deleteConfirmation', {name}))
+                        ) {
+                          e.preventDefault()
+                        }
+                      }}
+                    >
+                      <button className="cursor-pointer">🗑️</button>
+                    </form>
+                  </td>
                 </tr>
               )
             })}

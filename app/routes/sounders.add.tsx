@@ -56,7 +56,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const key = makeKey()
 
-  const sounder = await prisma.sounder.create({data: {name, key}})
+  const sounder = await prisma.sounder.create({data: {name, key, ip}})
 
   return redirect(`/sounders/${sounder.id}`)
 }

@@ -233,6 +233,8 @@ export const en = {
   'sounders.titleWithCount': 'Sounders ({{count}})',
   'sounders.table.device': 'Sounder',
   'sounders.addButton': 'Add sounder',
+  'sounders.deleteConfirmation':
+    'Are you sure you want to delete the sounder {{name}}?',
   'sounders.add.pageTitle': 'Add sounder',
   'sounders.form.name.label': 'Name',
   'sounders.form.name.helper': 'Descriptive name of the sounder.',
