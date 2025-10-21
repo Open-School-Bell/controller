@@ -31,13 +31,12 @@ export const action = async ({request}: ActionFunctionArgs) => {
     }
   })
 
-  const data = schedules.map(({time, dayTypeId, weekDays, audioId, count}) => {
+  const data = schedules.map(({time, dayTypeId, weekDays, audioSequence}) => {
     return {
       time,
       day: dayTypeId ? dayTypeId : 'null',
       weekDays,
-      soundId: audioId,
-      count
+      sequence: audioSequence
     }
   })
 

@@ -4,7 +4,7 @@ export const RequiredVersions = {
   controller: VERSION,
   tts: '2.0.0',
   piper: '1.3.0',
-  sounder: '2.0.0'
+  sounder: '2.1.0'
 }
 
 export const DOCS_URL = `https://openschoolbell.co.uk`

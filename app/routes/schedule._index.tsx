@@ -76,8 +76,7 @@ const Schedule = () => {
             <th className="p-2">{t('calendar.weekdays.saturday')}</th>
             <th className="p-2">{t('calendar.weekdays.sunday')}</th>
             <th className="p-2">{t('schedule.table.zone')}</th>
-            <th className="p-2">{t('schedule.table.sound')}</th>
-            <th className="p-2">{t('schedule.table.count')}</th>
+            <th className="p-2">{t('schedule.table.sequenceLength')}</th>
             <th></th>
           </tr>
         </thead>
@@ -86,7 +85,7 @@ const Schedule = () => {
             .filter(({dayTypeId}) => {
               return dayTypeId === (day === '_' ? null : day)
             })
-            .map(({id, time, weekDays, zone, audio, count}) => {
+            .map(({id, time, weekDays, zone, audioSequence}) => {
               const days = weekDays.split(',')
 
               return (
@@ -117,9 +116,8 @@ const Schedule = () => {
                   </td>
                   <td className="text-center">{zone.name}</td>
                   <td className="text-center">
-                    <Link to={`/sounds/${audio.id}`}>{audio.name}</Link>
+                    {(JSON.parse(audioSequence) as string[]).length}
                   </td>
-                  <td className="text-center">{count}</td>
                   <td className="text-center">
                     <form method="post" action={`/schedule/${id}/delete`}>
                       <button className="cursor-pointer">🗑️</button>
