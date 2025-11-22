@@ -28,6 +28,7 @@ import LockClosedIcon from '@heroicons/react/24/outline/LockClosedIcon'
 import MusicIcon from '@heroicons/react/24/outline/MusicalNoteIcon'
 import CodeIcon from '@heroicons/react/24/outline/CodeBracketIcon'
 import LogIcon from '@heroicons/react/24/outline/ClipboardDocumentCheckIcon'
+import ButtonIcon from '@heroicons/react/24/outline/ArrowDownOnSquareIcon'
 
 import './tailwind.css'
 
@@ -111,6 +112,9 @@ const AppContent = () => {
         </SidebarLink>
         <SidebarLink to="/actions">
           <ArrowIcon className="w-6 mr-2" /> <span>{t('nav.actions')}</span>
+        </SidebarLink>
+        <SidebarLink to="/buttons">
+          <ButtonIcon className="w-6 mr-2" /> <span>{t('nav.buttons')}</span>
         </SidebarLink>
         <SidebarLink to="/webhooks">
           <CodeIcon className="w-6 mr-2" /> <span>{t('nav.webhooks')}</span>

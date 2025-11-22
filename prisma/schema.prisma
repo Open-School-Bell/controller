@@ -110,6 +110,7 @@ model Action {
   audioId String?
 
   webhooks Webhook[]
+  buttons  ActionButton[]
 }
 
 model Setting {
@@ -145,4 +146,32 @@ model OutboundWebhook {
   target String
   event  String
   key    String
+}
+
+model ActionButton {
+  id          String   @id @default(uuid())
+  name        String
+  key         String
+  ip          String   @default("")
+  enrolled    Boolean  @default(false)
+  lastCheckIn DateTime @default(now())
+
+  ledPin         Int @default(0)
+  buttonPin      Int @default(0)
+  holdDuration   Int @default(0)
+  cancelDuration Int @default(0)
+
+  action   Action @relation(fields: [actionId], references: [id])
+  actionId String
+
+  logs ActionButtonLog[]
+}
+
+model ActionButtonLog {
+  id      String   @id @default(uuid())
+  time    DateTime @default(now())
+  message String
+
+  actionButton   ActionButton @relation(fields: [actionButtonId], references: [id])
+  actionButtonId String
 }
