@@ -59,7 +59,7 @@ const Sounders = () => {
               return (
                 <tr key={id}>
                   <td>
-                    <Link to={`/sounders/${id}`}>{name}</Link>
+                    <Link to={`/buttons/${id}`}>{name}</Link>
                   </td>
                   <td>
                     <Link to={`/actions/${action.id}`}>{action.name}</Link>
