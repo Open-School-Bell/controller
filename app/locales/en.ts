@@ -358,6 +358,8 @@ export const en = {
     'IP address where the controller can reach the button.',
   'buttons.form.action.label': 'Action',
   'buttons.form.action.helper': 'The action to be triggered by this button',
+  'buttons.form.zone.label': 'Zone',
+  'buttons.form.zone.helper': 'The zone to use when triggering the action.',
   'buttons.form.ledPin.label': 'LED Pin',
   'buttons.form.ledPin.helper': 'The GPIO output pin connected to the LED.',
   'buttons.form.buttonPin.label': 'Button Pin',
@@ -370,6 +372,7 @@ export const en = {
   'buttons.form.cancelDuration.helper':
     'How long in seconds does the user have to cancel the trigger.',
   'buttons.add.submit': 'Add Button',
+  'buttons.edit.submit': 'Update Button',
   'buttons.deleteConfirmation':
     'Are you sure you want to delete the button {{name}}?',
   'buttons.detail.metaFallback': 'Button',
@@ -382,6 +385,8 @@ export const en = {
   'buttons.detail.buttonPinLabel': 'Button Pin',
   'buttons.detail.holdLabel': 'Hold Duration',
   'buttons.detail.cancelLabel': 'Cancel Duration',
+  'buttons.detail.actionLabel': 'Action',
+  'buttons.detail.zoneLabel': 'Zone',
   'buttons.edit.metaTitle': 'Edit {{name}}',
   'buttons.edit.pageTitle': 'Edit button {{name}}',
   'dashboard.buttons': 'Buttons'

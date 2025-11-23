@@ -5,9 +5,8 @@ import {broadcast} from '~/lib/broadcast.server'
 import {toggleLockdown} from '~/lib/lockdown.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
-  const {key, zone} = (await request.json()) as {
+  const {key} = (await request.json()) as {
     key?: string
-    zone?: string
   }
 
   if (!key || typeof key !== 'string') {
@@ -24,6 +23,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   if (!button) {
     return Response.json({error: 'sounder not found'}, {status: 401})
   }
+
+  const zone = button.zoneId
 
   switch (button.action.action) {
     case 'broadcast':

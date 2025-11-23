@@ -3,7 +3,7 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData, useNavigate} from '@remix-run/react'
+import {useLoaderData, useNavigate, Link} from '@remix-run/react'
 import {format} from 'date-fns'
 
 import {getPrisma} from '~/lib/prisma.server'
@@ -37,6 +37,7 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
     where: {id: params.sounder},
     include: {
       action: true,
+      zone: true,
       logs: {orderBy: {time: 'desc'}, take: 10}
     }
   })
@@ -70,6 +71,16 @@ const Sounder = () => {
           </p>
           <p>
             {t('buttons.detail.cancelLabel')}: {button.cancelDuration}
+          </p>
+          <p>
+            {t('buttons.detail.actionLabel')}:{' '}
+            <Link to={`/actions/${button.actionId}`}>{button.action.name}</Link>
+          </p>
+          <p>
+            {t('buttons.detail.zoneLabel')}:{' '}
+            <Link to={`/zones/${button.zoneId}`}>
+              {button.zone ? button.zone.name : 'None'}
+            </Link>
           </p>
           {button.enrolled ? (
             <form method="post" action={`/buttons/${button.id}/reset`}>

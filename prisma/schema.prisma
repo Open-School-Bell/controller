@@ -40,8 +40,9 @@ model Zone {
   id   String @id @default(uuid())
   name String
 
-  sounders  ZoneSounder[]
-  schedules Schedule[]
+  sounders     ZoneSounder[]
+  schedules    Schedule[]
+  ActionButton ActionButton[]
 }
 
 model ZoneSounder {
@@ -161,8 +162,10 @@ model ActionButton {
   holdDuration   Int @default(0)
   cancelDuration Int @default(0)
 
-  action   Action @relation(fields: [actionId], references: [id])
+  action   Action  @relation(fields: [actionId], references: [id])
   actionId String
+  zone     Zone?   @relation(fields: [zoneId], references: [id])
+  zoneId   String?
 
   logs ActionButtonLog[]
 }

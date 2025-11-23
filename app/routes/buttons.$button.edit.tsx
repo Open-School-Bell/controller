@@ -8,7 +8,7 @@ import {useLoaderData, useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {makeKey, INPUT_CLASSES, pageTitle} from '~/lib/utils'
+import {INPUT_CLASSES, pageTitle} from '~/lib/utils'
 import {checkSession} from '~/lib/session'
 import {Page, FormElement, Actions} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
@@ -41,11 +41,12 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
   const actions = await prisma.action.findMany({orderBy: {name: 'asc'}})
+  const zones = await prisma.zone.findMany({orderBy: {name: 'asc'}})
   const button = await prisma.actionButton.findFirstOrThrow({
     where: {id: params.button}
   })
 
-  return {actions, button}
+  return {actions, button, zones}
 }
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
@@ -62,6 +63,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
   const name = formData.get('name') as string | undefined
   const ip = formData.get('ip') as string | undefined
   const action = formData.get('action') as string | undefined
+  const zone = formData.get('zone') as string | undefined
   const ledPin = formData.get('ledpin') as string | undefined
   const buttonPin = formData.get('buttonpin') as string | undefined
   const holdDuration = formData.get('holdduration') as string | undefined
@@ -70,12 +72,11 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
   invariant(name)
   invariant(ip)
   invariant(action)
+  invariant(zone)
   invariant(ledPin)
   invariant(buttonPin)
   invariant(holdDuration)
   invariant(cancelDuration)
-
-  const key = makeKey()
 
   const button = await prisma.actionButton.update({
     where: {id: params.button},
@@ -83,6 +84,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
       name,
       ip,
       actionId: action,
+      zoneId: zone,
       ledPin: parseInt(ledPin),
       buttonPin: parseInt(buttonPin),
       holdDuration: parseInt(holdDuration),
@@ -94,7 +96,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
 }
 
 const EditButton = () => {
-  const {actions, button} = useLoaderData<typeof loader>()
+  const {actions, button, zones} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const {t} = useTranslation()
 
@@ -127,6 +129,24 @@ const EditButton = () => {
             defaultValue={button.actionId}
           >
             {actions.map(({id, name}) => {
+              return (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              )
+            })}
+          </select>
+        </FormElement>
+        <FormElement
+          label={t('buttons.form.zone.label')}
+          helperText={t('buttons.form.zone.helper')}
+        >
+          <select
+            name="zone"
+            className={INPUT_CLASSES}
+            defaultValue={button.zoneId ? button.zoneId : ''}
+          >
+            {zones.map(({id, name}) => {
               return (
                 <option key={id} value={id}>
                   {name}
@@ -189,7 +209,7 @@ const EditButton = () => {
                 navigate('/buttons')
               }
             },
-            {label: t('buttons.add.submit'), color: 'bg-green-300'}
+            {label: t('buttons.edit.submit'), color: 'bg-green-300'}
           ]}
         />
       </form>
