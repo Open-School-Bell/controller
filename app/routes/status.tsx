@@ -13,6 +13,9 @@ export const loader = async ({}: LoaderFunctionArgs) => {
     select: {id: true, name: true, lastCheckIn: true, enrolled: true, ip: true}
   })
   const zones = await prisma.zone.findMany()
+  const buttons = await prisma.actionButton.findMany({
+    select: {id: true, name: true, lastCheckIn: true, enrolled: true, ip: true}
+  })
 
   const date = new Date()
   date.setHours(0, 0, 0, 0)
@@ -27,6 +30,7 @@ export const loader = async ({}: LoaderFunctionArgs) => {
     lockdown: lockdownMode === '1',
     sounders,
     version: VERSION,
-    zones
+    zones,
+    buttons
   })
 }

@@ -22,6 +22,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   }
 
   const sounders = await prisma.sounder.findMany({orderBy: {name: 'asc'}})
+  const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
 
   return Response.json({
     system: 'ok',
@@ -35,6 +36,18 @@ export const action = async ({request}: ActionFunctionArgs) => {
         status:
           new Date().getTime() / 1000 - sounder.lastCheckIn.getTime() / 1000 <
           65
+            ? '🟢'
+            : '🔴'
+      }
+    }),
+    buttons: buttons.map(button => {
+      return {
+        ...button,
+        lastSeen: formatDistance(new Date(button.lastCheckIn), new Date(), {
+          addSuffix: true
+        }),
+        status:
+          new Date().getTime() / 1000 - button.lastCheckIn.getTime() / 1000 < 65
             ? '🟢'
             : '🔴'
       }
