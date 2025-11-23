@@ -112,6 +112,25 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
       .catch(() => resolve('error'))
   })
 
+  const buttonLatest = await new Promise<string>(resolve => {
+    fetch(
+      'https://api.github.com/repos/Open-School-Bell/action-button/releases?per_page=1',
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+      .then(response => {
+        response
+          .json()
+          .then(data => resolve(data[0].tag_name))
+          .catch(() => resolve('error'))
+      })
+      .catch(() => resolve('error'))
+  })
+
   const prisma = getPrisma()
   const redis = getRedis()
 
@@ -128,6 +147,19 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     sounderVersions[id] = version ? version : '0.0.0'
   })
 
+  const buttons = await prisma.actionButton.findMany({
+    select: {id: true, name: true},
+    orderBy: {name: 'asc'}
+  })
+
+  const buttonVersions: {[buttonId: string]: string} = {}
+
+  await asyncForEach(buttons, async ({id}) => {
+    const version = await redis.get(`osb-button-version-${id}`)
+
+    buttonVersions[id] = version ? version : '0.0.0'
+  })
+
   const license = (
     await readFile(path.join(process.cwd(), 'LICENSE'))
   ).toString()
@@ -137,6 +169,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     sounders,
     sounderVersions,
     sounderLatest,
+    buttons,
+    buttonVersions,
+    buttonLatest,
     ttsLatest,
     controllerLatest,
     license
@@ -154,6 +189,9 @@ const About = () => {
     sounders,
     sounderVersions,
     sounderLatest,
+    buttons,
+    buttonVersions,
+    buttonLatest,
     ttsLatest,
     controllerLatest,
     license
@@ -224,6 +262,24 @@ const About = () => {
                   className={`text-center ${semver.gt(RequiredVersions.sounder, sounderVersions[id]) ? 'bg-red-300' : ''}`}
                 >
                   {RequiredVersions.sounder}
+                </td>
+              </tr>
+            )
+          })}
+          {buttons.map(({id, name}) => {
+            return (
+              <tr key={id}>
+                <td>{`Button: ${name}`}</td>
+                <td className="text-center">{buttonVersions[id]}</td>
+                <td
+                  className={`text-center ${semver.gt(buttonLatest, buttonVersions[id]) ? 'bg-red-300' : ''}`}
+                >
+                  {buttonLatest.replace('v', '')}
+                </td>
+                <td
+                  className={`text-center ${semver.gt(RequiredVersions.button, buttonVersions[id]) ? 'bg-red-300' : ''}`}
+                >
+                  {RequiredVersions.button}
                 </td>
               </tr>
             )

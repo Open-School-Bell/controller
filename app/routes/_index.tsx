@@ -26,10 +26,11 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
   const sounders = await prisma.sounder.findMany({orderBy: {name: 'asc'}})
+  const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
 
   const lockdownMode = await getSetting('lockdownMode')
 
-  return {sounders, lockdownMode}
+  return {sounders, lockdownMode, buttons}
 }
 
 export const meta: MetaFunction = ({matches}) => {
@@ -38,7 +39,7 @@ export const meta: MetaFunction = ({matches}) => {
 }
 
 export default function Index() {
-  const {sounders, lockdownMode} = useLoaderData<typeof loader>()
+  const {sounders, lockdownMode, buttons} = useLoaderData<typeof loader>()
   const {t, locale} = useTranslation()
   const dateLocale = locale === 'pl' ? pl : enUS
 
@@ -118,6 +119,42 @@ export default function Index() {
               )}
             </button>
           </form>
+        </div>
+        <div className="box">
+          <h2>{t('dashboard.buttons')}</h2>
+          <table className="box-table">
+            <thead>
+              <tr>
+                <th className="p-2">{t('dashboard.table.name')}</th>
+                <th className="p-2">{t('dashboard.table.status')}</th>
+                <th className="p-2">{t('dashboard.table.lastSeen')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {buttons.map(({id, name, lastCheckIn}) => {
+                return (
+                  <tr key={id}>
+                    <td>
+                      <Link to={`/buttons/${id}`}>{name}</Link>
+                    </td>
+                    <td className="text-center">
+                      {new Date().getTime() / 1000 -
+                        lastCheckIn.getTime() / 1000 <
+                      65
+                        ? '🟢'
+                        : '🔴'}
+                    </td>
+                    <td>
+                      {formatDistance(lastCheckIn, new Date(), {
+                        addSuffix: true,
+                        locale: dateLocale
+                      })}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </Page>

@@ -383,7 +383,8 @@ export const en = {
   'buttons.detail.holdLabel': 'Hold Duration',
   'buttons.detail.cancelLabel': 'Cancel Duration',
   'buttons.edit.metaTitle': 'Edit {{name}}',
-  'buttons.edit.pageTitle': 'Edit button {{name}}'
+  'buttons.edit.pageTitle': 'Edit button {{name}}',
+  'dashboard.buttons': 'Buttons'
 } as const
 
 export type EnMessages = typeof en
