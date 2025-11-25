@@ -31,6 +31,7 @@ export const en = {
     'Are you sure you want to disable lockdown?',
   'dashboard.lockdown.button.enable': 'Enable',
   'dashboard.lockdown.button.disable': 'Disable',
+  'dashboard.log': 'Log',
   'about.title': 'About',
   'about.table.component': 'Component',
   'about.table.version': 'Version',

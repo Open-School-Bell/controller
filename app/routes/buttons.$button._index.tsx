@@ -14,6 +14,7 @@ import {getSetting} from '~/lib/settings.server'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {useLivePageData} from '~/lib/hooks/use-live-data'
 
 export const meta: MetaFunction<typeof loader> = ({data, matches}) => {
   const {messages} = getRootI18n(matches)
@@ -51,6 +52,7 @@ const Sounder = () => {
   const {button, enrollUrl} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const {t} = useTranslation()
+  useLivePageData()
 
   return (
     <Page title={button.name}>

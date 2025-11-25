@@ -14,6 +14,7 @@ import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
 import {MessageKey} from '~/locales'
+import {useLivePageData} from '~/lib/hooks/use-live-data'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -37,6 +38,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 const Log = () => {
   const {logs} = useLoaderData<typeof loader>()
   const {t} = useTranslation()
+  useLivePageData()
 
   return (
     <Page title={t('log.pageTitle')}>
@@ -66,7 +68,7 @@ const Log = () => {
 
 export default Log
 
-const translateLogMessage = (
+export const translateLogMessage = (
   message: string,
   t: ReturnType<typeof useTranslation>['t']
 ) => {
