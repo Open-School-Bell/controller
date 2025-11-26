@@ -382,6 +382,7 @@ export const en = {
   'buttons.detail.keyLabel': 'Key',
   'buttons.detail.logTitle': 'Log',
   'buttons.detail.editButton': 'Edit button',
+  'buttons.detail.logButton': 'View full log',
   'buttons.detail.ledPinLabel': 'LED Pin',
   'buttons.detail.buttonPinLabel': 'Button Pin',
   'buttons.detail.holdLabel': 'Hold Duration',

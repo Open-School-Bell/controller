@@ -130,6 +130,13 @@ const Sounder = () => {
       <Actions
         actions={[
           {
+            label: t('buttons.detail.logButton'),
+            color: 'bg-blue-100',
+            onClick: () => {
+              window.location.href = `/buttons/${button.id}/log`
+            }
+          },
+          {
             label: t('buttons.detail.editButton'),
             color: 'bg-blue-300',
             onClick: () => navigate(`/buttons/${button.id}/edit`)
