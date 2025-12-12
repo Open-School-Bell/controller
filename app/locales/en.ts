@@ -31,6 +31,7 @@ export const en = {
     'Are you sure you want to disable lockdown?',
   'dashboard.lockdown.button.enable': 'Enable',
   'dashboard.lockdown.button.disable': 'Disable',
+  'dashboard.log': 'Log',
   'about.title': 'About',
   'about.table.component': 'Component',
   'about.table.version': 'Version',
@@ -343,7 +344,54 @@ export const en = {
   'zones.edit.pageTitle': 'Edit zone {{name}}',
   'zones.detail.metaFallback': 'Zone',
   'zones.detail.soundersTitle': 'Sounders',
-  'zones.detail.editButton': 'Edit zone'
+  'zones.detail.editButton': 'Edit zone',
+  'buttons.titleWithCount': 'Buttons ({{count}})',
+  'buttons.table.device': 'Button',
+  'buttons.table.action': 'Action',
+  'nav.buttons': 'Buttons',
+  'buttons.addButton': 'Add Button',
+  'buttons.metaTitle': 'Buttons',
+  'buttons.add.pageTitle': 'Add Button',
+  'buttons.form.name.label': 'Name',
+  'buttons.form.name.helper': 'Descriptive name of the button.',
+  'buttons.form.ip.label': 'IP address',
+  'buttons.form.ip.helper':
+    'IP address where the controller can reach the button.',
+  'buttons.form.action.label': 'Action',
+  'buttons.form.action.helper': 'The action to be triggered by this button',
+  'buttons.form.zone.label': 'Zone',
+  'buttons.form.zone.helper': 'The zone to use when triggering the action.',
+  'buttons.form.ledPin.label': 'LED Pin',
+  'buttons.form.ledPin.helper': 'The GPIO output pin connected to the LED.',
+  'buttons.form.buttonPin.label': 'Button Pin',
+  'buttons.form.buttonPin.helper':
+    'The GPIO input pin connected to the Button.',
+  'buttons.form.holdDuration.label': 'Hold Duration',
+  'buttons.form.holdDuration.helper':
+    'How long in seconds should the button be held to trigger the action.',
+  'buttons.form.cancelDuration.label': 'Cancel Duration',
+  'buttons.form.cancelDuration.helper':
+    'How long in seconds does the user have to cancel the trigger.',
+  'buttons.add.submit': 'Add Button',
+  'buttons.edit.submit': 'Update Button',
+  'buttons.deleteConfirmation':
+    'Are you sure you want to delete the button {{name}}?',
+  'buttons.detail.metaFallback': 'Button',
+  'buttons.detail.infoTitle': 'About',
+  'buttons.detail.ipLabel': 'IP',
+  'buttons.detail.keyLabel': 'Key',
+  'buttons.detail.logTitle': 'Log',
+  'buttons.detail.editButton': 'Edit button',
+  'buttons.detail.logButton': 'View full log',
+  'buttons.detail.ledPinLabel': 'LED Pin',
+  'buttons.detail.buttonPinLabel': 'Button Pin',
+  'buttons.detail.holdLabel': 'Hold Duration',
+  'buttons.detail.cancelLabel': 'Cancel Duration',
+  'buttons.detail.actionLabel': 'Action',
+  'buttons.detail.zoneLabel': 'Zone',
+  'buttons.edit.metaTitle': 'Edit {{name}}',
+  'buttons.edit.pageTitle': 'Edit button {{name}}',
+  'dashboard.buttons': 'Buttons'
 } as const
 
 export type EnMessages = typeof en

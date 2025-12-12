@@ -142,7 +142,7 @@ const AddSound = () => {
           <input
             name="file"
             type="file"
-            accept="audio/mp3"
+            accept="audio/mp3,audio/wav"
             className={INPUT_CLASSES}
           />
         </FormElement>

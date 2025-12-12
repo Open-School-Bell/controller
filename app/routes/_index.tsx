@@ -4,7 +4,7 @@ import {
   redirect
 } from '@remix-run/node'
 import {Link, useLoaderData} from '@remix-run/react'
-import {formatDistance} from 'date-fns'
+import {formatDistance, format} from 'date-fns'
 import {enUS, pl} from 'date-fns/locale'
 
 import {getPrisma} from '~/lib/prisma.server'
@@ -15,6 +15,8 @@ import {Page} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {useLivePageData} from '~/lib/hooks/use-live-data'
+import {translateLogMessage} from './log'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const result = await checkSession(request)
@@ -26,10 +28,12 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
   const sounders = await prisma.sounder.findMany({orderBy: {name: 'asc'}})
+  const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
+  const logs = await prisma.log.findMany({orderBy: {time: 'desc'}, take: 10})
 
   const lockdownMode = await getSetting('lockdownMode')
 
-  return {sounders, lockdownMode}
+  return {sounders, lockdownMode, buttons, logs}
 }
 
 export const meta: MetaFunction = ({matches}) => {
@@ -38,12 +42,13 @@ export const meta: MetaFunction = ({matches}) => {
 }
 
 export default function Index() {
-  const {sounders, lockdownMode} = useLoaderData<typeof loader>()
+  const {sounders, lockdownMode, buttons, logs} = useLoaderData<typeof loader>()
   const {t, locale} = useTranslation()
   const dateLocale = locale === 'pl' ? pl : enUS
+  useLivePageData()
 
   return (
-    <Page title={t('dashboard.pageTitle')}>
+    <Page title={t('dashboard.pageTitle')} wide>
       <div className="grid grid-cols-2 gap-4">
         <div className="box">
           <h2>{t('dashboard.devices')}</h2>
@@ -82,9 +87,9 @@ export default function Index() {
           </table>
         </div>
         <div
-          className={`box ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
+          className={`box text-center ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
         >
-          <p>
+          <p className="mt-2">
             {t('dashboard.lockdown.message', {
               status: t(
                 lockdownMode === '0'
@@ -110,7 +115,9 @@ export default function Index() {
               }
             }}
           >
-            <button className="bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer">
+            <button
+              className={`bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer mt-4 ${lockdownMode === '1' ? 'bg-green-300' : 'bg-red-300'}`}
+            >
               {t(
                 lockdownMode === '0'
                   ? 'dashboard.lockdown.button.enable'
@@ -118,6 +125,65 @@ export default function Index() {
               )}
             </button>
           </form>
+        </div>
+        <div className="box">
+          <h2>{t('dashboard.buttons')}</h2>
+          <table className="box-table">
+            <thead>
+              <tr>
+                <th className="p-2">{t('dashboard.table.name')}</th>
+                <th className="p-2">{t('dashboard.table.status')}</th>
+                <th className="p-2">{t('dashboard.table.lastSeen')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {buttons.map(({id, name, lastCheckIn}) => {
+                return (
+                  <tr key={id}>
+                    <td>
+                      <Link to={`/buttons/${id}`}>{name}</Link>
+                    </td>
+                    <td className="text-center">
+                      {new Date().getTime() / 1000 -
+                        lastCheckIn.getTime() / 1000 <
+                      65
+                        ? '🟢'
+                        : '🔴'}
+                    </td>
+                    <td>
+                      {formatDistance(lastCheckIn, new Date(), {
+                        addSuffix: true,
+                        locale: dateLocale
+                      })}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div className="box">
+          <h2>{t('dashboard.log')}</h2>
+          <table className="box-table">
+            <thead>
+              <tr>
+                <th>{t('log.columns.time')}</th>
+                <th>{t('log.columns.message')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {logs.map(({id, message, time}) => {
+                return (
+                  <tr key={id}>
+                    <td className="text-center">
+                      {format(time, 'dd/MM/yy HH:mm')}
+                    </td>
+                    <td>{translateLogMessage(message, t)}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </Page>
