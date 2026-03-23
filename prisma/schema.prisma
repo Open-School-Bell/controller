@@ -106,6 +106,7 @@ model Action {
   name   String
   icon   String
   action String
+  data   String @default("")
 
   audio   Audio?  @relation(fields: [audioId], references: [id])
   audioId String?
