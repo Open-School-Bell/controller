@@ -29,7 +29,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
       }
 
       if (webhook.action.audioId) {
-        await broadcast(zone, webhook.action.audioId)
+        await broadcast(zone, webhook.action.data)
       }
       break
     case 'lockdown':

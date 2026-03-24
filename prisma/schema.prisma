@@ -106,7 +106,9 @@ model Action {
   name   String
   icon   String
   action String
+  data   String @default("")
 
+  // BREAKING CHANGE When we make the jump to 2.x this can be removed. Not Worth a full V2 bump just to take it out.
   audio   Audio?  @relation(fields: [audioId], references: [id])
   audioId String?
 

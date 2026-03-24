@@ -53,7 +53,9 @@ export const en = {
     'An emoji to use as the action icon. Note that emoji render differently on the RPi screen.',
   'actions.form.type.label': 'Type',
   'actions.form.type.helper':
-    'Broadcast runs a broadcast to the supplied zone. Lockdown toggles a system wide lockdown.',
+    'Broadcast runs a broadcast to the supplied zone, you can build the broadcaast once the action has been created. Lockdown toggles a system wide lockdown.',
+  'actions.form.sequence.label': 'Sequence',
+  'actions.form.sequence.helper': 'Build your broadcast sequence.',
   'actions.form.sound.label': 'Sound',
   'actions.form.sound.helper': 'Which sound should be used when broadcasting?',
   'button.cancel': 'Cancel',
@@ -66,6 +68,7 @@ export const en = {
   'actions.detail.sound': 'Sound:',
   'actions.edit.metaTitle': 'Edit {{name}}',
   'actions.edit.pageTitle': 'Edit {{name}}',
+  'actions.detail.sequence.label': 'Sequence',
   'backup.pageTitle': 'Backups',
   'backup.create': 'Create Backup',
   'broadcast.pageTitle': 'Broadcast',
