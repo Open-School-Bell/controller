@@ -1,9 +1,11 @@
-import {type LoaderFunctionArgs} from '@remix-run/node'
+import {type ActionFunctionArgs} from '@remix-run/node'
 
 import {getSetting} from '~/lib/settings.server'
 import {getPrisma} from '~/lib/prisma.server'
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+import {triggerAction} from '~/lib/trigger-action.server'
+
+export const action = async ({request}: ActionFunctionArgs) => {
   const controlPointKey = await getSetting('controlPointKey')
 
   if (controlPointKey === '') {
@@ -23,13 +25,20 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return Response.json({result: 'error', error: 'Invalid Ket provided.'})
   }
 
+  const data = (await request.json()) as {pin: string; zone: string}
+
   const prisma = getPrisma()
 
-  const zones = await prisma.zone.findMany({orderBy: {name: 'asc'}})
+  const action = await prisma.action.findFirst({where: {controlPin: data.pin}})
+
+  if (!action) {
+    return Response.json({result: 'error', error: 'No action for this pin'})
+  }
+
+  await triggerAction(action, data.zone)
 
   return Response.json({
-    zones: zones.map(({id, name}) => {
-      return {id, name}
-    })
+    result: 'success',
+    message: `${action.icon} ${action.name}`
   })
 }

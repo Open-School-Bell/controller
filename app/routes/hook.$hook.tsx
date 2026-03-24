@@ -1,8 +1,7 @@
 import {type ActionFunctionArgs} from '@remix-run/node'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {broadcast} from '~/lib/broadcast.server'
-import {toggleLockdown} from '~/lib/lockdown.server'
+import {triggerAction} from '~/lib/trigger-action.server'
 
 export const action = async ({request, params}: ActionFunctionArgs) => {
   const prisma = getPrisma()
@@ -22,22 +21,11 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
     return {error: 'Bad Key Provided'}
   }
 
-  switch (webhook.action.action) {
-    case 'broadcast':
-      if (!zone) {
-        return {error: 'No zone provided.'}
-      }
-
-      if (webhook.action.audioId) {
-        await broadcast(zone, webhook.action.data)
-      }
-      break
-    case 'lockdown':
-      await toggleLockdown()
-      break
-    default:
-      break
+  if (!zone) {
+    return {error: 'No zone provided.'}
   }
+
+  await triggerAction(webhook.action, zone)
 
   return {status: 'ok'}
 }
