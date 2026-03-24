@@ -63,15 +63,19 @@ export const action = async ({params, request}: ActionFunctionArgs) => {
   const icon = formData.get('icon') as string | undefined
   const action = formData.get('action') as string | undefined
   const data = formData.get('data') as string | undefined
+  const controlPin = (formData.get('controlPin') as string | undefined)
+    ? (formData.get('controlPin') as string | undefined)
+    : ''
 
   invariant(name)
   invariant(icon)
   invariant(action)
   invariant(data)
+  invariant(controlPin)
 
   await prisma.action.update({
     where: {id: params.action},
-    data: {name, icon, action, data}
+    data: {name, icon, action, data, controlPin}
   })
 
   return redirect(`/actions/${params.action}`)
@@ -103,6 +107,16 @@ const AddAction = () => {
             name="icon"
             className={INPUT_CLASSES}
             defaultValue={action.icon}
+          />
+        </FormElement>
+        <FormElement
+          label={t('actions.form.pin.label')}
+          helperText={t('actions.form.pin.helper')}
+        >
+          <input
+            name="controlPin"
+            className={INPUT_CLASSES}
+            defaultValue={action.controlPin}
           />
         </FormElement>
         <FormElement

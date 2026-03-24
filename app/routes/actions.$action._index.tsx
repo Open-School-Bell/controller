@@ -56,6 +56,9 @@ const Action = () => {
           {t('actions.detail.type')}:{' '}
           {typeLabels[action.action] ?? action.action}
         </p>
+        <p>
+          {t('actions.detail.pin')}: {action.controlPin}
+        </p>
       </div>
       <SequenceViewer
         sounds={sounds}
