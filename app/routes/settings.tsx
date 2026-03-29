@@ -27,11 +27,16 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return redirect('/login')
   }
 
-  const {ttsSpeed, enrollUrl} = await getSettings(['ttsSpeed', 'enrollUrl'])
+  const {ttsSpeed, enrollUrl, controlPointKey} = await getSettings([
+    'ttsSpeed',
+    'enrollUrl',
+    'controlPointKey'
+  ])
 
   return {
     ttsSpeed,
-    enrollUrl
+    enrollUrl,
+    controlPointKey
   }
 }
 
@@ -42,12 +47,19 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const ttsSpeed = formData.get('ttsSpeed') as string | undefined
   const password = formData.get('password') as string | undefined
   const checkPassword = formData.get('confirmPassword') as string | undefined
+  const controlPointKey = (formData.get('controlPointKey') as
+    | string
+    | undefined)
+    ? (formData.get('controlPointKey') as string | undefined)
+    : ''
 
   invariant(enrollUrl)
   invariant(ttsSpeed)
+  invariant(controlPointKey)
 
   await setSetting('enrollUrl', enrollUrl)
   await setSetting('ttsSpeed', ttsSpeed)
+  await setSetting('controlPointKey', controlPointKey)
 
   if (password && checkPassword && password === checkPassword) {
     await setSetting('password', password)
@@ -57,7 +69,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const Settings = () => {
-  const {ttsSpeed, enrollUrl} = useLoaderData<typeof loader>()
+  const {ttsSpeed, enrollUrl, controlPointKey} = useLoaderData<typeof loader>()
   const {t} = useTranslation()
 
   return (
@@ -83,6 +95,17 @@ const Settings = () => {
             name="ttsSpeed"
             className={INPUT_CLASSES}
             defaultValue={ttsSpeed}
+          />
+        </FormElement>
+        <FormElement
+          label={t('settings.controlPointKey.label')}
+          helperText={t('settings.controlPointKey.helper')}
+        >
+          <input
+            type="text"
+            name="controlPointKey"
+            className={INPUT_CLASSES}
+            defaultValue={controlPointKey}
           />
         </FormElement>
         <FormElement

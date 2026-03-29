@@ -58,6 +58,9 @@ export const en = {
   'actions.form.sequence.helper': 'Build your broadcast sequence.',
   'actions.form.sound.label': 'Sound',
   'actions.form.sound.helper': 'Which sound should be used when broadcasting?',
+  'actions.form.pin.label': 'Control Point Pin',
+  'actions.form.pin.helper':
+    'The PIN used to trigger this action from the control point interface.',
   'button.cancel': 'Cancel',
   'button.add': 'Add',
   'button.save': 'Save',
@@ -66,6 +69,7 @@ export const en = {
   'actions.detail.icon': 'Icon',
   'actions.detail.type': 'Type',
   'actions.detail.sound': 'Sound:',
+  'actions.detail.pin': 'Control Pin',
   'actions.edit.metaTitle': 'Edit {{name}}',
   'actions.edit.pageTitle': 'Edit {{name}}',
   'actions.detail.sequence.label': 'Sequence',
@@ -206,6 +210,9 @@ export const en = {
   'settings.ttsSpeed.label': 'Text-to-speech speed',
   'settings.ttsSpeed.helper':
     'Speed factor for text-to-speech generation. Default is 1; lower is faster.',
+  'settings.controlPointKey.label': 'Control Point Key',
+  'settings.controlPointKey.helper':
+    'The key used by the Control Point App to communicate with the controller.',
   'settings.password.label': 'Change password',
   'settings.password.helper':
     'Leave fields empty to keep the current password.',

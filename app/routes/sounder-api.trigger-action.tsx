@@ -1,8 +1,7 @@
 import {type ActionFunctionArgs} from '@remix-run/node'
 
 import {getPrisma} from '~/lib/prisma.server'
-import {broadcast} from '~/lib/broadcast.server'
-import {toggleLockdown} from '~/lib/lockdown.server'
+import {triggerAction} from '~/lib/trigger-action.server'
 
 export const action = async ({request}: ActionFunctionArgs) => {
   const {key, action, zone} = (await request.json()) as {
@@ -37,23 +36,11 @@ export const action = async ({request}: ActionFunctionArgs) => {
     return Response.json({error: 'action not found'}, {status: 404})
   }
 
-  switch (dbAction.action) {
-    case 'broadcast':
-      if (!zone || typeof zone !== 'string' || zone.trim() === '') {
-        return Response.json({error: 'missing zone'}, {status: 400})
-      }
-
-      if (dbAction.audioId) {
-        const zoneId = zone.trim()
-        await broadcast(zoneId, JSON.stringify([dbAction.audioId]))
-      }
-      break
-    case 'lockdown':
-      await toggleLockdown()
-      break
-    default:
-      break
+  if (!zone || typeof zone !== 'string' || zone.trim() === '') {
+    return Response.json({error: 'missing zone'}, {status: 400})
   }
+
+  await triggerAction(dbAction, zone)
 
   return Response.json({ping: 'pong'})
 }
