@@ -74,6 +74,19 @@ const main = async () => {
 
     await Promise.all(promises)
   }
+
+  const actionsWithAudioIdAndNoData = await prisma.action.findMany({
+    where: {audioId: {not: ''}, data: ''}
+  })
+
+  await Promise.all(
+    actionsWithAudioIdAndNoData.map(action => {
+      return prisma.action.update({
+        where: {id: action.id},
+        data: {data: `["${action.audioId}"]`}
+      })
+    })
+  )
 }
 
 main()

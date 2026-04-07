@@ -14,6 +14,7 @@ import {Page, FormElement, Actions} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {SequenceBuilder} from '~/lib/sequence-builder'
 
 export const meta: MetaFunction<typeof loader> = ({matches, data}) => {
   const {messages} = getRootI18n(matches)
@@ -61,16 +62,20 @@ export const action = async ({params, request}: ActionFunctionArgs) => {
   const name = formData.get('name') as string | undefined
   const icon = formData.get('icon') as string | undefined
   const action = formData.get('action') as string | undefined
-  const sound = formData.get('sound') as string | undefined
+  const data = formData.get('data') as string | undefined
+  const controlPin = (formData.get('controlPin') as string | undefined)
+    ? (formData.get('controlPin') as string | undefined)
+    : ''
 
   invariant(name)
   invariant(icon)
   invariant(action)
-  invariant(sound)
+  invariant(data)
+  invariant(controlPin)
 
   await prisma.action.update({
     where: {id: params.action},
-    data: {name, icon, action, audioId: sound}
+    data: {name, icon, action, data, controlPin}
   })
 
   return redirect(`/actions/${params.action}`)
@@ -105,6 +110,16 @@ const AddAction = () => {
           />
         </FormElement>
         <FormElement
+          label={t('actions.form.pin.label')}
+          helperText={t('actions.form.pin.helper')}
+        >
+          <input
+            name="controlPin"
+            className={INPUT_CLASSES}
+            defaultValue={action.controlPin}
+          />
+        </FormElement>
+        <FormElement
           label={t('actions.form.type.label')}
           helperText={t('actions.form.type.helper')}
         >
@@ -117,24 +132,13 @@ const AddAction = () => {
             <option value="lockdown">{t('actions.types.lockdown')}</option>
           </select>
         </FormElement>
-        <FormElement
-          label={t('actions.form.sound.label')}
-          helperText={t('actions.form.sound.helper')}
-        >
-          <select
-            name="sound"
-            className={INPUT_CLASSES}
-            defaultValue={action.audioId!}
-          >
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
+        <SequenceBuilder
+          sounds={sounds}
+          initialQueue={action.data === '' ? [] : JSON.parse(action.data)}
+          name="data"
+          label={t('actions.form.sequence.label')}
+          helperText={t('actions.form.sequence.helper')}
+        />
         <Actions
           actions={[
             {

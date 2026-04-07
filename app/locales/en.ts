@@ -19,6 +19,9 @@ export const en = {
   'nav.logout': 'Logout',
   'dashboard.pageTitle': 'Open School Bell',
   'dashboard.devices': 'Sounders',
+  'dashboard.services': 'Services',
+  'dashboard.services.background': 'Background Worker',
+  'dashboard.services.tts': 'Text-To-Speech Engine',
   'dashboard.table.name': 'Name',
   'dashboard.table.status': 'Status',
   'dashboard.table.lastSeen': 'Last Seen',
@@ -53,9 +56,14 @@ export const en = {
     'An emoji to use as the action icon. Note that emoji render differently on the RPi screen.',
   'actions.form.type.label': 'Type',
   'actions.form.type.helper':
-    'Broadcast runs a broadcast to the supplied zone. Lockdown toggles a system wide lockdown.',
+    'Broadcast runs a broadcast to the supplied zone, you can build the broadcaast once the action has been created. Lockdown toggles a system wide lockdown.',
+  'actions.form.sequence.label': 'Sequence',
+  'actions.form.sequence.helper': 'Build your broadcast sequence.',
   'actions.form.sound.label': 'Sound',
   'actions.form.sound.helper': 'Which sound should be used when broadcasting?',
+  'actions.form.pin.label': 'Control Point Pin',
+  'actions.form.pin.helper':
+    'The PIN used to trigger this action from the control point interface.',
   'button.cancel': 'Cancel',
   'button.add': 'Add',
   'button.save': 'Save',
@@ -64,8 +72,10 @@ export const en = {
   'actions.detail.icon': 'Icon',
   'actions.detail.type': 'Type',
   'actions.detail.sound': 'Sound:',
+  'actions.detail.pin': 'Control Pin',
   'actions.edit.metaTitle': 'Edit {{name}}',
   'actions.edit.pageTitle': 'Edit {{name}}',
+  'actions.detail.sequence.label': 'Sequence',
   'backup.pageTitle': 'Backups',
   'backup.create': 'Create Backup',
   'broadcast.pageTitle': 'Broadcast',
@@ -203,6 +213,9 @@ export const en = {
   'settings.ttsSpeed.label': 'Text-to-speech speed',
   'settings.ttsSpeed.helper':
     'Speed factor for text-to-speech generation. Default is 1; lower is faster.',
+  'settings.controlPointKey.label': 'Control Point Key',
+  'settings.controlPointKey.helper':
+    'The key used by the Control Point App to communicate with the controller.',
   'settings.password.label': 'Change password',
   'settings.password.helper':
     'Leave fields empty to keep the current password.',

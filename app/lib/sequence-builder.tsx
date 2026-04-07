@@ -130,3 +130,49 @@ export const SequenceBuilder = ({
     </div>
   )
 }
+
+export const SequenceViewer = ({
+  queue,
+  sounds,
+  label
+}: {
+  queue: string[]
+  sounds: Audio[]
+  label: string
+}) => {
+  const {t} = useTranslation()
+
+  let duration = 0
+
+  return (
+    <div className="grid grid-cols-4 gap-4">
+      <span className="font-semibold col-span-4">{label}</span>
+      <div className="col-span-3 row-span-2">
+        {queue.map((queuedId, i) => {
+          const sound = sounds.filter(({id}) => {
+            return id === queuedId
+          })[0]
+
+          duration += sound.duration
+
+          return (
+            <div
+              key={`${sound.id}-${i}`}
+              className="border-b border-b-stone-100 mb-2 pb-2 grid grid-cols-5"
+            >
+              <p className="col-span-4">{sound.name}</p>
+              <p className="col-span-4 text-sm text-gray-400">
+                {getSecondsAsTime(sound.duration)}
+              </p>
+            </div>
+          )
+        })}
+        <div>
+          {t('broadcast.builder.totalDuration', {
+            duration: getSecondsAsTime(duration)
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
