@@ -191,7 +191,7 @@ export default function Index() {
           </table>
         </div>
         <div className="box">
-          <h2>Services</h2>
+          <h2>{t('dashboard.services')}</h2>
           <table className="box-table">
             <thead>
               <tr>
@@ -202,7 +202,7 @@ export default function Index() {
             </thead>
             <tbody>
               <tr>
-                <td>Background Worker</td>
+                <td>{t('dashboard.services.background')}</td>
                 <td className="text-center">
                   {new Date().getTime() / 1000 -
                     new Date(JSON.parse(workerLastSeen)).getTime() / 1000 <
@@ -218,7 +218,7 @@ export default function Index() {
                 </td>
               </tr>
               <tr>
-                <td>Text-To-Speech Engine</td>
+                <td>{t('dashboard.services.tts')}</td>
                 <td className="text-center">
                   {new Date().getTime() / 1000 -
                     new Date(JSON.parse(ttsLastSeen)).getTime() / 1000 <
