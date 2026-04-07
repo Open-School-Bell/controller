@@ -12,6 +12,7 @@ import {Page, Actions} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {SequenceViewer} from '~/lib/sequence-builder'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -28,15 +29,16 @@ export const loader = async ({request, params}: LoaderFunctionArgs) => {
   const prisma = getPrisma()
 
   const action = await prisma.action.findFirstOrThrow({
-    where: {id: params.action},
-    include: {audio: true}
+    where: {id: params.action}
   })
 
-  return {action}
+  const sounds = await prisma.audio.findMany({orderBy: {name: 'asc'}})
+
+  return {action, sounds}
 }
 
 const Action = () => {
-  const {action} = useLoaderData<typeof loader>()
+  const {action, sounds} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const {t} = useTranslation()
   const typeLabels: Record<string, string> = {
@@ -55,10 +57,14 @@ const Action = () => {
           {typeLabels[action.action] ?? action.action}
         </p>
         <p>
-          {t('actions.detail.sound')}{' '}
-          <Link to={`/sounds/${action.audioId}`}>{action.audio!.name}</Link>
+          {t('actions.detail.pin')}: {action.controlPin}
         </p>
       </div>
+      <SequenceViewer
+        sounds={sounds}
+        label={t('actions.detail.sequence.label')}
+        queue={action.data === '' ? [] : JSON.parse(action.data)}
+      />
       <Actions
         actions={[
           {

@@ -11,9 +11,20 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const prisma = getPrisma()
 
-  const button = await prisma.actionButton.findFirstOrThrow({
-    where: {key, enrolled: false}
+  const button = await prisma.actionButton.findFirst({
+    where: {key}
   })
+
+  if (!button) {
+    return Response.json(
+      {error: 'key does not belong to button'},
+      {status: 400}
+    )
+  }
+
+  if (button.enrolled) {
+    return Response.json({id: button.id, name: button.name})
+  }
 
   await prisma.actionButton.update({
     where: {id: button.id},

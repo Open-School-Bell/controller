@@ -1,5 +1,5 @@
 # Start with the node debian image
-FROM node:22-bullseye-slim AS base
+FROM node:24-bullseye-slim AS base
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install openssl -y

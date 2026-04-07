@@ -56,15 +56,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const name = formData.get('name') as string | undefined
   const icon = formData.get('icon') as string | undefined
   const action = formData.get('action') as string | undefined
-  const sound = formData.get('sound') as string | undefined
 
   invariant(name)
   invariant(icon)
   invariant(action)
-  invariant(sound)
 
   const newAction = await prisma.action.create({
-    data: {name, icon, action, audioId: sound}
+    data: {name, icon, action}
   })
 
   void trigger(`New Action: ${name}`, 'newAction')
@@ -99,20 +97,6 @@ const AddAction = () => {
           <select name="action" className={INPUT_CLASSES}>
             <option value="broadcast">{t('actions.types.broadcast')}</option>
             <option value="lockdown">{t('actions.types.lockdown')}</option>
-          </select>
-        </FormElement>
-        <FormElement
-          label={t('actions.form.sound.label')}
-          helperText={t('actions.form.sound.helper')}
-        >
-          <select name="sound" className={INPUT_CLASSES}>
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
           </select>
         </FormElement>
         <Actions

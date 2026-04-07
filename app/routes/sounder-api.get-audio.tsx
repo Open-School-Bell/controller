@@ -20,7 +20,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
   }
 
   const sounds = await prisma.audio.findMany({
-    select: {id: true, fileName: true}
+    select: {id: true, fileName: true},
+    where: {fileName: {not: ''}}
   })
 
   return Response.json(sounds)
