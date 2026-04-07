@@ -30,6 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "mkdirp": "^3.0.1",
     "music-metadata": "^11.12.3",
+    "node-cron": "^4.2.1",
     "prisma": "^6.15.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

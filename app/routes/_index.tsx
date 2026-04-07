@@ -10,7 +10,7 @@ import {enUS, pl} from 'date-fns/locale'
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'
 import {pageTitle} from '~/lib/utils'
-import {getSetting} from '~/lib/settings.server'
+import {getSettings} from '~/lib/settings.server'
 import {Page} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
@@ -31,9 +31,13 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
   const logs = await prisma.log.findMany({orderBy: {time: 'desc'}, take: 10})
 
-  const lockdownMode = await getSetting('lockdownMode')
+  const {lockdownMode, workerLastSeen, ttsLastSeen} = await getSettings([
+    'lockdownMode',
+    'workerLastSeen',
+    'ttsLastSeen'
+  ])
 
-  return {sounders, lockdownMode, buttons, logs}
+  return {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen}
 }
 
 export const meta: MetaFunction = ({matches}) => {
@@ -42,7 +46,8 @@ export const meta: MetaFunction = ({matches}) => {
 }
 
 export default function Index() {
-  const {sounders, lockdownMode, buttons, logs} = useLoaderData<typeof loader>()
+  const {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen} =
+    useLoaderData<typeof loader>()
   const {t, locale} = useTranslation()
   const dateLocale = locale === 'pl' ? pl : enUS
   useLivePageData()
@@ -182,6 +187,52 @@ export default function Index() {
                   </tr>
                 )
               })}
+            </tbody>
+          </table>
+        </div>
+        <div className="box">
+          <h2>Services</h2>
+          <table className="box-table">
+            <thead>
+              <tr>
+                <th className="p-2">{t('dashboard.table.name')}</th>
+                <th className="p-2">{t('dashboard.table.status')}</th>
+                <th className="p-2">{t('dashboard.table.lastSeen')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Background Worker</td>
+                <td className="text-center">
+                  {new Date().getTime() / 1000 -
+                    new Date(JSON.parse(workerLastSeen)).getTime() / 1000 <
+                  65
+                    ? '🟢'
+                    : '🔴'}
+                </td>
+                <td>
+                  {formatDistance(JSON.parse(workerLastSeen), new Date(), {
+                    addSuffix: true,
+                    locale: dateLocale
+                  })}
+                </td>
+              </tr>
+              <tr>
+                <td>Text-To-Speech Engine</td>
+                <td className="text-center">
+                  {new Date().getTime() / 1000 -
+                    new Date(JSON.parse(ttsLastSeen)).getTime() / 1000 <
+                  65
+                    ? '🟢'
+                    : '🔴'}
+                </td>
+                <td>
+                  {formatDistance(JSON.parse(ttsLastSeen), new Date(), {
+                    addSuffix: true,
+                    locale: dateLocale
+                  })}
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
