@@ -30,7 +30,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const schedules = await prisma.schedule.findMany({
     orderBy: {time: 'asc'},
-    include: {zone: true, audio: true}
+    include: {zone: true}
   })
 
   const days = await prisma.dayType.findMany({
@@ -116,7 +116,9 @@ const Schedule = () => {
                   </td>
                   <td className="text-center">{zone.name}</td>
                   <td className="text-center">
-                    {(JSON.parse(audioSequence) as string[]).length}
+                    {audioSequence === ''
+                      ? 0
+                      : (JSON.parse(audioSequence) as string[]).length}
                   </td>
                   <td className="text-center">
                     <form method="post" action={`/schedule/${id}/delete`}>

@@ -62,13 +62,22 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   if (copyFrom !== '-') {
     const schedules = await prisma.schedule.findMany({
-      where: {dayTypeId: copyFrom === '_' ? undefined : copyFrom}
+      where: {dayTypeId: copyFrom === '_' ? null : copyFrom}
     })
 
     await prisma.schedule.createMany({
-      data: schedules.map(({time, weekDays, zoneId, audioId}) => {
-        return {dayTypeId: dayType.id, time, weekDays, zoneId, audioId}
-      })
+      data: schedules.map(
+        ({time, weekDays, zoneId, audioId, audioSequence}) => {
+          return {
+            dayTypeId: dayType.id,
+            time,
+            weekDays,
+            zoneId,
+            audioId,
+            audioSequence
+          }
+        }
+      )
     })
   }
 
