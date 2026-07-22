@@ -193,6 +193,12 @@ export const en = {
   'lockdown.field.entrySound.label': 'Lockdown start sound',
   'lockdown.field.entrySound.helper':
     'Sound used to start lockdown and for repetitions.',
+  'lockdown.field.entrySequence.label': 'Lockdown Entry Sequence',
+  'lockdown.field.entrySequence.helper':
+    'The sequence that is run when lockdown starts and on any repetitions.',
+  'lockdown.field.exitSequence.label': 'Lockdown Exit Sequence',
+  'lockdown.field.exitSequence.helper':
+    'The sequence that is run when lockdown ends.',
   'lockdown.field.exitSound.label': 'Lockdown end sound',
   'lockdown.field.exitSound.helper': 'Sound used to end lockdown.',
   'lockdown.field.startCount.label': 'Lockdown start count',

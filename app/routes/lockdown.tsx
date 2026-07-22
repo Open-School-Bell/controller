@@ -15,6 +15,7 @@ import {Page, FormElement, Actions} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {SequenceBuilder} from '~/lib/sequence-builder'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -31,19 +32,15 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const {
     lockdownMode,
     lockdownRepeat,
-    lockdownExitRepeat,
-    lockdownEntrySound,
-    lockdownExitSound,
     lockdownRepeatRingerWire,
-    lockdownRepetitions
+    lockdownEntrySequence,
+    lockdownExitSequence
   } = await getSettings([
-    'lockdownEntrySound',
     'lockdownMode',
     'lockdownRepeat',
-    'lockdownExitRepeat',
-    'lockdownExitSound',
     'lockdownRepeatRingerWire',
-    'lockdownRepetitions'
+    'lockdownEntrySequence',
+    'lockdownExitSequence'
   ])
 
   const prisma = getPrisma()
@@ -53,11 +50,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return {
     lockdownMode,
     lockdownRepeat,
-    lockdownExitRepeat,
-    lockdownEntrySound,
-    lockdownExitSound,
     lockdownRepeatRingerWire,
-    lockdownRepetitions,
+    lockdownEntrySequence,
+    lockdownExitSequence,
     sounds
   }
 }
@@ -65,18 +60,6 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData()
 
-  const lockdownEntrySound = formData.get('lockdownEntrySound') as
-    | string
-    | undefined
-  const lockdownExitSound = formData.get('lockdownExitSound') as
-    | string
-    | undefined
-  const lockdownRepetitions = formData.get('lockdownRepetitions') as
-    | string
-    | undefined
-  const lockdownExitRepeat = formData.get('lockdownExitRepeat') as
-    | string
-    | undefined
   const lockdownRepeat = formData.get('lockdownRepeat') as string | undefined
   const lockdownRepeatRingerWire = !!(formData.get(
     'lockdownRepeatRingerWire'
@@ -84,16 +67,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     ? '1'
     : '0'
 
-  invariant(lockdownEntrySound)
-  invariant(lockdownExitSound)
-  invariant(lockdownRepetitions)
   invariant(lockdownRepeat)
-  invariant(lockdownExitRepeat)
 
-  await setSetting('lockdownEntrySound', lockdownEntrySound)
-  await setSetting('lockdownExitSound', lockdownExitSound)
-  await setSetting('lockdownRepetitions', lockdownRepetitions)
-  await setSetting('lockdownExitRepeat', lockdownExitRepeat)
   await setSetting('lockdownRepeat', lockdownRepeat)
   await setSetting('lockdownRepeatRingerWire', lockdownRepeatRingerWire)
 
@@ -104,11 +79,9 @@ const Lockdown = () => {
   const {
     lockdownMode,
     lockdownRepeat,
-    lockdownExitRepeat,
-    lockdownEntrySound,
-    lockdownExitSound,
     lockdownRepeatRingerWire,
-    lockdownRepetitions,
+    lockdownEntrySequence,
+    lockdownExitSequence,
     sounds
   } = useLoaderData<typeof loader>()
   const {t} = useTranslation()
@@ -123,64 +96,20 @@ const Lockdown = () => {
           : t('lockdown.status.inactive')}{' '}
       </div>
       <form method="post">
-        <FormElement
-          label={t('lockdown.field.entrySound.label')}
-          helperText={t('lockdown.field.entrySound.helper')}
-        >
-          <select
-            className={INPUT_CLASSES}
-            name="lockdownEntrySound"
-            defaultValue={lockdownEntrySound}
-          >
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
-        <FormElement
-          label={t('lockdown.field.exitSound.label')}
-          helperText={t('lockdown.field.exitSound.helper')}
-        >
-          <select
-            className={INPUT_CLASSES}
-            name="lockdownExitSound"
-            defaultValue={lockdownExitSound}
-          >
-            {sounds.map(({id, name}) => {
-              return (
-                <option key={id} value={id}>
-                  {name}
-                </option>
-              )
-            })}
-          </select>
-        </FormElement>
-        <FormElement
-          label={t('lockdown.field.startCount.label')}
-          helperText={t('lockdown.field.startCount.helper')}
-        >
-          <input
-            type="number"
-            name="lockdownRepetitions"
-            className={INPUT_CLASSES}
-            defaultValue={lockdownRepetitions}
-          />
-        </FormElement>
-        <FormElement
-          label={t('lockdown.field.exitCount.label')}
-          helperText={t('lockdown.field.exitCount.helper')}
-        >
-          <input
-            type="number"
-            name="lockdownExitRepeat"
-            className={INPUT_CLASSES}
-            defaultValue={lockdownExitRepeat}
-          />
-        </FormElement>
+        <SequenceBuilder
+          sounds={sounds}
+          initialQueue={JSON.parse(lockdownEntrySequence)}
+          name="lockdownEntrySequence"
+          label={t('lockdown.field.entrySequence.label')}
+          helperText={t('lockdown.field.entrySequence.helper')}
+        />
+        <SequenceBuilder
+          sounds={sounds}
+          initialQueue={JSON.parse(lockdownExitSequence)}
+          name="lockdownExitSequence"
+          label={t('lockdown.field.exitSequence.label')}
+          helperText={t('lockdown.field.exitSequence.helper')}
+        />
         <FormElement
           label={t('lockdown.field.repeatInterval.label')}
           helperText={t('lockdown.field.repeatInterval.helper')}
