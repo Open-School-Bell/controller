@@ -61,6 +61,12 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const formData = await request.formData()
 
   const lockdownRepeat = formData.get('lockdownRepeat') as string | undefined
+  const lockdownEntrySequence = formData.get('lockdownEntrySequence') as
+    | string
+    | undefined
+  const lockdownExitSequence = formData.get('lockdownExitSequence') as
+    | string
+    | undefined
   const lockdownRepeatRingerWire = !!(formData.get(
     'lockdownRepeatRingerWire'
   ) as string | undefined)
@@ -68,9 +74,13 @@ export const action = async ({request}: ActionFunctionArgs) => {
     : '0'
 
   invariant(lockdownRepeat)
+  invariant(lockdownEntrySequence)
+  invariant(lockdownExitSequence)
 
   await setSetting('lockdownRepeat', lockdownRepeat)
   await setSetting('lockdownRepeatRingerWire', lockdownRepeatRingerWire)
+  await setSetting('lockdownEntrySequence', lockdownEntrySequence)
+  await setSetting('lockdownExitSequence', lockdownExitSequence)
 
   return redirect('/lockdown')
 }
