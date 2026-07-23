@@ -146,7 +146,7 @@ const AppContent = () => {
         </SidebarLink>
       </div>
       <div className="text-sm text-gray-400 p-2 text-center">
-        &copy; Open School Bell 2025 <br />
+        &copy; Open School Bell 2026 <br />
         OSB {VERSION}
       </div>
     </div>

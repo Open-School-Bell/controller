@@ -36,27 +36,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const {
     lockdownMode,
     lockdownRepeat,
-    lockdownExitRepeat,
-    lockdownEntrySound,
-    lockdownExitSound,
-    lockdownRepeatRingerWire,
-    lockdownRepetitions
+    lockdownEntrySequence,
+    lockdownExitSequence,
+    lockdownRepeatRingerWire
   } = await getSettings([
-    'lockdownEntrySound',
+    'lockdownEntrySequence',
+    'lockdownExitSequence',
     'lockdownMode',
     'lockdownRepeat',
-    'lockdownExitSound',
-    'lockdownRepeatRingerWire',
-    'lockdownRepetitions',
-    'lockdownExitRepeat'
+    'lockdownRepeatRingerWire'
   ])
-
-  const entrySound = await prisma.audio.findFirstOrThrow({
-    where: {id: lockdownEntrySound}
-  })
-  const exitSound = await prisma.audio.findFirstOrThrow({
-    where: {id: lockdownExitSound}
-  })
 
   return Response.json({
     id: sounder.id,
@@ -70,10 +59,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
     ),
     lockdown: {
       enable: lockdownMode === '1',
-      entrySound: entrySound.id,
-      exitSound: exitSound.id,
-      times: parseInt(lockdownRepetitions),
-      exitTimes: parseInt(lockdownExitRepeat),
+      entrySequence: lockdownEntrySequence,
+      exitSequence: lockdownExitSequence,
       interval: parseInt(lockdownRepeat),
       repeatRingerWire: lockdownRepeatRingerWire === '1'
     }

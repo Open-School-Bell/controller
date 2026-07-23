@@ -87,6 +87,91 @@ const main = async () => {
       })
     })
   )
+
+  const lockdownSettings = await prisma.setting.findMany({
+    where: {
+      key: {
+        in: [
+          'lockdownEntrySound',
+          'lockdownExitSound',
+          'lockdownExitRepeat',
+          'lockdownRepetitions'
+        ]
+      }
+    }
+  })
+
+  if (lockdownSettings.length > 0) {
+    const lockdownEntrySound = lockdownSettings.reduce((v, {key, value}) => {
+      if (v) return v
+      if (key === 'lockdownEntrySound') return value
+      return undefined
+    }, undefined)
+
+    const lockdownRepetitions = lockdownSettings.reduce((v, {key, value}) => {
+      if (v) return v
+      if (key === 'lockdownRepetitions') return value
+      return undefined
+    }, undefined)
+
+    if (lockdownEntrySound && lockdownRepetitions) {
+      const entrySequence = []
+
+      let i = 0
+      while (i < parseInt(lockdownRepetitions)) {
+        entrySequence.push(lockdownEntrySound)
+        i++
+      }
+
+      await prisma.setting.upsert({
+        where: {key: 'lockdownEntrySequence'},
+        create: {
+          key: 'lockdownEntrySequence',
+          value: JSON.stringify(entrySequence)
+        },
+        update: {value: JSON.stringify(entrySequence)}
+      })
+
+      await prisma.setting.deleteMany({
+        where: {key: {in: ['lockdownEntrySound', 'lockdownRepetitions']}}
+      })
+    }
+
+    const lockdownExitSound = lockdownSettings.reduce((v, {key, value}) => {
+      if (v) return v
+      if (key === 'lockdownExitSound') return value
+      return undefined
+    }, undefined)
+
+    const lockdownExitRepeat = lockdownSettings.reduce((v, {key, value}) => {
+      if (v) return v
+      if (key === 'lockdownExitRepeat') return value
+      return undefined
+    }, undefined)
+
+    if (lockdownExitSound && lockdownExitRepeat) {
+      const exitSequence = []
+
+      let i = 0
+      while (i < parseInt(lockdownExitRepeat)) {
+        exitSequence.push(lockdownExitSound)
+        i++
+      }
+
+      await prisma.setting.upsert({
+        where: {key: 'lockdownExitSequence'},
+        create: {
+          key: 'lockdownExitSequence',
+          value: JSON.stringify(exitSequence)
+        },
+        update: {value: JSON.stringify(exitSequence)}
+      })
+
+      await prisma.setting.deleteMany({
+        where: {key: {in: ['lockdownExitSound', 'lockdownExitRepeat']}}
+      })
+    }
+  }
 }
 
 main()

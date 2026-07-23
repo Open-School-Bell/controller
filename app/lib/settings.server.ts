@@ -2,34 +2,30 @@ import {asyncForEach} from '@arcath/utils'
 import {getPrisma} from './prisma.server'
 
 type SettingKey =
-  | 'lockdownEntrySound'
-  | 'lockdownExitSound'
   | 'lockdownRepeat'
-  | 'lockdownExitRepeat'
   | 'lockdownMode'
   | 'lockdownRepeatRingerWire'
-  | 'lockdownRepetitions'
   | 'password'
   | 'ttsSpeed'
   | 'enrollUrl'
   | 'controlPointKey'
   | 'ttsLastSeen'
   | 'workerLastSeen'
+  | 'lockdownEntrySequence'
+  | 'lockdownExitSequence'
 
 export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
-  lockdownEntrySound: '',
-  lockdownExitSound: '',
   lockdownRepeat: '5',
-  lockdownExitRepeat: '2',
   lockdownRepeatRingerWire: '0',
   lockdownMode: '0',
-  lockdownRepetitions: '4',
   password: 'bell',
   ttsSpeed: '1',
   enrollUrl: 'http://controller:3000',
   controlPointKey: '',
   ttsLastSeen: '"1970-01-01T23:00:00.000Z"',
-  workerLastSeen: '"1970-01-01T23:00:00.000Z"'
+  workerLastSeen: '"1970-01-01T23:00:00.000Z"',
+  lockdownEntrySequence: '[]',
+  lockdownExitSequence: '[]'
 }
 
 export const getSetting = async (setting: SettingKey) => {
