@@ -4,7 +4,7 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData} from '@remix-run/react'
+import {Form, useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getSettings, setSetting} from '~/lib/settings.server'
@@ -14,6 +14,7 @@ import {Page, FormElement} from '~/lib/ui'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
+import {getPrisma} from '~/lib/prisma.server'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)
@@ -27,16 +28,27 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     return redirect('/login')
   }
 
-  const {ttsSpeed, enrollUrl, controlPointKey} = await getSettings([
-    'ttsSpeed',
-    'enrollUrl',
-    'controlPointKey'
-  ])
+  const prisma = getPrisma()
+
+  const {ttsSpeed, enrollUrl, controlPointKey, controlPointDefaultZone} =
+    await getSettings([
+      'ttsSpeed',
+      'enrollUrl',
+      'controlPointKey',
+      'controlPointDefaultZone'
+    ])
+
+  const zones = await prisma.zone.findMany({
+    select: {id: true, name: true},
+    orderBy: {name: 'asc'}
+  })
 
   return {
     ttsSpeed,
     enrollUrl,
-    controlPointKey
+    controlPointKey,
+    controlPointDefaultZone,
+    zones
   }
 }
 
@@ -52,14 +64,19 @@ export const action = async ({request}: ActionFunctionArgs) => {
     | undefined)
     ? (formData.get('controlPointKey') as string | undefined)
     : ''
+  const controlPointDefaultZone = formData.get('controlPointDefaultZone') as
+    | string
+    | undefined
 
   invariant(enrollUrl)
   invariant(ttsSpeed)
   invariant(controlPointKey)
+  invariant(controlPointDefaultZone)
 
   await setSetting('enrollUrl', enrollUrl)
   await setSetting('ttsSpeed', ttsSpeed)
   await setSetting('controlPointKey', controlPointKey)
+  await setSetting('controlPointDefaultZone', controlPointDefaultZone)
 
   if (password && checkPassword && password === checkPassword) {
     await setSetting('password', password)
@@ -69,7 +86,8 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const Settings = () => {
-  const {ttsSpeed, enrollUrl, controlPointKey} = useLoaderData<typeof loader>()
+  const {ttsSpeed, enrollUrl, controlPointKey, controlPointDefaultZone, zones} =
+    useLoaderData<typeof loader>()
   const {t} = useTranslation()
 
   return (
@@ -107,6 +125,20 @@ const Settings = () => {
             className={INPUT_CLASSES}
             defaultValue={controlPointKey}
           />
+        </FormElement>
+        <FormElement
+          label={t('settings.controlPointDefaultZone.label')}
+          helperText={t('settings.controlPointDefaultZone.helper')}
+        >
+          <select
+            className={INPUT_CLASSES}
+            name="controlPointDefaultZone"
+            defaultValue={controlPointDefaultZone}
+          >
+            {zones.map(({id, name}) => {
+              return <option value={id}>{name}</option>
+            })}
+          </select>
         </FormElement>
         <FormElement
           label={t('settings.password.label')}

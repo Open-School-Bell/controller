@@ -22,7 +22,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   }
 
   if (authHeader !== controlPointKey) {
-    return Response.json({result: 'error', error: 'Invalid Ket provided.'})
+    return Response.json({result: 'error', error: 'Invalid Key provided.'})
   }
 
   const data = (await request.json()) as {pin: string; zone: string}
