@@ -5,10 +5,12 @@ import {getPrisma} from '~/lib/prisma.server'
 import {getRedis} from '~/lib/redis.server.mjs'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
-  const {controlPointKey, controlPointDefaultZone} = await getSettings([
-    'controlPointKey',
-    'controlPointDefaultZone'
-  ])
+  const {controlPointKey, controlPointDefaultZone, siteName} =
+    await getSettings([
+      'controlPointKey',
+      'controlPointDefaultZone',
+      'siteName'
+    ])
 
   const redis = getRedis()
 
@@ -43,6 +45,7 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
       return {id, name}
     }),
     defaultZone:
-      controlPointDefaultZone !== '' ? controlPointDefaultZone : zones[0].id
+      controlPointDefaultZone !== '' ? controlPointDefaultZone : zones[0].id,
+    siteName
   })
 }

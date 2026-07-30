@@ -30,13 +30,19 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
 
   const prisma = getPrisma()
 
-  const {ttsSpeed, enrollUrl, controlPointKey, controlPointDefaultZone} =
-    await getSettings([
-      'ttsSpeed',
-      'enrollUrl',
-      'controlPointKey',
-      'controlPointDefaultZone'
-    ])
+  const {
+    ttsSpeed,
+    enrollUrl,
+    controlPointKey,
+    controlPointDefaultZone,
+    siteName
+  } = await getSettings([
+    'ttsSpeed',
+    'enrollUrl',
+    'controlPointKey',
+    'controlPointDefaultZone',
+    'siteName'
+  ])
 
   const zones = await prisma.zone.findMany({
     select: {id: true, name: true},
@@ -48,7 +54,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     enrollUrl,
     controlPointKey,
     controlPointDefaultZone,
-    zones
+    zones,
+    siteName
   }
 }
 
@@ -67,16 +74,19 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const controlPointDefaultZone = formData.get('controlPointDefaultZone') as
     | string
     | undefined
+  const siteName = formData.get('siteName') as string | undefined
 
   invariant(enrollUrl)
   invariant(ttsSpeed)
   invariant(controlPointKey)
   invariant(controlPointDefaultZone)
+  invariant(siteName)
 
   await setSetting('enrollUrl', enrollUrl)
   await setSetting('ttsSpeed', ttsSpeed)
   await setSetting('controlPointKey', controlPointKey)
   await setSetting('controlPointDefaultZone', controlPointDefaultZone)
+  await setSetting('siteName', siteName)
 
   if (password && checkPassword && password === checkPassword) {
     await setSetting('password', password)
@@ -86,13 +96,30 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const Settings = () => {
-  const {ttsSpeed, enrollUrl, controlPointKey, controlPointDefaultZone, zones} =
-    useLoaderData<typeof loader>()
+  const {
+    ttsSpeed,
+    enrollUrl,
+    controlPointKey,
+    controlPointDefaultZone,
+    zones,
+    siteName
+  } = useLoaderData<typeof loader>()
   const {t} = useTranslation()
 
   return (
     <Page title={t('settings.pageTitle')}>
       <form method="post">
+        <FormElement
+          label={t('settings.siteName.label')}
+          helperText={t('settings.siteName.helper')}
+        >
+          <input
+            type="text"
+            name="siteName"
+            className={INPUT_CLASSES}
+            defaultValue={siteName}
+          />
+        </FormElement>
         <FormElement
           label={t('settings.controllerUrl.label')}
           helperText={t('settings.controllerUrl.helper')}

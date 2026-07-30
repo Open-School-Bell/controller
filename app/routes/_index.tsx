@@ -31,13 +31,23 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
   const logs = await prisma.log.findMany({orderBy: {time: 'desc'}, take: 10})
 
-  const {lockdownMode, workerLastSeen, ttsLastSeen} = await getSettings([
-    'lockdownMode',
-    'workerLastSeen',
-    'ttsLastSeen'
-  ])
+  const {lockdownMode, workerLastSeen, ttsLastSeen, siteName} =
+    await getSettings([
+      'lockdownMode',
+      'workerLastSeen',
+      'ttsLastSeen',
+      'siteName'
+    ])
 
-  return {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen}
+  return {
+    sounders,
+    lockdownMode,
+    buttons,
+    logs,
+    workerLastSeen,
+    ttsLastSeen,
+    siteName
+  }
 }
 
 export const meta: MetaFunction = ({matches}) => {
@@ -46,14 +56,21 @@ export const meta: MetaFunction = ({matches}) => {
 }
 
 export default function Index() {
-  const {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen} =
-    useLoaderData<typeof loader>()
+  const {
+    sounders,
+    lockdownMode,
+    buttons,
+    logs,
+    workerLastSeen,
+    ttsLastSeen,
+    siteName
+  } = useLoaderData<typeof loader>()
   const {t, locale} = useTranslation()
   const dateLocale = locale === 'pl' ? pl : enUS
   useLivePageData()
 
   return (
-    <Page title={t('dashboard.pageTitle')} wide>
+    <Page title={`${t('dashboard.pageTitle')} - ${siteName}`} wide>
       <div className="grid grid-cols-2 gap-4">
         <div className="box">
           <h2>{t('dashboard.devices')}</h2>

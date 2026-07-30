@@ -230,6 +230,9 @@ export const en = {
     'Leave fields empty to keep the current password.',
   'settings.password.placeholderNew': 'New password',
   'settings.password.placeholderConfirm': 'Repeat new password',
+  'settings.siteName.label': 'Site Name',
+  'settings.siteName.helper':
+    'The site names to display at the top of the application.',
   'schedule.metaTitle': 'Schedule',
   'schedule.pageTitle': 'Schedule',
   'schedule.defaultOption': 'Default',

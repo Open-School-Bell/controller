@@ -38,6 +38,7 @@ import {locales, type SupportedLocale} from '~/locales'
 import {SidebarLink, NavSep} from './lib/ui'
 import {I18nProvider, useTranslation} from './lib/i18n'
 import {initTranslations, type InitTranslationsReturn} from './lib/i18n.server'
+import {getSetting} from './lib/settings.server'
 
 const FALLBACK_LOCALE: SupportedLocale = 'en'
 const FALLBACK_TRANSLATIONS: InitTranslationsReturn = {
@@ -49,7 +50,10 @@ export const links: LinksFunction = () => []
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
   const {locale, messages} = initTranslations(request)
-  return json({locale, messages})
+
+  const siteName = await getSetting('siteName')
+
+  return {locale, messages, siteName}
 }
 
 export function Layout({children}: {children: React.ReactNode}) {
@@ -74,13 +78,14 @@ export function Layout({children}: {children: React.ReactNode}) {
 }
 
 const AppContent = () => {
+  const {siteName} = useLoaderData<typeof loader>()
   const {t} = useTranslation()
 
   return (
     <div className="grid grid-cols-app min-h-screen grid-rows-app">
       <div className="p-2 flex items-center">
         <img src="/logo.png" className="w-16 mr-4" />
-        <span>{t('app.title')}</span>
+        <span>{siteName}</span>
       </div>
       <div className="row-span-3 border-gray-300 border rounded-xl my-2 mr-2 shadow-sm bg-white p-2">
         <Outlet />
