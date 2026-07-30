@@ -131,6 +131,25 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
       .catch(() => resolve('error'))
   })
 
+  const controlPointLatest = await new Promise<string>(resolve => {
+    fetch(
+      'https://api.github.com/repos/Open-School-Bell/control-point/releases?per_page=1',
+      {
+        headers: {
+          Accept: 'application/vnd.github+json',
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+      .then(response => {
+        response
+          .json()
+          .then(data => resolve(data[0].tag_name))
+          .catch(() => resolve('error'))
+      })
+      .catch(() => resolve('error'))
+  })
+
   const prisma = getPrisma()
   const redis = getRedis()
 
@@ -160,6 +179,8 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     buttonVersions[id] = version ? version : '0.0.0'
   })
 
+  const controlPointVersion = await redis.get('osb-control-point-version')
+
   const license = (
     await readFile(path.join(process.cwd(), 'LICENSE'))
   ).toString()
@@ -174,7 +195,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
     buttonLatest,
     ttsLatest,
     controllerLatest,
-    license
+    license,
+    controlPointVersion,
+    controlPointLatest
   }
 }
 
@@ -194,7 +217,9 @@ const About = () => {
     buttonLatest,
     ttsLatest,
     controllerLatest,
-    license
+    license,
+    controlPointVersion,
+    controlPointLatest
   } = useLoaderData<typeof loader>()
   const {t} = useTranslation()
 
@@ -284,6 +309,24 @@ const About = () => {
               </tr>
             )
           })}
+          {controlPointVersion ? (
+            <tr>
+              <td>Control Point</td>
+              <td className="text-center">{controlPointVersion}</td>
+              <td
+                className={`text-center ${semver.gt(controlPointLatest, controlPointVersion) ? 'bg-red-300' : ''}`}
+              >
+                {controlPointLatest.replace('v', '')}
+              </td>
+              <td
+                className={`text-center ${semver.gt(RequiredVersions.controlPoint, controlPointVersion) ? 'bg-red-300' : ''}`}
+              >
+                {RequiredVersions.controlPoint}
+              </td>
+            </tr>
+          ) : (
+            ''
+          )}
         </tbody>
       </table>
 

@@ -222,6 +222,9 @@ export const en = {
   'settings.controlPointKey.label': 'Control Point Key',
   'settings.controlPointKey.helper':
     'The key used by the Control Point App to communicate with the controller.',
+  'settings.controlPointDefaultZone.label': 'Control Point Zone',
+  'settings.controlPointDefaultZone.helper':
+    'Which zone should the control point user interface default to?',
   'settings.password.label': 'Change password',
   'settings.password.helper':
     'Leave fields empty to keep the current password.',

@@ -9,6 +9,7 @@ type SettingKey =
   | 'ttsSpeed'
   | 'enrollUrl'
   | 'controlPointKey'
+  | 'controlPointDefaultZone'
   | 'ttsLastSeen'
   | 'workerLastSeen'
   | 'lockdownEntrySequence'
@@ -22,6 +23,7 @@ export const DEFAULT_SETTINGS: {[setting in SettingKey]: string} = {
   ttsSpeed: '1',
   enrollUrl: 'http://controller:3000',
   controlPointKey: '',
+  controlPointDefaultZone: '',
   ttsLastSeen: '"1970-01-01T23:00:00.000Z"',
   workerLastSeen: '"1970-01-01T23:00:00.000Z"',
   lockdownEntrySequence: '[]',
