@@ -33,14 +33,23 @@ export const action = async ({request}: ActionFunctionArgs) => {
   })
 
   if (!dbAction) {
-    return Response.json({error: 'action not found'}, {status: 404})
+    return Response.json(
+      {result: 'error', error: 'action not found'},
+      {status: 404}
+    )
   }
 
-  if (!zone || typeof zone !== 'string' || zone.trim() === '') {
-    return Response.json({error: 'missing zone'}, {status: 400})
+  let response: {result: 'error' | 'ok'; error?: string} = {
+    result: 'ok'
   }
+  let status = 200
 
-  await triggerAction(dbAction, zone)
+  await triggerAction(dbAction, zone, `Sounder: ${sounder.name}`, {
+    onMissingZone: zone => {
+      response = {result: 'error', error: 'Zone not found.'}
+      status = 400
+    }
+  })
 
-  return Response.json({ping: 'pong'})
+  return Response.json(response, {status})
 }

@@ -35,10 +35,16 @@ export const action = async ({request}: ActionFunctionArgs) => {
     return Response.json({result: 'error', error: 'No action for this pin'})
   }
 
-  await triggerAction(action, data.zone)
-
-  return Response.json({
+  let response = {
     result: 'success',
     message: `${action.icon} ${action.name}`
+  }
+
+  await triggerAction(action, data.zone, 'Control Point', {
+    onMissingZone: zone => {
+      response = {result: 'error', message: 'Zone does not exist'}
+    }
   })
+
+  return Response.json(response)
 }
