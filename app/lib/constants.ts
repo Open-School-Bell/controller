@@ -2,8 +2,8 @@ export const VERSION = '1.7.1'
 
 export const RequiredVersions = {
   controller: VERSION,
-  tts: '2.0.0',
-  piper: '1.3.0',
+  tts: '2.0.2',
+  piper: '1.6.0',
   sounder: '2.4.0',
   button: '1.0.0',
   controlPoint: '1.0.0'
