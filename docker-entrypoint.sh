@@ -13,7 +13,5 @@ if [ "$1" = 'osb-remix' ]; then
 
   npm run start
 elif [ "$1" = 'osb-worker' ]; then
-  npx prisma generate
-
   npm run start:worker
 fi
