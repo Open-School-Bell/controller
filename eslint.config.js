@@ -32,7 +32,8 @@ export const config = [
       '**/server-build/**',
       '**/dist/**',
       '**/coverage/**',
-      '.test.env'
+      '.test.env',
+      '**/generated/prisma/**'
     ]
   },
 

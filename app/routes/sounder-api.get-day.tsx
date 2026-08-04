@@ -1,5 +1,4 @@
 import {type ActionFunctionArgs} from '@remix-run/node'
-import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
 

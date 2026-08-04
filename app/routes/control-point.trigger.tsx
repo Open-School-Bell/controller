@@ -41,7 +41,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   }
 
   await triggerAction(action, data.zone, 'Control Point', {
-    onMissingZone: zone => {
+    onMissingZone: () => {
       response = {result: 'error', message: 'Zone does not exist'}
     }
   })

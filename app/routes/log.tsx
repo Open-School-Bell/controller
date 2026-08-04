@@ -13,7 +13,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
-import {MessageKey} from '~/locales'
+import {type MessageKey} from '~/locales'
 import {useLivePageData} from '~/lib/hooks/use-live-data'
 
 export const meta: MetaFunction = ({matches}) => {

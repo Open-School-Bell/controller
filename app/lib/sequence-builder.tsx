@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import {type AudioModel} from '../../prisma/generated/prisma/models'
 
 import CopyIcon from '@heroicons/react/24/outline/DocumentDuplicateIcon'

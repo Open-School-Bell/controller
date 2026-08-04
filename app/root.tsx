@@ -7,11 +7,7 @@ import {
   useLoaderData,
   useRouteLoaderData
 } from '@remix-run/react'
-import {
-  json,
-  type LinksFunction,
-  type LoaderFunctionArgs
-} from '@remix-run/node'
+import {type LinksFunction, type LoaderFunctionArgs} from '@remix-run/node'
 import BellIcon from '@heroicons/react/24/outline/BellIcon'
 import BellAlertIcon from '@heroicons/react/24/outline/BellAlertIcon'
 import Square3StackIcon from '@heroicons/react/24/outline/Square3Stack3DIcon'
