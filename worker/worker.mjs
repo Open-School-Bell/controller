@@ -1,12 +1,9 @@
 import {Worker, Queue} from 'bullmq'
 import cron from 'node-cron'
-import {PrismaClient} from '@prisma/client'
 
 import {getRedis} from '../app/lib/redis.server.mjs'
 
 const connection = getRedis()
-
-const prisma = global.__prisma ?? (global.__prisma = new PrismaClient())
 
 const queue = new Queue('osbc', {connection})
 const worker = new Worker(
@@ -81,19 +78,11 @@ createHandler('outboundWebhook', async ({target, key}) => {
 createHandler('statusCheck', async () => {
   console.log(`Running status check`)
 
-  await prisma.setting.upsert({
-    where: {key: 'workerLastSeen'},
-    create: {key: 'workerLastSeen', value: JSON.stringify(new Date())},
-    update: {value: JSON.stringify(new Date())}
-  })
+  // inform controller of last seen
 
   fetch(`${process.env.TTS_API}/status.json`)
     .then(async () => {
-      await prisma.setting.upsert({
-        where: {key: 'ttsLastSeen'},
-        create: {key: 'ttsLastSeen', value: JSON.stringify(new Date())},
-        update: {value: JSON.stringify(new Date())}
-      })
+      // inform controller of tts last seen
     })
     .catch(() => {
       console.log('Unable to contact tts')

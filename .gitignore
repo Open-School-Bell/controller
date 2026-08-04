@@ -8,6 +8,7 @@ prisma/*.db
 prisma/*.db-journal
 prisma/**/*.db
 prisma/**/*.db-journal
+prisma/generated
 
 
 public/sounds
