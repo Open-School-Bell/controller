@@ -67,13 +67,11 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const password = formData.get('password') as string | undefined
   const checkPassword = formData.get('confirmPassword') as string | undefined
   const controlPointKey = (formData.get('controlPointKey') as
-    | string
-    | undefined)
+    string | undefined)
     ? (formData.get('controlPointKey') as string | undefined)
     : ''
   const controlPointDefaultZone = formData.get('controlPointDefaultZone') as
-    | string
-    | undefined
+    string | undefined
   const siteName = formData.get('siteName') as string | undefined
 
   invariant(enrollUrl)

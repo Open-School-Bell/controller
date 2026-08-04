@@ -62,11 +62,9 @@ export const action = async ({request}: ActionFunctionArgs) => {
 
   const lockdownRepeat = formData.get('lockdownRepeat') as string | undefined
   const lockdownEntrySequence = formData.get('lockdownEntrySequence') as
-    | string
-    | undefined
+    string | undefined
   const lockdownExitSequence = formData.get('lockdownExitSequence') as
-    | string
-    | undefined
+    string | undefined
   const lockdownRepeatRingerWire = !!(formData.get(
     'lockdownRepeatRingerWire'
   ) as string | undefined)
