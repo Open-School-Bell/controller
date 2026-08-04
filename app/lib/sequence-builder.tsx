@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {type Audio} from '@prisma/client'
+import {type AudioModel} from '../../prisma/generated/prisma/models'
 
 import CopyIcon from '@heroicons/react/24/outline/DocumentDuplicateIcon'
 import PasteIcon from '@heroicons/react/24/outline/ClipboardDocumentIcon'
@@ -15,7 +15,7 @@ export const SequenceBuilder = ({
   label,
   helperText
 }: {
-  sounds: Audio[]
+  sounds: AudioModel[]
   initialQueue: string[]
   name: string
   label: string
@@ -137,7 +137,7 @@ export const SequenceViewer = ({
   label
 }: {
   queue: string[]
-  sounds: Audio[]
+  sounds: AudioModel[]
   label: string
 }) => {
   const {t} = useTranslation()
