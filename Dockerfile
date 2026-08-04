@@ -30,6 +30,7 @@ RUN npm prune --production
 FROM base AS build
 
 ENV NODE_ENV=production
+ENV DATABASE_URL=file:./prisma/data/db.db
 
 RUN mkdir /app
 WORKDIR /app
