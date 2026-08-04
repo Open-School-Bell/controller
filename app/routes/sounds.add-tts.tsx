@@ -72,14 +72,17 @@ export const action = async ({request}: ActionFunctionArgs) => {
     }
   })
 
-  const downloadResponse = await fetch(`${process.env.TTS_API}/piper`, {
-    body: JSON.stringify({
-      text: tts,
-      length_scale: speed
-    }),
-    headers: {'Content-Type': 'application/json'},
-    method: 'post'
-  }).catch(() => {})
+  const downloadResponse = await fetch(
+    `${process.env.TTS_API}/piper/synthesize`,
+    {
+      body: JSON.stringify({
+        text: tts,
+        length_scale: speed
+      }),
+      headers: {'Content-Type': 'application/json'},
+      method: 'post'
+    }
+  ).catch(() => {})
 
   const downloadStream = fs.createWriteStream(
     path.join(process.cwd(), 'public', 'sounds', `${sound.id}.wav`)

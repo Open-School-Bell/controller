@@ -1,10 +1,18 @@
 import {type LoaderFunctionArgs} from '@remix-run/node'
 
-import {getSetting} from '~/lib/settings.server'
+import {getSettings} from '~/lib/settings.server'
 import {getPrisma} from '~/lib/prisma.server'
+import {getRedis} from '~/lib/redis.server.mjs'
 
 export const loader = async ({request}: LoaderFunctionArgs) => {
-  const controlPointKey = await getSetting('controlPointKey')
+  const {controlPointKey, controlPointDefaultZone, siteName} =
+    await getSettings([
+      'controlPointKey',
+      'controlPointDefaultZone',
+      'siteName'
+    ])
+
+  const redis = getRedis()
 
   if (controlPointKey === '') {
     return Response.json({
@@ -14,13 +22,18 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   }
 
   const authHeader = request.headers.get('Auth')
+  const versionHeader = request.headers.get('Version')
 
   if (!authHeader) {
     return Response.json({result: 'error', error: 'No key provided.'})
   }
 
   if (authHeader !== controlPointKey) {
-    return Response.json({result: 'error', error: 'Invalid Ket provided.'})
+    return Response.json({result: 'error', error: 'Invalid Key provided.'})
+  }
+
+  if (versionHeader) {
+    void redis.set(`osb-control-point-version`, versionHeader)
   }
 
   const prisma = getPrisma()
@@ -30,6 +43,9 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   return Response.json({
     zones: zones.map(({id, name}) => {
       return {id, name}
-    })
+    }),
+    defaultZone:
+      controlPointDefaultZone !== '' ? controlPointDefaultZone : zones[0].id,
+    siteName
   })
 }

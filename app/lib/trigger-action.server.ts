@@ -2,12 +2,21 @@ import {type Action} from '@prisma/client'
 
 import {broadcast} from './broadcast.server'
 import {toggleLockdown} from './lockdown.server'
+import {log} from './log.server'
 
-export const triggerAction = async (action: Action, zone: string) => {
+export const triggerAction = async (
+  action: Action,
+  zone: string | null | undefined,
+  source: string,
+  callbacks: {onMissingZone: (suppliedZone: string | null | undefined) => void}
+) => {
+  await log(`🎬 Triggering action ${action.name} from ${source}`)
+
   switch (action.action) {
     case 'broadcast':
       if (!zone || typeof zone !== 'string' || zone.trim() === '') {
-        return Response.json({error: 'missing zone'}, {status: 400})
+        callbacks.onMissingZone(zone)
+        return
       }
 
       await broadcast(zone, action.data)

@@ -31,13 +31,23 @@ export const loader = async ({request}: LoaderFunctionArgs) => {
   const buttons = await prisma.actionButton.findMany({orderBy: {name: 'asc'}})
   const logs = await prisma.log.findMany({orderBy: {time: 'desc'}, take: 10})
 
-  const {lockdownMode, workerLastSeen, ttsLastSeen} = await getSettings([
-    'lockdownMode',
-    'workerLastSeen',
-    'ttsLastSeen'
-  ])
+  const {lockdownMode, workerLastSeen, ttsLastSeen, siteName} =
+    await getSettings([
+      'lockdownMode',
+      'workerLastSeen',
+      'ttsLastSeen',
+      'siteName'
+    ])
 
-  return {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen}
+  return {
+    sounders,
+    lockdownMode,
+    buttons,
+    logs,
+    workerLastSeen,
+    ttsLastSeen,
+    siteName
+  }
 }
 
 export const meta: MetaFunction = ({matches}) => {
@@ -46,14 +56,21 @@ export const meta: MetaFunction = ({matches}) => {
 }
 
 export default function Index() {
-  const {sounders, lockdownMode, buttons, logs, workerLastSeen, ttsLastSeen} =
-    useLoaderData<typeof loader>()
+  const {
+    sounders,
+    lockdownMode,
+    buttons,
+    logs,
+    workerLastSeen,
+    ttsLastSeen,
+    siteName
+  } = useLoaderData<typeof loader>()
   const {t, locale} = useTranslation()
   const dateLocale = locale === 'pl' ? pl : enUS
   useLivePageData()
 
   return (
-    <Page title={t('dashboard.pageTitle')} wide>
+    <Page title={`${t('dashboard.pageTitle')} - ${siteName}`} wide>
       <div className="grid grid-cols-2 gap-4">
         <div className="box">
           <h2>{t('dashboard.devices')}</h2>
@@ -92,44 +109,46 @@ export default function Index() {
           </table>
         </div>
         <div
-          className={`box text-center ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
+          className={`box text-center relative shadow ring-1 ring-white/50 ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
         >
-          <p className="mt-2">
-            {t('dashboard.lockdown.message', {
-              status: t(
-                lockdownMode === '0'
-                  ? 'dashboard.lockdown.status.disabled'
-                  : 'dashboard.lockdown.status.enabled'
-              )
-            })}
-          </p>
-          <form
-            action="/lockdown/trigger"
-            method="post"
-            onSubmit={e => {
-              if (
-                !confirm(
-                  t(
-                    lockdownMode === '0'
-                      ? 'dashboard.lockdown.confirmEnable'
-                      : 'dashboard.lockdown.confirmDisable'
-                  )
+          <div className="absolute top-[50%] mt-[-44px] left-[50%] ml-[-12.25rem] w-96">
+            <p className="mt-2">
+              {t('dashboard.lockdown.message', {
+                status: t(
+                  lockdownMode === '0'
+                    ? 'dashboard.lockdown.status.disabled'
+                    : 'dashboard.lockdown.status.enabled'
                 )
-              ) {
-                e.preventDefault()
-              }
-            }}
-          >
-            <button
-              className={`bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer mt-4 ${lockdownMode === '1' ? 'bg-green-300' : 'bg-red-300'}`}
+              })}
+            </p>
+            <form
+              action="/lockdown/trigger"
+              method="post"
+              onSubmit={e => {
+                if (
+                  !confirm(
+                    t(
+                      lockdownMode === '0'
+                        ? 'dashboard.lockdown.confirmEnable'
+                        : 'dashboard.lockdown.confirmDisable'
+                    )
+                  )
+                ) {
+                  e.preventDefault()
+                }
+              }}
             >
-              {t(
-                lockdownMode === '0'
-                  ? 'dashboard.lockdown.button.enable'
-                  : 'dashboard.lockdown.button.disable'
-              )}
-            </button>
-          </form>
+              <button
+                className={`bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer mt-4 ${lockdownMode === '1' ? 'bg-green-300' : 'bg-red-300'}`}
+              >
+                {t(
+                  lockdownMode === '0'
+                    ? 'dashboard.lockdown.button.enable'
+                    : 'dashboard.lockdown.button.disable'
+                )}
+              </button>
+            </form>
+          </div>
         </div>
         <div className="box">
           <h2>{t('dashboard.buttons')}</h2>
