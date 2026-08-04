@@ -109,44 +109,46 @@ export default function Index() {
           </table>
         </div>
         <div
-          className={`box text-center ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
+          className={`box text-center relative shadow ring-1 ring-white/50 ${lockdownMode === '0' ? 'bg-green-300' : 'bg-red-300'}`}
         >
-          <p className="mt-2">
-            {t('dashboard.lockdown.message', {
-              status: t(
-                lockdownMode === '0'
-                  ? 'dashboard.lockdown.status.disabled'
-                  : 'dashboard.lockdown.status.enabled'
-              )
-            })}
-          </p>
-          <form
-            action="/lockdown/trigger"
-            method="post"
-            onSubmit={e => {
-              if (
-                !confirm(
-                  t(
-                    lockdownMode === '0'
-                      ? 'dashboard.lockdown.confirmEnable'
-                      : 'dashboard.lockdown.confirmDisable'
-                  )
+          <div className="absolute top-[50%] mt-[-44px] left-[50%] ml-[-12.25rem] w-96">
+            <p className="mt-2">
+              {t('dashboard.lockdown.message', {
+                status: t(
+                  lockdownMode === '0'
+                    ? 'dashboard.lockdown.status.disabled'
+                    : 'dashboard.lockdown.status.enabled'
                 )
-              ) {
-                e.preventDefault()
-              }
-            }}
-          >
-            <button
-              className={`bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer mt-4 ${lockdownMode === '1' ? 'bg-green-300' : 'bg-red-300'}`}
+              })}
+            </p>
+            <form
+              action="/lockdown/trigger"
+              method="post"
+              onSubmit={e => {
+                if (
+                  !confirm(
+                    t(
+                      lockdownMode === '0'
+                        ? 'dashboard.lockdown.confirmEnable'
+                        : 'dashboard.lockdown.confirmDisable'
+                    )
+                  )
+                ) {
+                  e.preventDefault()
+                }
+              }}
             >
-              {t(
-                lockdownMode === '0'
-                  ? 'dashboard.lockdown.button.enable'
-                  : 'dashboard.lockdown.button.disable'
-              )}
-            </button>
-          </form>
+              <button
+                className={`bg-gray-300 p-2 rounded-xl shadow-sm cursor-pointer mt-4 ${lockdownMode === '1' ? 'bg-green-300' : 'bg-red-300'}`}
+              >
+                {t(
+                  lockdownMode === '0'
+                    ? 'dashboard.lockdown.button.enable'
+                    : 'dashboard.lockdown.button.disable'
+                )}
+              </button>
+            </form>
+          </div>
         </div>
         <div className="box">
           <h2>{t('dashboard.buttons')}</h2>
