@@ -118,8 +118,6 @@ const AddSchedule = () => {
   const navigate = useNavigate()
   const [day, setDay] = useLocalStorage<string>('day', '_')
   const [zone, setZone] = useLocalStorage<string>('zone', zones[0].id)
-  const [sound, setSound] = useLocalStorage<string>('sound', sounds[0].id)
-  const [count, setCount] = useLocalStorage<string>('count', '1')
   const {t} = useTranslation()
 
   return (

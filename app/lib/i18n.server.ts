@@ -4,7 +4,7 @@ import {
   locales,
   type SupportedLocale,
   FALLBACK_LOCALE,
-  MessageKey
+  type MessageKey
 } from '~/locales'
 import {type Messages} from './i18n.shared'
 

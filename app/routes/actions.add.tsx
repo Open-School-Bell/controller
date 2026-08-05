@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction
 } from '@remix-run/node'
-import {useLoaderData, useNavigate} from '@remix-run/react'
+import {useNavigate} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getPrisma} from '~/lib/prisma.server'
@@ -71,7 +71,6 @@ export const action = async ({request}: ActionFunctionArgs) => {
 }
 
 const AddAction = () => {
-  const {sounds} = useLoaderData<typeof loader>()
   const navigate = useNavigate()
   const {t} = useTranslation()
 

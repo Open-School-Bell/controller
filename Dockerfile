@@ -30,6 +30,7 @@ RUN npm prune --production
 FROM base AS build
 
 ENV NODE_ENV=production
+ENV DATABASE_URL=file:./prisma/data/db.db
 
 RUN mkdir /app
 WORKDIR /app
@@ -37,6 +38,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules /app/node_modules
 
 ADD . .
+RUN npx prisma generate
 RUN npm run build
 
 # Go back to the `base` image and copy in the production deps and build

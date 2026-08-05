@@ -1,4 +1,4 @@
-export const VERSION = '1.7.1'
+export const VERSION = '2.0.0'
 
 export const RequiredVersions = {
   controller: VERSION,

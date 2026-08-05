@@ -16,16 +16,16 @@ jobs:
       docs: ${{ steps.filter.outputs.docs }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 💾 Cache Node Modules
         id: node-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key:
@@ -37,7 +37,7 @@ jobs:
         run: npm install
 
       - name: 🧭 Find Changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
@@ -69,16 +69,16 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 💾 Cache Node Modules
         id: node-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key:
@@ -98,23 +98,28 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-ts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    env:
+      DATABASE_URL: file:./prisma/data/db.db
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 💾 Cache Node Modules
         id: node-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key:
             node-modules-${{ hashFiles('package-lock.json',
             'prisma/schema.prisma') }}
+
+      - name: 📊 Generate Prisma
+        run: npx prisma generate
 
       - name: 🔎 Type check
         run: npm run typecheck
@@ -131,16 +136,16 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ⎔ Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: 24
 
       - name: 💾 Cache Node Modules
         id: node-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key:
@@ -162,7 +167,7 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     steps:
       - name: ⬇️ Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: ☁️ Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -174,7 +179,7 @@ jobs:
 
       # Setup cache
       - name: ⚡️ Cache Docker layers
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

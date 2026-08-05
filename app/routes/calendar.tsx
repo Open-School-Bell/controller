@@ -15,7 +15,7 @@ import {getPrisma} from '~/lib/prisma.server'
 import {useTranslation} from '~/lib/i18n'
 import {translate} from '~/lib/i18n.shared'
 import {getRootI18n} from '~/lib/i18n.meta'
-import {MessageKey} from '~/locales'
+import {type MessageKey} from '~/locales'
 
 export const meta: MetaFunction = ({matches}) => {
   const {messages} = getRootI18n(matches)

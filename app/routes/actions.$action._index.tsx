@@ -3,7 +3,7 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {useLoaderData, Link, useNavigate} from '@remix-run/react'
+import {useLoaderData, useNavigate} from '@remix-run/react'
 
 import {getPrisma} from '~/lib/prisma.server'
 import {checkSession} from '~/lib/session'

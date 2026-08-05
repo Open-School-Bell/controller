@@ -4,7 +4,7 @@ import {
   type MetaFunction,
   redirect
 } from '@remix-run/node'
-import {Form, useLoaderData} from '@remix-run/react'
+import {useLoaderData} from '@remix-run/react'
 import {invariant} from '@arcath/utils'
 
 import {getSettings, setSetting} from '~/lib/settings.server'
@@ -67,13 +67,11 @@ export const action = async ({request}: ActionFunctionArgs) => {
   const password = formData.get('password') as string | undefined
   const checkPassword = formData.get('confirmPassword') as string | undefined
   const controlPointKey = (formData.get('controlPointKey') as
-    | string
-    | undefined)
+    string | undefined)
     ? (formData.get('controlPointKey') as string | undefined)
     : ''
   const controlPointDefaultZone = formData.get('controlPointDefaultZone') as
-    | string
-    | undefined
+    string | undefined
   const siteName = formData.get('siteName') as string | undefined
 
   invariant(enrollUrl)
@@ -163,7 +161,11 @@ const Settings = () => {
             defaultValue={controlPointDefaultZone}
           >
             {zones.map(({id, name}) => {
-              return <option value={id}>{name}</option>
+              return (
+                <option value={id} key={id}>
+                  {name}
+                </option>
+              )
             })}
           </select>
         </FormElement>

@@ -28,7 +28,7 @@ export const action = async ({request, params}: ActionFunctionArgs) => {
   let response = {status: 'ok'}
 
   await triggerAction(webhook.action, zone, `Webhook: ${params.hook}`, {
-    onMissingZone: zone => {
+    onMissingZone: () => {
       response = {status: 'zone not found'}
     }
   })

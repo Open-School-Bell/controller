@@ -45,7 +45,7 @@ export const action = async ({request}: ActionFunctionArgs) => {
   let status = 200
 
   await triggerAction(dbAction, zone, `Sounder: ${sounder.name}`, {
-    onMissingZone: zone => {
+    onMissingZone: () => {
       response = {result: 'error', error: 'Zone not found.'}
       status = 400
     }
